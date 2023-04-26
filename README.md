@@ -99,8 +99,10 @@
 ## Branch Strategy
 
 + GitHub Flow
-    + main : 배포 브랜치
-    + feature : 기능 개발 관련 브랜치
+  + deploy-BE: BE 배포 브랜치
+  + deploy-FE: FE 배포 브랜치
+  + dev-BE: BE 개발 브랜치
+  + dev-FE: FE 개발 브랜치
 > <img src="https://user-images.githubusercontent.com/82401504/223504426-05c2b5fc-5d95-4bbf-be50-95b25a58a332.png" width="500" height="400" alt="">
 
 
