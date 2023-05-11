@@ -1,14 +1,14 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="info">
+    <b-navbar fixed="top" toggleable="lg" type="light" variant="light">
       <b-navbar-brand to="/">
         <img src="/logo.png" class="d-inline-block align-top" alt="logo" />
         Share-Travel
       </b-navbar-brand>
 
       <b-navbar-nav>
-        <b-nav-item to="/">공지사항</b-nav-item>
-        <b-nav-item to="/">이벤트</b-nav-item>
+        <b-nav-item to="/info">공지사항</b-nav-item>
+        <b-nav-item to="/event">이벤트</b-nav-item>
       </b-navbar-nav>
 
       <b-collapse id="nav-collapse" is-nav>
@@ -16,7 +16,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item to="/share">여행지 찾기</b-nav-item>
           <b-nav-item to="/recommend">여행지 추천</b-nav-item>
-          <b-nav-item to="/">게시판</b-nav-item>
+          <b-nav-item to="/board">게시판</b-nav-item>
           <template v-if="isLoggedIn">
             <b-nav-item to="/user">마이페이지</b-nav-item>
             <b-nav-item href="javascript:;" @click="logout"
