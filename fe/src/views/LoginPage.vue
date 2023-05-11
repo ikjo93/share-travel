@@ -1,15 +1,15 @@
 <template>
   <div class="main form-container">
-    <LoginPage></LoginPage>
+    <LoginForm></LoginForm>
   </div>
 </template>
 
 <script>
-import LoginPage from '../components/LoginPage.vue';
+import LoginForm from '../components/LoginForm.vue';
 
 export default {
   components: {
-    LoginPage,
+    LoginForm,
   },
 };
 </script>
