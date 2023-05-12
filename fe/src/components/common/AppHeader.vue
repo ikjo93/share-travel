@@ -90,13 +90,13 @@ export default {
       this.$refs['my-modal'].hide();
     },
     googleLogin() {
-      console.log('TODO');
+      location.href = `${process.env.VUE_APP_API_URL}oauth2/authorization/google`;
     },
     naverLogin() {
-      console.log('TODO');
+      location.href = `${process.env.VUE_APP_API_URL}oauth2/authorization/naver`;
     },
     kakaoLogin() {
-      console.log('TODO');
+      location.href = `${process.env.VUE_APP_API_URL}oauth2/authorization/kakao`;
     },
   },
 };
