@@ -1,3 +1,6 @@
+### OAuth ###
+application-oauth.yml
+
 HELP.md
 .gradle
 build/
