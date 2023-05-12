@@ -12,5 +12,8 @@ export default new Vuex.Store({
     isLoggedIn(state) {
       return !!state.token;
     },
+    userToken(state) {
+      return state.token;
+    },
   },
 });
