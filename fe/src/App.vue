@@ -20,7 +20,4 @@ export default {
 };
 </script>
 
-<style>
-@import './assets/css/reset.css';
-@import './assets/css/common.css';
-</style>
+<style></style>

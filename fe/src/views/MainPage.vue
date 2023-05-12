@@ -1,9 +1,17 @@
 <template>
-  <div></div>
+  <div>
+    <ImageSlider></ImageSlider>
+  </div>
 </template>
 
 <script>
-export default {};
+import ImageSlider from '@/components/main/ImageSlider.vue';
+
+export default {
+  components: {
+    ImageSlider,
+  },
+};
 </script>
 
 <style></style>

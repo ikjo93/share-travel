@@ -13,21 +13,19 @@ export default {};
 
 <style scoped>
 footer {
-  /* position: fixed;
-	bottom: 0;
-	width: 100%; */
-  height: 52px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
   padding: 0 20px;
-  margin-top: 50px;
   font-size: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #364f6b;
-  color: white;
+  background: #fffefc;
+  color: black;
 }
-
 footer a {
-  color: white;
+  color: black;
 }
 </style>

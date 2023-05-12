@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import MainPage from '../views/MainPage';
-import LoginPage from '../views/LoginPage';
 import UserPage from '../views/UserPage';
+import ShareTravelPage from '../views/ShareTravelPage';
+import TravelRecommendPage from '../views/TravelRecommendPage';
+import BoardPage from '../views/BoardPage';
 
 Vue.use(Router);
 
@@ -19,14 +21,34 @@ export default new Router({
       component: MainPage,
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginPage,
-    },
-    {
       path: '/user',
       name: 'user',
       component: UserPage,
+    },
+    {
+      path: '/info',
+      name: 'info',
+      redirect: '/main',
+    },
+    {
+      path: '/event',
+      name: 'event',
+      redirect: '/main',
+    },
+    {
+      path: '/share',
+      name: 'share',
+      component: ShareTravelPage,
+    },
+    {
+      path: '/recommend',
+      name: 'recommend',
+      component: TravelRecommendPage,
+    },
+    {
+      path: '/board',
+      name: 'board',
+      component: BoardPage,
     },
   ],
 });

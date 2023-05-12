@@ -8,4 +8,9 @@ export default new Vuex.Store({
     user: {},
     token: '',
   },
+  getters: {
+    isLoggedIn(state) {
+      return !!state.token;
+    },
+  },
 });
