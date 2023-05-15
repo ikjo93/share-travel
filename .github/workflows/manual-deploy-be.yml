@@ -1,8 +1,7 @@
-name: BACKEND CI/CD
+name: Munual Deploy Backend
 
 on:
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -10,7 +9,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'be')
     defaults:
       run:
         shell: bash
