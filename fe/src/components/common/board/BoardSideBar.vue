@@ -1,7 +1,6 @@
 <template>
   <div>
     <b-navbar class="flex-column">
-      <b-navbar-brand href="#">사이드 바 임시</b-navbar-brand>
       <b-nav pills vertical>
         <b-nav-item href="#">공지사항</b-nav-item>
         <b-nav-item href="#">이벤트</b-nav-item>
@@ -27,4 +26,8 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.b-navbar {
+  background-color: blueviolet;
+}
+</style>
