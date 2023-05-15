@@ -74,7 +74,7 @@
 
 ### 🏁 Architecture
 
-> <img src="https://github.com/ikjo93/share-travel/assets/82401504/71bc4e62-078e-4a80-99a7-5de22b2df9f5" width="650" height="400" alt="">
+> <img src="https://github.com/ikjo93/share-travel/assets/82401504/71bc4e62-078e-4a80-99a7-5de22b2df9f5" width="750" height="550" alt="">
 
 ### 🔎 팀원 소개
 
