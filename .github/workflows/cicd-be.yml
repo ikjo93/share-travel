@@ -1,0 +1,59 @@
+name: BACKEND CI/CD
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'be')
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./be
+
+    steps:
+      - name: checkout Github Action
+        uses: actions/checkout@v3
+
+      - name: Insert secret data into yml file
+        run: |
+          sed -i "s|\${DB_URL}|$DB_URL|g" ./src/main/resources/application.yml
+          sed -i "s|\${DB_USERNAME}|$DB_USERNAME|g" ./src/main/resources/application.yml
+          sed -i "s|\${DB_PASSWORD}|$DB_PASSWORD|g" ./src/main/resources/application.yml
+          sed -i "s|\${REDIS_HOST}|$REDIS_HOST|g" ./src/main/resources/application.yml
+          sed -i "s|\${GOOGLE_CLIENT_ID}|$GOOGLE_CLIENT_ID|g" ./src/main/resources/application.yml
+          sed -i "s|\${GOOGLE_CLIENT_SECRET}|$GOOGLE_CLIENT_SECRET|g" ./src/main/resources/application.yml
+          sed -i "s|\${NAVER_CLIENT_ID}|$NAVER_CLIENT_ID|g" ./src/main/resources/application.yml
+          sed -i "s|\${NAVER_CLIENT_SECRET}|$NAVER_CLIENT_SECRET|g" ./src/main/resources/application.yml
+          sed -i "s|\${KAKAO_CLIENT_ID}|$KAKAO_CLIENT_ID|g" ./src/main/resources/application.yml
+          sed -i "s|\${KAKAO_CLIENT_SECRET}|$KAKAO_CLIENT_SECRET|g" ./src/main/resources/application.yml
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+
+      - name: Docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t share-travel .
+          docker tag share-travel ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7}
+          docker push ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7}
+
+      - name: Deploy to our AWS infra through Docker
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ec2-user
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          envs: GITHUB_SHA
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7}
+            docker tag ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7} share-travel
+            docker stop share-travel-spring-container
+            docker run -d --rm --name share-travel-spring-container -e JWT_SECRET=${{ secrets.JWT_SECRET }} -e TZ=Asia/Seoul -p 8080:8080 --net mynet --ip 172.19.0.3 share-travel
