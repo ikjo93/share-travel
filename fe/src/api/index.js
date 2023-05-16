@@ -12,5 +12,13 @@ function createWithAuth(url, options) {
   return instance;
 }
 
-export const auth = create(process.env.VUE_APP_API_URL);
+export const naverOauth2 = create(
+  `${process.env.VUE_APP_API_URL}login/oauth2/code/naver`,
+);
+export const kakaoOauth2 = create(
+  `${process.env.VUE_APP_API_URL}login/oauth2/code/kakao`,
+);
+export const googleOauth2 = create(
+  `${process.env.VUE_APP_API_URL}login/oauth2/code/google`,
+);
 export const users = createWithAuth(`${process.env.VUE_APP_API_URL}users/`);
