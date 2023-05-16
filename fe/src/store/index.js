@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { deleteCookie } from '@/utils/cookies.js';
+import { getAccessTokenFromCookie, deleteCookie } from '@/utils/cookies';
 
 Vue.use(Vuex);
 
@@ -17,13 +17,18 @@ export default new Vuex.Store({
     userToken(state) {
       return state.token;
     },
+    hasNickName(state) {
+      return !!state.user.nickName;
+    },
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user;
     },
-    SET_TOKEN(state, token) {
+    LOGIN(state) {
+      const token = getAccessTokenFromCookie();
       state.token = token;
+      deleteCookie('auth');
     },
     LOGOUT(state) {
       state.user = null;

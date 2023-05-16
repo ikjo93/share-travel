@@ -28,7 +28,7 @@ export default new Router({
       component: UserPage,
     },
     {
-      path: '/login/:provider',
+      path: '/login',
       name: 'login',
       component: OAuthLoginPage,
     },
