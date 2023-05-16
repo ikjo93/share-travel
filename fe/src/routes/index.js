@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import MainPage from '../views/MainPage';
 import UserPage from '../views/UserPage';
+import OAuthLoginPage from '../views/OAuthLoginPage';
+import UserInputPage from '../views/UserInputPage';
 import ShareTravelPage from '../views/ShareTravelPage';
 import TravelRecommendPage from '../views/TravelRecommendPage';
 import BoardPage from '../views/BoardPage';
@@ -24,6 +26,16 @@ export default new Router({
       path: '/user',
       name: 'user',
       component: UserPage,
+    },
+    {
+      path: '/login/:provider',
+      name: 'login',
+      component: OAuthLoginPage,
+    },
+    {
+      path: '/userinput',
+      name: 'userInput',
+      component: UserInputPage,
     },
     {
       path: '/info',
