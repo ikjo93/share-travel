@@ -1,10 +1,9 @@
 package com.sharetravel.global.auth.jwt.handler;
 
+import static com.sharetravel.global.CommonUtil.getResponseEntity;
 import static com.sharetravel.global.ServletUtil.*;
 
-import com.sharetravel.global.CommonUtil;
 import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
-import com.sharetravel.global.auth.jwt.dto.AccessTokenResponse;
 import com.sharetravel.global.auth.jwt.exception.HackedTokenException;
 import com.sharetravel.global.auth.jwt.exception.InvalidTokenException;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
@@ -26,7 +25,7 @@ public class TokenHandler {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/api/token/reissue")
-    public AccessTokenResponse reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
+    public ResponseEntity<ApiResponseMessage> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
         String refreshToken = refreshTokenService.validateAndGetToken(refreshTokenId);
 
         String renewedAccessToken = accessTokenService.renewAccessToken(refreshToken);
@@ -37,18 +36,18 @@ public class TokenHandler {
              이를 통해 리프레쉬 토큰 탈취 시 피해 파급 최소화
         */
         String renewedRefreshTokenId = refreshTokenService.renewRefreshToken(refreshTokenId, refreshToken);
-        addRefreshTokenCookie(response, renewedRefreshTokenId);
+        addTokenToCookie(response, renewedAccessToken, renewedRefreshTokenId);
 
-        return new AccessTokenResponse(renewedAccessToken);
+        return getResponseEntity(ApiResponseCode.TOKEN_REFRESHED);
     }
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ApiResponseMessage> handleInvalidTokenException() {
-        return CommonUtil.getResponseEntity(ApiResponseCode.TOKEN_INVALID);
+        return getResponseEntity(ApiResponseCode.TOKEN_INVALID);
     }
 
     @ExceptionHandler(HackedTokenException.class)
     public ResponseEntity<ApiResponseMessage> handleHackedTokenException() {
-        return CommonUtil.getResponseEntity(ApiResponseCode.TOKEN_HACKED);
+        return getResponseEntity(ApiResponseCode.TOKEN_HACKED);
     }
 }
