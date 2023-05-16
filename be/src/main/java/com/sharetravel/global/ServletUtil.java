@@ -42,9 +42,9 @@ public class ServletUtil {
         throw new InvalidTokenException();
     }
 
-    public static void addTokenToCookie(HttpServletResponse response, String accessToken, String refreshTokenId) {
+    public static void addTokenToCookie(HttpServletResponse response, String accessToken, String refreshToken) {
         response.addCookie(getAccessTokenCookie(accessToken));
-        response.addCookie(getRefreshTokenIdCookie(refreshTokenId));
+        response.addCookie(getRefreshTokenIdCookie(refreshToken));
     }
 
     // TODO : https 적용 시 Secure 설정 필요
