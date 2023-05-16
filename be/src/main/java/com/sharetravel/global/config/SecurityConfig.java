@@ -59,7 +59,7 @@ public class SecurityConfig {
             true); // Cross Origin 에 요청을 보낼 때 요청에 인증(credential) 정보를 담아서 보낼 수 있는지 결정하는 항목
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/articles/**", configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
