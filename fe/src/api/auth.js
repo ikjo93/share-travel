@@ -2,7 +2,9 @@ import { naverOauth2, kakaoOauth2, googleOauth2 } from './index';
 
 function oauth2Login(provider, code) {
   if (provider === 'naver') {
-    return naverOauth2.get(code);
+    return naverOauth2.get('', {
+      params: { code: code },
+    });
   } else if (provider === 'kakao') {
     return kakaoOauth2.get(code);
   } else if (provider === 'google') {
