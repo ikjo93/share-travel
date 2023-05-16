@@ -98,6 +98,10 @@ export default {
     kakaoLogin() {
       location.href = `${process.env.VUE_APP_API_URL}oauth2/authorization/kakao`;
     },
+    logout() {
+      this.$store.commit('LOGOUT');
+      this.$router.push('/');
+    },
   },
 };
 </script>
