@@ -35,6 +35,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String refreshTokenId = refreshTokenService.createRefreshToken(userId);
 
         addTokenToCookie(response, accessToken, refreshTokenId);
-        response.sendRedirect("http://localhost:3000");
+        response.sendRedirect("http://localhost:3000/login");
     }
 }
