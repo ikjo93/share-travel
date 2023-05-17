@@ -61,6 +61,36 @@ export default new Router({
       path: '/board',
       name: 'board',
       component: BoardPage,
+      redirect: '/board/notice',
+      children: [
+        {
+          path: 'notice',
+          name: 'boardnotice',
+          component: () => import('@/components/board/content/BoardNotice.vue'),
+        },
+        {
+          path: 'event',
+          name: 'boardevent',
+          component: () => import('@/components/board/content/BoardEvent.vue'),
+        },
+        {
+          path: 'general',
+          name: 'boardgeneral',
+          component: () =>
+            import('@/components/board/content/BoardGeneralForum.vue'),
+        },
+        {
+          path: 'tip',
+          name: 'boardtip',
+          component: () =>
+            import('@/components/board/content/BoardTipForum.vue'),
+        },
+        {
+          path: 'detail',
+          name: 'boarddetail',
+          component: () => import('@/components/board/content/BoardDetail.vue'),
+        },
+      ],
     },
   ],
 });
