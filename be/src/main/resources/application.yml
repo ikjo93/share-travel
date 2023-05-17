@@ -22,6 +22,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: profile,email
           naver:
             client-id: ${NAVER_CLIENT_ID}
@@ -54,3 +55,12 @@ logging:
     org:
       springframework:
         security: INFO
+
+server:
+  ssl:
+    enabled: true
+    key-store: keystore.p12
+    key-store-password: ssafy123
+    key-store-type: PKCS12
+    key-alias: bns-ssl
+  port: 8080

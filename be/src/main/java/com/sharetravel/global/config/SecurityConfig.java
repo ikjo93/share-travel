@@ -58,8 +58,8 @@ public class SecurityConfig {
         configuration.addAllowedOriginPattern("http://localhost:3000");
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(
-            true); // Cross Origin 에 요청을 보낼 때 요청에 인증(credential) 정보를 담아서 보낼 수 있는지 결정하는 항목
+        // Cross Origin 에 요청을 보낼 때 요청에 인증(credential) 정보를 담아서 보낼 수 있는지 결정하는 항목
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

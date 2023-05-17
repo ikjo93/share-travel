@@ -1,9 +1,10 @@
 package com.sharetravel.global.auth.jwt.handler;
 
 import static com.sharetravel.global.CommonUtil.getResponseEntity;
-import static com.sharetravel.global.ServletUtil.*;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getRefreshTokenIdCookie;
 
 import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
+import com.sharetravel.global.auth.jwt.dto.AccessTokenResponse;
 import com.sharetravel.global.auth.jwt.exception.HackedTokenException;
 import com.sharetravel.global.auth.jwt.exception.InvalidTokenException;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
@@ -25,7 +26,7 @@ public class TokenHandler {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/api/token/reissue")
-    public ResponseEntity<ApiResponseMessage> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
+    public ResponseEntity<AccessTokenResponse> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
         String refreshToken = refreshTokenService.validateAndGetToken(refreshTokenId);
 
         String renewedAccessToken = accessTokenService.renewAccessToken(refreshToken);
@@ -36,9 +37,17 @@ public class TokenHandler {
              이를 통해 리프레쉬 토큰 탈취 시 피해 파급 최소화
         */
         String renewedRefreshTokenId = refreshTokenService.renewRefreshToken(refreshTokenId, refreshToken);
-        addTokenToCookie(response, renewedAccessToken, renewedRefreshTokenId);
+        response.addCookie(getRefreshTokenIdCookie(renewedRefreshTokenId));
 
-        return getResponseEntity(ApiResponseCode.TOKEN_REFRESHED);
+        ApiResponseCode apiResponseCode = ApiResponseCode.TOKEN_REFRESHED;
+        return ResponseEntity
+                .status(apiResponseCode.getHttpStatusCode())
+                .body(
+                    AccessTokenResponse.of(
+                        renewedAccessToken,
+                        apiResponseCode.getCode(),
+                        apiResponseCode.getMessage())
+                );
     }
 
     @ExceptionHandler(InvalidTokenException.class)
