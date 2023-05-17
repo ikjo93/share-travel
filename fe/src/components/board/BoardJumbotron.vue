@@ -9,6 +9,7 @@
       <button class="radious" @click="moveEvent()">이벤트</button>
       <button class="radious" @click="moveGeneral()">자유 게시판</button>
       <button class="radious" @click="moveTip()">꿀팁 게시판</button>
+      <button class="radious" @click="moveQna()">QnA</button>
     </b-jumbotron>
   </div>
 </template>
@@ -30,6 +31,9 @@ export default {
     },
     moveTip() {
       this.$router.push({ name: 'boardtip' });
+    },
+    moveQna() {
+      this.$router.push({ name: 'boardqna' });
     },
   },
 };
