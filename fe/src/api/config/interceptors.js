@@ -8,8 +8,7 @@ function setInterceptors(instance) {
         config.headers.Authorization = `Bearer ${store.getters['userToken']}`;
         return config;
       } else {
-        alert('로그인이 필요한 작업입니다.');
-        return Promise.reject(new Error('Request skipped.'));
+        return Promise.reject(new Error('로그인이 필요한 작업입니다.'));
       }
     },
     error => Promise.reject(error.response),
@@ -25,8 +24,11 @@ function setInterceptors(instance) {
           this.$store.commit('LOGIN');
           return instance(config);
         } else {
-          alert('로그인 시간 제한이 만료되었습니다. 다시 로그인해주세요.');
-          return Promise.reject(new Error('Request skipped.'));
+          return Promise.reject(
+            new Error(
+              '로그인 시간 제한이 만료되었습니다. 다시 로그인해주세요.',
+            ),
+          );
         }
       }
 
