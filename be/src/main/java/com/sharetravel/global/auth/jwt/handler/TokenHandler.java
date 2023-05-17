@@ -4,6 +4,7 @@ import static com.sharetravel.global.CommonUtil.getResponseEntity;
 import static com.sharetravel.global.ServletUtil.*;
 
 import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
+import com.sharetravel.global.auth.jwt.dto.AccessTokenResponse;
 import com.sharetravel.global.auth.jwt.exception.HackedTokenException;
 import com.sharetravel.global.auth.jwt.exception.InvalidTokenException;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
@@ -25,7 +26,7 @@ public class TokenHandler {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/api/token/reissue")
-    public ResponseEntity<ApiResponseMessage> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
+    public ResponseEntity<AccessTokenResponse> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
         String refreshToken = refreshTokenService.validateAndGetToken(refreshTokenId);
 
         String renewedAccessToken = accessTokenService.renewAccessToken(refreshToken);
@@ -38,7 +39,9 @@ public class TokenHandler {
         String renewedRefreshTokenId = refreshTokenService.renewRefreshToken(refreshTokenId, refreshToken);
         addTokenToCookie(response, renewedAccessToken, renewedRefreshTokenId);
 
-        return getResponseEntity(ApiResponseCode.TOKEN_REFRESHED);
+        return ResponseEntity
+                .status(ApiResponseCode.TOKEN_REFRESHED.getHttpStatusCode())
+                .body(new AccessTokenResponse(renewedAccessToken, ApiResponseCode.TOKEN_REFRESHED.getCode(), ApiResponseCode.TOKEN_REFRESHED.getMessage()));
     }
 
     @ExceptionHandler(InvalidTokenException.class)

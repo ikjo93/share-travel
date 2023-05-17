@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +19,7 @@ public class ServletUtil {
     private static final String ACCESS_TOKEN_COOKIE_NAME = "auth";
     private static final String REFRESH_TOKEN_ID_COOKIE_NAME = "renew";
 
-    private static final int ACCESS_TOKEN_COOKIE_DURATION = 5; // 10 seconds
+    private static final int ACCESS_TOKEN_COOKIE_DURATION = 10; // 10 seconds
     private static final int REFRESH_TOKEN_ID_COOKIE_DURATION = 600; // 600 seconds (= 10 minutes)
 
     public static String parseAccessToken(HttpServletRequest request) {
@@ -33,6 +34,11 @@ public class ServletUtil {
 
     public static String parseRefreshTokenId(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            throw new InvalidTokenException();
+        }
+
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(REFRESH_TOKEN_ID_COOKIE_NAME)) {
                 return cookie.getValue();
@@ -49,13 +55,13 @@ public class ServletUtil {
 
     // TODO : https 적용 시 Secure 설정 필요
     private static Cookie getAccessTokenCookie(String accessToken) {
-        Cookie refreshTokenCookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setHttpOnly(false);
-        refreshTokenCookie.setAttribute("SameSite", "Strict");
-        refreshTokenCookie.setMaxAge(ACCESS_TOKEN_COOKIE_DURATION);
+        Cookie accessTokenCookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setHttpOnly(false);
+        accessTokenCookie.setAttribute("SameSite", "Strict");
+        accessTokenCookie.setMaxAge(ACCESS_TOKEN_COOKIE_DURATION);
 
-        return refreshTokenCookie;
+        return accessTokenCookie;
     }
 
     // TODO : https 적용 시 Secure 설정 필요
@@ -63,7 +69,8 @@ public class ServletUtil {
         Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_ID_COOKIE_NAME, refreshTokenId);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setAttribute("SameSite", "Strict");
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setAttribute("SameSite", "None");
         refreshTokenCookie.setMaxAge(REFRESH_TOKEN_ID_COOKIE_DURATION);
 
         return refreshTokenCookie;
