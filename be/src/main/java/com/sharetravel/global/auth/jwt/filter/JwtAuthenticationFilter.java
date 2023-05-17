@@ -1,6 +1,7 @@
 package com.sharetravel.global.auth.jwt.filter;
 
-import static com.sharetravel.global.ServletUtil.*;
+import static com.sharetravel.global.ServletUtil.setApiResponse;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.parseAccessToken;
 
 import com.sharetravel.global.auth.jwt.dto.JwtAuthenticationResult;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
@@ -36,15 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws IOException, ServletException {
 
         try {
-            log.debug("JwtAuthenticationFilter is running...");
-
             String token = parseAccessToken(request);
 
-            if (StringUtils.hasText(token) && !token.equalsIgnoreCase("null")) {
-                log.debug("Token is obtained...");
+            if (StringUtils.hasText(token)) {
 
                 Claims claims = accessTokenService.validateAndGetClaims(token);
-                log.debug("Token is successfully validated...");
 
                 JwtAuthenticationResult jwtAuthenticationResult = accessTokenService.getJwtAuthenticationResult(claims);
                 jwtAuthenticationResult.setAuthenticated(true);
@@ -56,7 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            log.debug(e.getMessage());
             setApiResponse(response, ApiResponseCode.TOKEN_INVALID);
             return;
         }

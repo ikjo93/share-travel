@@ -1,6 +1,7 @@
 package com.sharetravel.global.auth.oauth2.handler;
 
-import static com.sharetravel.global.ServletUtil.*;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getAccessTokenCookie;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getRefreshTokenIdCookie;
 
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
 import com.sharetravel.global.auth.jwt.service.RefreshTokenService;
@@ -34,7 +35,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String accessToken = accessTokenService.createAccessToken(userId);
         String refreshTokenId = refreshTokenService.createRefreshToken(userId);
 
-        addTokenToCookie(response, accessToken, refreshTokenId);
-        response.sendRedirect("http://localhost:3000/login");
+        response.addCookie(getAccessTokenCookie(accessToken));
+        response.addCookie(getRefreshTokenIdCookie(refreshTokenId));
+
+        response.sendRedirect("http://localhost:3000");
     }
 }

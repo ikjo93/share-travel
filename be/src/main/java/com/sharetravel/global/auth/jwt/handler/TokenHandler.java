@@ -1,7 +1,7 @@
 package com.sharetravel.global.auth.jwt.handler;
 
 import static com.sharetravel.global.CommonUtil.getResponseEntity;
-import static com.sharetravel.global.ServletUtil.*;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getRefreshTokenIdCookie;
 
 import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
 import com.sharetravel.global.auth.jwt.dto.AccessTokenResponse;
@@ -37,11 +37,17 @@ public class TokenHandler {
              이를 통해 리프레쉬 토큰 탈취 시 피해 파급 최소화
         */
         String renewedRefreshTokenId = refreshTokenService.renewRefreshToken(refreshTokenId, refreshToken);
-        addTokenToCookie(response, renewedAccessToken, renewedRefreshTokenId);
+        response.addCookie(getRefreshTokenIdCookie(renewedRefreshTokenId));
 
+        ApiResponseCode apiResponseCode = ApiResponseCode.TOKEN_REFRESHED;
         return ResponseEntity
-                .status(ApiResponseCode.TOKEN_REFRESHED.getHttpStatusCode())
-                .body(new AccessTokenResponse(renewedAccessToken, ApiResponseCode.TOKEN_REFRESHED.getCode(), ApiResponseCode.TOKEN_REFRESHED.getMessage()));
+                .status(apiResponseCode.getHttpStatusCode())
+                .body(
+                    AccessTokenResponse.of(
+                        renewedAccessToken,
+                        apiResponseCode.getCode(),
+                        apiResponseCode.getMessage())
+                );
     }
 
     @ExceptionHandler(InvalidTokenException.class)
