@@ -1,6 +1,19 @@
 <template lang="">
   <div>
-    <!-- TODO: primary key 사용해서 상세보기 만들어보기 -->
+    <div calss="article-search-type">
+      <button class="radious searchTypeBtn">제목</button>
+      <button class="radious searchTypeBtn">제목+작성자</button>
+      <button class="radious searchTypeBtn">작성자</button>
+      <button class="radious writeBtn" @click="moveWrite()">글쓰기</button>
+    </div>
+    <div class="article-search-input">
+      <label>
+        <input id="search-input" />
+        <button type="button" class="radious">
+          <img id="submitImage" src="../../../../public/search_icon.png" />
+        </button>
+      </label>
+    </div>
     <div v-if="items.length">
       <b-table
         id="articleTable"
@@ -29,6 +42,7 @@
     </div>
     <div v-else>
       <img src="../../../../public/icon_noresult.png" />
+      <p>글이 없졍..</p>
     </div>
   </div>
 </template>
@@ -38,7 +52,7 @@ export default {
     return {
       perPage: 10,
       currentPage: 1,
-      fields: [{ key: 'title' }, 'author', 'writeDate', 'boardType'],
+      fields: ['title', 'author', 'writeDate', 'boardType'],
       items: [
         {
           title: '임시제목',
@@ -206,8 +220,10 @@ export default {
   },
   methods: {
     moveDetail() {
-      console.log('클릭 되냐 ?');
       this.$router.push({ name: 'boarddetail' });
+    },
+    moveWrite() {
+      this.$router.push({ name: 'boardwrite' });
     },
   },
   computed: {
@@ -217,4 +233,31 @@ export default {
   },
 };
 </script>
-<style lang=""></style>
+<style>
+.radious {
+  border-radius: 50px !important;
+  padding: 5px 12px !important;
+  overflow-x: auto !important;
+  margin: 5px !important;
+  white-space: nowrap !important;
+  border: 0px !important;
+}
+.writeBtn {
+  float: right;
+}
+.searchTypeBtn {
+  float: left;
+}
+#search-input {
+  border-radius: 50px !important;
+  padding: 2.5px 12px !important;
+  overflow-x: auto !important;
+  margin: 5px !important;
+  white-space: nowrap !important;
+  outline: none;
+}
+#submitImage {
+  width: 10px;
+  height: 10px;
+}
+</style>

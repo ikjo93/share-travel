@@ -90,6 +90,16 @@ export default new Router({
           name: 'boarddetail',
           component: () => import('@/components/board/content/BoardDetail.vue'),
         },
+        {
+          path: 'write',
+          name: 'boardwrite',
+          component: () => import('@/components/board/BoardWrite.vue'),
+        },
+        {
+          path: 'qna',
+          name: 'boardqna',
+          component: () => import('@/components/board/content/BoardQna.vue'),
+        },
       ],
     },
   ],

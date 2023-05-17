@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="btn-box-top">
+      <button class="radious temp" @click="boardModify()">수정</button>
+      <button class="radious temp" @click="boardDelete()">삭제</button>
+    </div>
     <section class="article-detail">
       <div class="article-detail-header">
         <div class="article-detail-meta">
@@ -78,6 +82,12 @@ export default {
     moveGeneral() {
       this.$router.push({ name: 'boardgeneral' });
     },
+    boardModify() {
+      console.log('수정버튼');
+    },
+    boardDelete() {
+      console.log('삭제버튼');
+    },
   },
 };
 </script>
@@ -91,9 +101,15 @@ export default {
   border: 0px !important;
   display: block;
 }
-div {
+div:not(.btn-box-top) {
   width: fit-content;
   margin: auto;
+}
+.btn-box-top {
+  float: right;
+}
+.btn-box-top > button {
+  display: inline;
 }
 .btn-box {
   padding-top: 40px;
