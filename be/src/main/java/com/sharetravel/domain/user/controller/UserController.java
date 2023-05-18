@@ -7,6 +7,8 @@ import com.sharetravel.domain.user.service.UserService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +25,11 @@ public class UserController {
     @GetMapping("/api/users")
     public UserResponseDto find(@AuthenticationPrincipal Long userId) {
         return userService.findById(userId);
+    }
+
+    @GetMapping("/api/users/duplicate")
+    public ResponseEntity<ApiResponseMessage> validate(@RequestParam @Min(6) @Max(30) String nickName) {
+        return userService.validateDuplicate(nickName);
     }
 
     @PostMapping("/api/users")

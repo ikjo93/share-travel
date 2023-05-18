@@ -1,5 +1,7 @@
 package com.sharetravel.domain.user.service;
 
+import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
+
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.domain.travelkeyword.repository.TravelKeywordRepository;
 import com.sharetravel.domain.user.dto.UserInfoRegisterForm;
@@ -8,7 +10,10 @@ import com.sharetravel.domain.user.dto.UserInfoUpdateRequestDto;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.domain.user.entity.UserTravelKeyword;
 import com.sharetravel.domain.user.repository.UserRepository;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +30,15 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         return UserResponseDto.from(getUserById(id));
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponseMessage> validateDuplicate(String nickName) {
+        if (userRepository.findByNickName(nickName).isPresent()) {
+            return getResponseEntity(ApiResponseCode.USER_DUPLICATE_NICKNAME);
+        } else {
+            return getResponseEntity(ApiResponseCode.USER_NOT_DUPLICATE_NICKNAME);
+        }
     }
 
     @Transactional
