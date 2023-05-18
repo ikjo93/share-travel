@@ -26,7 +26,17 @@
             v-model="userInputNickName"
             :state="nickNameState"
             trim
+            class="form-input"
+            @keyup="duplicated = true"
           ></b-form-input>
+          <b-button
+            variant="outline-primary"
+            :disabled="!nickNameState || !duplicated"
+            @click="checkNickName"
+          >
+            <span v-if="duplicated">중복 확인하기</span>
+            <span v-else style="color: #28a745">중복 확인 완료!</span>
+          </b-button>
         </b-form-group>
         <b-form-group
           id="fieldset-1"
@@ -51,11 +61,12 @@
         </b-form-group>
         <div class="button-container">
           <b-button
-            :disabled="!(nickNameState && travelKeywordState)"
+            :disabled="!(nickNameState && !duplicated && travelKeywordState)"
             size="lg"
             :class="{
-              'custom-button': nickNameState && travelKeywordState,
-              disabled: !(nickNameState && travelKeywordState),
+              'custom-button':
+                nickNameState && !duplicated && travelKeywordState,
+              disabled: !(nickNameState && !duplicated && travelKeywordState),
             }"
             >확인</b-button
           >
@@ -67,6 +78,7 @@
 
 <script>
 import { getTravelKeywords } from '@/api/travel.js';
+import { validateUserNickName } from '@/api/user.js';
 
 export default {
   data() {
@@ -74,6 +86,7 @@ export default {
       travelKeywords: [],
       userInputNickName: '',
       userInputTravelKeywords: [],
+      duplicated: true,
     };
   },
   computed: {
@@ -87,7 +100,7 @@ export default {
       if (this.nickNameState) {
         return '';
       } else {
-        return '최소 6자, 최대 30 자로 작성해주세요.';
+        return '최소 6자, 최대 15 자로 작성해주세요.';
       }
     },
     travelKeywordState() {
@@ -119,8 +132,16 @@ export default {
         this.userInputTravelKeywords.splice(idx, 1);
       }
     },
-    validateDuplicate() {
-      console.log('todo');
+    async checkNickName() {
+      const { data } = await validateUserNickName(this.userInputNickName);
+      if (data.code === 'U03') {
+        this.duplicated = true;
+        alert(data.message);
+      } else if (data.code == 'U04') {
+        this.duplicated = false;
+      } else {
+        alert(data.message);
+      }
     },
     submit() {
       console.log('todo');
@@ -182,5 +203,11 @@ export default {
 .custom-button.disabled {
   background-color: #dc3545; /* Update with desired background color */
   color: #ffffff; /* Update with desired text color */
+}
+
+.form-input {
+  display: inline;
+  width: 260px; /* Set the desired width */
+  margin-right: 10px;
 }
 </style>

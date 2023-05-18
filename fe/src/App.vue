@@ -36,16 +36,17 @@ export default {
           // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
           const data = response.data;
           if (data.code === 'A05') {
-            this.processLogin(data.accessToken);
+            try {
+              this.processLogin(data.accessToken);
+            } catch (error) {
+              this.processLogout();
+            }
           } else {
             alert(data.message);
           }
         }
       } catch (error) {
-        this.$store.commit('LOGOUT');
-        if (this.$route.path !== '/') {
-          this.$router.push('/');
-        }
+        this.processLogout();
       }
     },
     async processLogin(token) {
@@ -53,6 +54,12 @@ export default {
       this.$store.commit('LOGIN', token);
       const user = await getUserInfo();
       this.$store.commit('SET_USER', user.data);
+    },
+    processLogout() {
+      this.$store.commit('LOGOUT');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
     },
   },
   created() {
