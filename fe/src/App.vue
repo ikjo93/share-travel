@@ -52,12 +52,7 @@ export default {
       // 액세스 토큰을 스토어에 저장하고 사용자 정보를 가져옴
       this.$store.commit('LOGIN', token);
       const user = await getUserInfo();
-
       this.$store.commit('SET_USER', user.data);
-
-      if (!this.$store.getters.hasNickName) {
-        this.$router.push('/userinput');
-      }
     },
   },
   created() {

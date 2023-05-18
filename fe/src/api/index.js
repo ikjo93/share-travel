@@ -18,3 +18,7 @@ export const reissueAccessToken = create(
 );
 
 export const users = createWithAuth(`${process.env.VUE_APP_API_URL}api/users`);
+
+export const travelKeywords = create(
+  `${process.env.VUE_APP_API_URL}api/travelkeywords`,
+);
