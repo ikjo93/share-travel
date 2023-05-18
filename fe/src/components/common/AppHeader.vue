@@ -18,7 +18,7 @@
           <b-nav-item to="/recommend">여행지 추천</b-nav-item>
           <b-nav-item to="/board">커뮤니티</b-nav-item>
           <template v-if="isLoggedIn">
-            <UserInput v-if="!hasNickName"></UserInput>
+            <UserInputModal v-if="!hasNickName"></UserInputModal>
             <b-nav-item to="/user">마이페이지</b-nav-item>
             <b-nav-item href="javascript:;" @click="logout"
               >로그아웃</b-nav-item
@@ -37,12 +37,12 @@
 import { mapGetters } from 'vuex';
 import { deleteCookie } from '@/utils/cookies';
 import LoginModal from '@/components/user/LoginModal.vue';
-import UserInput from '@/components/user/UserInput.vue';
+import UserInputModal from '@/components/user/UserInputModal.vue';
 
 export default {
   components: {
     LoginModal,
-    UserInput,
+    UserInputModal,
   },
   computed: {
     ...mapGetters(['isLoggedIn']),
