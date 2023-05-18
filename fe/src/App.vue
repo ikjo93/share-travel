@@ -39,6 +39,7 @@ export default {
             try {
               this.processLogin(data.accessToken);
             } catch (error) {
+              alert('사용자 정보를 가져오는 과정에서 에러가 발생했습니다.');
               this.processLogout();
             }
           } else {
