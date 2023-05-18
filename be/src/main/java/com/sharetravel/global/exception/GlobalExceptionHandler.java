@@ -1,7 +1,7 @@
 package com.sharetravel.global.exception;
 
-import com.sharetravel.global.ApiResponseCode;
-import com.sharetravel.global.ApiResponseMessage;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

@@ -1,6 +1,6 @@
-package com.sharetravel.global.auth.jwt.handler;
+package com.sharetravel.global.auth.jwt.controller;
 
-import static com.sharetravel.global.CommonUtil.getResponseEntity;
+import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
 import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getRefreshTokenIdCookie;
 
 import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
@@ -8,8 +8,8 @@ import com.sharetravel.global.auth.jwt.dto.AccessTokenResponse;
 import com.sharetravel.global.auth.jwt.exception.HackedTokenException;
 import com.sharetravel.global.auth.jwt.exception.InvalidTokenException;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
-import com.sharetravel.global.ApiResponseCode;
-import com.sharetravel.global.ApiResponseMessage;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 import com.sharetravel.global.auth.jwt.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class TokenHandler {
+public class TokenController {
 
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;

@@ -1,11 +1,11 @@
 package com.sharetravel.global.auth.jwt.filter;
 
-import static com.sharetravel.global.ServletUtil.setApiResponse;
+import static com.sharetravel.global.servlet.ServletUtil.setApiResponse;
 import static com.sharetravel.global.auth.jwt.utils.TokenUtils.parseAccessToken;
 
 import com.sharetravel.global.auth.jwt.dto.JwtAuthenticationResult;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
-import com.sharetravel.global.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseCode;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

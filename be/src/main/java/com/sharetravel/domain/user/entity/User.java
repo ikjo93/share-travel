@@ -1,6 +1,6 @@
 package com.sharetravel.domain.user.entity;
 
-import com.sharetravel.global.BaseTimeEntity;
+import com.sharetravel.global.domain.BaseTimeEntity;
 import com.sharetravel.global.auth.oauth2.dto.OAuth2Provider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
