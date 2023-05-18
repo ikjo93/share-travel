@@ -2,19 +2,16 @@ package com.sharetravel.domain.user.entity;
 
 import com.sharetravel.global.domain.BaseTimeEntity;
 import com.sharetravel.global.auth.oauth2.dto.OAuth2Provider;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,6 +36,9 @@ public class User extends BaseTimeEntity {
     @Column(length = 500, name = "picture")
     private String picture;
 
+    @OneToMany(mappedBy = "user")
+    private Set<UserTravelKeyword> travelKeywords = new HashSet<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OAuth2Provider provider;
@@ -58,11 +58,24 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public User update(String name, String picture) {
-        this.name = name;
+    public User registerNickNameAndTravelKeywords(String nickName, Set<UserTravelKeyword> travelKeywords) {
+        this.nickName = nickName;
+        this.travelKeywords = travelKeywords;
+
+        return this;
+    }
+
+    public User updateNickNameAndPicture(String nickName, String picture) {
+        this.nickName = nickName;
         this.picture = picture;
 
         return this;
+    }
+
+    public List<String> getTravelKeywordsOfUser() {
+        return travelKeywords.stream()
+                .map(UserTravelKeyword::getTravelKeyWordName)
+                .collect(Collectors.toList());
     }
 
     public String getRoleKey() {
