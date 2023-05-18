@@ -12,7 +12,7 @@ function createWithAuth(url, options) {
   return instance;
 }
 
-export const refreshToken = create(
+export const reissueAccessToken = create(
   `${process.env.VUE_APP_API_URL}api/token/reissue`,
   { withCredentials: true },
 );

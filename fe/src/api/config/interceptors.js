@@ -1,5 +1,5 @@
 import store from '@/store/index.js';
-import { tokens } from '@/api/index';
+import { reissueAccessToken } from '@/api/index';
 
 function setInterceptors(instance) {
   instance.interceptors.request.use(
@@ -15,12 +15,12 @@ function setInterceptors(instance) {
   );
   instance.interceptors.response.use(
     config => {
+      // 액세스 토큰이 만료된 경우
       if (config.data.code === 'A03') {
-        // 액세스 토큰이 만료된 경우
         const res = requsetRenewAccessToken();
         const code = res.data.code;
+        // 액세스 토큰이 재발급된 경우
         if (code === 'A05') {
-          // 액세스 토큰이 재발급된 경우
           this.$store.commit('LOGIN');
           return instance(config);
         } else {
@@ -40,7 +40,7 @@ function setInterceptors(instance) {
 }
 
 async function requsetRenewAccessToken() {
-  const response = await tokens.post();
+  const response = await reissueAccessToken.post();
   return response;
 }
 
