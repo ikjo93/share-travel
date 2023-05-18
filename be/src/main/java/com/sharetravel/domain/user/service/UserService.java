@@ -17,8 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -50,8 +50,8 @@ public class UserService {
         return UserResponseDto.from(user);
     }
 
-    private Set<UserTravelKeyword> getUserTravelKeywords(User user, Set<Long> travelKeywordIds) {
-        Set<UserTravelKeyword> userTravelKeywords = new HashSet<>();
+    private List<UserTravelKeyword> getUserTravelKeywords(User user, List<Long> travelKeywordIds) {
+        List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
         for (Long travelKeywordId : travelKeywordIds) {
             TravelKeyword travelKeyword = travelKeywordRepository.findById(travelKeywordId).orElseThrow(() -> {
                 throw new IllegalStateException("식별 번호가 " + travelKeywordId + "인 여행지 키워드가 존재하지 않습니다.");
@@ -77,11 +77,9 @@ public class UserService {
     }
 
     private User getUserById(Long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> {
                     throw new IllegalStateException("식별 번호가 " + id + "에 해당되는 사용자가 없습니다.");
                 });
-
-        return user;
     }
 }

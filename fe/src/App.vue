@@ -31,7 +31,7 @@ export default {
           // 액세스 토큰이 존재하지 않으면
         } else {
           // 서버에 리프레쉬 토큰 전송
-          const response = await reissueAccessToken.post();
+          const response = await reissueAccessToken.post(); // TODO : 토큰 탈취 감지시에는 어떻게 대응?
 
           // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
           const data = response.data;

@@ -6,13 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @NoArgsConstructor
 public class UserInfoUpdateRequestDto {
 
-    @Size(min = 6)
-    @Size(max = 30)
+    @Length(min = 6, max = 15)
     private String nickName;
     private String picture;
 
