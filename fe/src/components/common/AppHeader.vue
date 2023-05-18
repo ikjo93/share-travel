@@ -71,6 +71,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { deleteCookie } from '@/utils/cookies';
 
 export default {
   computed: {
@@ -101,6 +102,7 @@ export default {
     logout() {
       this.$store.commit('LOGOUT');
       this.$router.push('/');
+      deleteCookie('renew');
     },
   },
 };

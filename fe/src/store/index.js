@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { deleteCookie } from '@/utils/cookies.js';
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -17,18 +15,22 @@ export default new Vuex.Store({
     userToken(state) {
       return state.token;
     },
+    hasNickName(state) {
+      return !!state.user.nickName;
+    },
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user;
     },
-    SET_TOKEN(state, token) {
+    LOGIN(state, token) {
       state.token = token;
+      localStorage.setItem('hasRefreshToken', 'yes');
     },
     LOGOUT(state) {
       state.user = null;
       state.token = null;
-      deleteCookie('renew');
+      localStorage.setItem('hasRefreshToken', 'no');
     },
   },
 });
