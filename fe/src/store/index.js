@@ -25,12 +25,10 @@ export default new Vuex.Store({
     },
     LOGIN(state, token) {
       state.token = token;
-      localStorage.setItem('hasRefreshToken', 'yes');
     },
     LOGOUT(state) {
       state.user = null;
       state.token = null;
-      localStorage.setItem('hasRefreshToken', 'no');
     },
   },
 });

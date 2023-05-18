@@ -11,7 +11,7 @@
 <script>
 import AppHeader from './components/common/AppHeader.vue';
 import AppFooter from './components/common/AppFooter.vue';
-import { refreshToken } from '@/api/index';
+import { reissueAccessToken } from '@/api/index';
 import { getUserInfo } from '@/api/user';
 import { getAccessTokenFromCookie } from '@/utils/cookies';
 
@@ -23,52 +23,40 @@ export default {
   methods: {
     async login() {
       try {
+        // OAuth2 로그인 완료 이후 Access Token 추출
         const token = getAccessTokenFromCookie();
         // 액세스 토큰이 존재하면
         if (token) {
-          this.$store.commit('LOGIN', token);
-          const response = await getUserInfo();
-          this.$store.commit('SET_USER', response.data);
-
-          if (this.$store.getters.hasNickName) {
-            this.$router.push('/');
-          } else {
-            this.$router.push('/userinput');
-          }
-
+          this.processLogin(token);
           // 액세스 토큰이 존재하지 않으면
         } else {
-          // 리프레쉬 토큰이 로그아웃 처리되지 않았다면
-          if (localStorage.getItem('hasRefreshToken') === 'yes') {
-            // 서버에 리프레쉬 토큰 전송
-            const response = await refreshToken.post();
-            const data = response.data;
-            console.log(data);
+          // 서버에 리프레쉬 토큰 전송
+          const response = await reissueAccessToken.post();
 
-            // 액세스 토큰을 재발급 받은 경우
-            if (data.code === 'A05') {
-              alert(data.accessToken);
-              this.$store.commit('LOGIN', data.accessToken);
-              const user = await getUserInfo();
-              this.$store.commit('SET_USER', user.data);
-
-              if (this.$store.getters.hasNickName) {
-                this.$router.push('/');
-              } else {
-                this.$router.push('/userinput');
-              }
-            } else {
-              this.$store.commit('LOGOUT');
-              this.$router.push('/');
-            }
+          // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
+          const data = response.data;
+          if (data.code === 'A05') {
+            this.processLogin(data.accessToken);
           } else {
-            this.$store.commit('LOGOUT');
+            alert(data.message);
           }
         }
       } catch (error) {
-        alert('오류 발생!');
         this.$store.commit('LOGOUT');
-        this.$router.push('/');
+        if (this.$route.path !== '/') {
+          this.$router.push('/');
+        }
+      }
+    },
+    async processLogin(token) {
+      // 액세스 토큰을 스토어에 저장하고 사용자 정보를 가져옴
+      this.$store.commit('LOGIN', token);
+      const user = await getUserInfo();
+
+      this.$store.commit('SET_USER', user.data);
+
+      if (!this.$store.getters.hasNickName) {
+        this.$router.push('/userinput');
       }
     },
   },

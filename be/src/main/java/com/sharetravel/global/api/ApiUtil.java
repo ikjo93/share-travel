@@ -1,8 +1,8 @@
-package com.sharetravel.global;
+package com.sharetravel.global.api;
 
 import org.springframework.http.ResponseEntity;
 
-public class CommonUtil {
+public class ApiUtil {
 
     public static ResponseEntity<ApiResponseMessage> getResponseEntity(ApiResponseCode responseCode) {
         return ResponseEntity.status(responseCode.getHttpStatusCode())

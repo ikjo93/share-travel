@@ -1,4 +1,4 @@
-package com.sharetravel.global;
+package com.sharetravel.global.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,9 +14,9 @@ public enum ApiResponseCode {
     TOKEN_REFRESHED("A05", 200, "액세스 토큰이 재발급되었습니다."),
 
     USER_NOT_FOUND("U01", 404, "존재하지 않는 회원입니다."),
-    USER_UPDATE_SUCCESS("U02", 200, "회원 정보 수정이 완료되었습니다.");
+    USER_UPDATE_SUCCESS("U02", 200, "회원 정보 수정이 완료되었습니다."),
 
-
+    SERVER_INTERNAL_ERROR("G01", 500, "현재 서버 내부에서 에러가 발생했습니다.");
 
     private final String code;
     private final int httpStatusCode;

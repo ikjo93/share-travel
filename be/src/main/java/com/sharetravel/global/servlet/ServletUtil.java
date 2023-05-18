@@ -1,6 +1,8 @@
-package com.sharetravel.global;
+package com.sharetravel.global.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
