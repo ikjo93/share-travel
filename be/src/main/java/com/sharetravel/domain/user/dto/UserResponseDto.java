@@ -18,9 +18,13 @@ public class UserResponseDto {
     private String nickName;
     private String email;
     private String picture;
+    private String oauthProvider;
     private List<String> keywords;
 
     public static UserResponseDto from(User user) {
-        return new UserResponseDto(user.getId(), user.getName(), user.getNickName(), user.getEmail(), user.getPicture(), user.getTravelKeywordsOfUser());
+        return new UserResponseDto(
+                user.getId(), user.getName(), user.getNickName(), user.getEmail(),
+                user.getPicture(), user.getProvider().name(), user.getTravelKeywordsOfUser()
+        );
     }
 }
