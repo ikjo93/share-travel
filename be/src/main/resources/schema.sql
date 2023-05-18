@@ -27,7 +27,8 @@ create table `user`
     created_date  TIMESTAMP,
     modified_date TIMESTAMP,
     primary key (user_id),
-    UNIQUE INDEX index_email_provider (email, provider)
+    UNIQUE INDEX index_email_provider (email, provider),
+    UNIQUE INDEX index_nickname (nickname)
 );
 
 create table `user_travel_keyword`

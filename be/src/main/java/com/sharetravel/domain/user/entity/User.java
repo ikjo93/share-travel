@@ -15,7 +15,10 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "`user`", indexes = @Index(name = "index_email_provider", columnList = "email, provider", unique = true))
+@Table(name = "`user`", indexes = {
+    @Index(name = "index_email_provider", columnList = "email, provider", unique = true),
+    @Index(name = "index_nickname", columnList = "nickname", unique = true)
+})
 @Entity
 public class User extends BaseTimeEntity {
 
