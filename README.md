@@ -72,11 +72,14 @@
 
 <br>
 
-### 🏁 Architecture
+## 🏁 Architecture
 
+### 테스트 서버 인프라 아키텍처
 > <img src="https://github.com/ikjo93/share-travel/assets/82401504/71bc4e62-078e-4a80-99a7-5de22b2df9f5" width="750" height="550" alt="">
 
-### 🔎 팀원 소개
+<br>
+
+## 🔎 팀원 소개
 
 <table>
   <tbody>
@@ -102,11 +105,6 @@
 
 ## Branch Strategy
 
-+ GitHub Flow
-  + deploy-BE: BE 배포 브랜치
-  + deploy-FE: FE 배포 브랜치
-  + dev-BE: BE 개발 브랜치
-  + dev-FE: FE 개발 브랜치
+### GitHub Flow
+
 > <img src="https://user-images.githubusercontent.com/82401504/223504426-05c2b5fc-5d95-4bbf-be50-95b25a58a332.png" width="500" height="400" alt="">
-
-
