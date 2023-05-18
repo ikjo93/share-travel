@@ -20,7 +20,7 @@ create table `user`
     user_id       bigint       not null auto_increment,
     email         varchar(255) not null,
     name          varchar(255) not null,
-    nickname      varchar(30),
+    nickname      varchar(15),
     picture       varchar(500),
     provider      varchar(255) not null,
     role          varchar(255) not null,

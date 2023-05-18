@@ -30,7 +30,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 30, name = "nickname")
+    @Column(length = 15, name = "nickname")
     private String nickName;
 
     @Column(nullable = false)
