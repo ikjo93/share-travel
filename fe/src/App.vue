@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <AppHeader></AppHeader>
+    <UserInputModal v-if="isLoggedIn && !hasNecessaryUserInfo"></UserInputModal>
     <div class="app-contents">
       <router-view></router-view>
     </div>
@@ -10,15 +11,22 @@
 
 <script>
 import AppHeader from './components/common/AppHeader.vue';
+import UserInputModal from '@/components/user/UserInputModal.vue';
 import AppFooter from './components/common/AppFooter.vue';
+import { mapGetters } from 'vuex';
 import { reissueAccessToken } from '@/api/index';
 import { getUserInfo } from '@/api/user';
-import { getAccessTokenFromCookie } from '@/utils/cookies';
+import { getAccessTokenFromCookie, deleteCookie } from '@/utils/cookies';
 
 export default {
   components: {
     AppHeader,
+    UserInputModal,
     AppFooter,
+  },
+  computed: {
+    ...mapGetters(['isLoggedIn']),
+    ...mapGetters(['hasNecessaryUserInfo']),
   },
   methods: {
     async login() {
@@ -61,6 +69,7 @@ export default {
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
+      deleteCookie('renew');
     },
   },
   created() {

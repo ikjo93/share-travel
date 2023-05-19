@@ -1,14 +1,17 @@
 <template>
   <div>
+    <div class="keyword-modify-button">
+      <button @click="openUpdateModal">수정하기</button>
+    </div>
     <b-modal ref="my-modal" hide-footer hide-header>
       <b-jumbotron
-        lead="서비스간 이용할 귀하의 정보를 입력해주세요 💁‍♂️"
+        lead="회원 정보 수정 💁‍♂️"
         bg-variant="white"
         style="font-family: 'hanna-pro';"
       >
         <b-form-group
           id="fieldset-1"
-          label="귀하의 닉네임을 입력해주세요. 😁"
+          label="변경하실 닉네임을 입력해주세요. 😁"
           label-for="input-1"
           valid-feedback="확인되었습니다. 🎉"
           :invalid-feedback="invalidNickNameFeedback"
@@ -62,7 +65,7 @@
               disabled: !(nickNameState && !duplicated && travelKeywordState),
             }"
             @click="submit"
-            >등록하기</b-button
+            >수정하기</b-button
           >
           <b-button
             size="lg"
@@ -120,6 +123,12 @@ export default {
     },
   },
   methods: {
+    openUpdateModal() {
+      this.$refs['my-modal'].show();
+    },
+    close() {
+      this.$refs['my-modal'].hide();
+    },
     selectTravelKeyword(keyword) {
       keyword.selected = !keyword.selected;
       if (keyword.selected) {
@@ -153,11 +162,10 @@ export default {
       try {
         const { data } = await registerUser(body);
         this.$store.commit('SET_USER', data);
-        alert('회원 정보가 정상적으로 처리되었습니다. 🎉');
+        alert('회원 정보 수정이 정상적으로 처리되었습니다. 🎉');
         this.$refs['my-modal'].hide();
       } catch (error) {
-        alert('회원 정보를 등록하는 과정에서 에러가 발생했습니다. 😢');
-        this.processLogout();
+        alert('회원 정보를 수정하는 과정에서 에러가 발생했습니다. 😢');
       }
     },
     processLogout() {
@@ -167,12 +175,6 @@ export default {
       }
       deleteCookie('renew');
     },
-    close() {
-      this.$refs['my-modal'].hide();
-    },
-  },
-  mounted() {
-    this.$refs['my-modal'].show();
   },
   async created() {
     const { data } = await getTravelKeywords();
@@ -196,10 +198,12 @@ export default {
   white-space: nowrap !important;
   border: 0px !important;
 }
+
 .grid-container {
   display: flex;
   flex-wrap: wrap;
 }
+
 .grid-container > .grid-item {
   flex: 0 0 calc(33.33% - 10px);
   margin: 5px;
@@ -207,31 +211,40 @@ export default {
   font-size: 25px;
   text-align: center;
 }
+
 .grid-container > .grid-item.selected {
-  background-color: #ffcc00; /* Update with desired background color */
-  color: #ffffff; /* Update with desired letter color */
+  background-color: #ffcc00;
+  /* Update with desired background color */
+  color: #ffffff;
+  /* Update with desired letter color */
 }
 
 .button-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 50px; /* Adjust the margin as needed */
+  margin-top: 50px;
+  /* Adjust the margin as needed */
 }
 
 .custom-button {
-  background-color: #28a745; /* Update with desired background color */
-  color: #ffffff; /* Update with desired text color */
+  background-color: #28a745;
+  /* Update with desired background color */
+  color: #ffffff;
+  /* Update with desired text color */
 }
 
 .custom-button.disabled {
-  background-color: #dc3545; /* Update with desired background color */
-  color: #ffffff; /* Update with desired text color */
+  background-color: #dc3545;
+  /* Update with desired background color */
+  color: #ffffff;
+  /* Update with desired text color */
 }
 
 .form-input {
   display: inline;
-  width: 260px; /* Set the desired width */
+  width: 260px;
+  /* Set the desired width */
   margin-right: 10px;
 }
 </style>

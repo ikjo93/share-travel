@@ -1,8 +1,7 @@
 package com.sharetravel.domain.user.controller;
 
-import com.sharetravel.domain.user.dto.UserInfoRegisterForm;
 import com.sharetravel.domain.user.dto.UserResponseDto;
-import com.sharetravel.domain.user.dto.UserInfoUpdateRequestDto;
+import com.sharetravel.domain.user.dto.UserInfoRequestDto;
 import com.sharetravel.domain.user.service.UserService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
@@ -33,13 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid UserInfoRegisterForm userInfo) {
+    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoRequestDto userInfo) {
         return userService.register(userId, userInfo);
-    }
-
-    @PatchMapping("/api/users")
-    public UserResponseDto update(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoUpdateRequestDto userInfo) {
-        return userService.update(userId, userInfo);
     }
 
     @ExceptionHandler(IllegalStateException.class)
@@ -47,6 +41,5 @@ public class UserController {
         return getResponseEntity(ApiResponseCode.USER_NOT_FOUND);
     }
 
-    // TODO : 사용자 닉네임이 등록되지 않은 경우 클라이언트는 사용자가 닉네임을 등록하도록 하고 서버는 클라이언트로부터 사용자 닉네임을 받아 등록
     // TODO : 회원 탈퇴 기능(구글 SMTP)
 }

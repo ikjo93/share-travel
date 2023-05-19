@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Getter
 @NoArgsConstructor
-public class UserInfoRegisterForm {
+public class UserInfoRequestDto {
 
     @Length(min = 6, max = 15)
     private String nickName;

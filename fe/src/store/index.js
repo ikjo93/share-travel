@@ -15,12 +15,12 @@ export default new Vuex.Store({
     userToken(state) {
       return state.token;
     },
-    hasNickName(state) {
-      if (!state.user) {
+    hasNecessaryUserInfo(state) {
+      if (!state.user || !state.user.nickName || !state.user.keywords) {
         return false;
       }
-
-      return !!state.user.nickName;
+      const length = state.user.keywords.length;
+      return 1 <= length && length <= 3;
     },
   },
   mutations: {
