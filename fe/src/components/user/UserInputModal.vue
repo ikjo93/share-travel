@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal ref="my-modal" hide-footer>
+    <b-modal ref="my-modal" hide-footer hide-header>
       <b-jumbotron
         lead="서비스간 이용할 귀하의 정보를 입력해주세요 💁‍♂️"
         bg-variant="white"
@@ -63,6 +63,13 @@
             }"
             @click="submit"
             >등록하기</b-button
+          >
+          <b-button
+            size="lg"
+            variant="outline-danger"
+            @click="close"
+            style="margin-left: 5px;"
+            >닫기</b-button
           >
         </div>
       </b-jumbotron>
@@ -159,6 +166,9 @@ export default {
         this.$router.push('/');
       }
       deleteCookie('renew');
+    },
+    close() {
+      this.$refs['my-modal'].hide();
     },
   },
   mounted() {

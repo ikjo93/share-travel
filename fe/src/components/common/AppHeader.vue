@@ -57,6 +57,7 @@ export default {
         this.$router.push('/');
       }
       deleteCookie('renew');
+      alert('로그아웃이 처리되었습니다!');
     },
   },
 };
