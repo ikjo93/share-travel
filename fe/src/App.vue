@@ -13,7 +13,6 @@ import AppHeader from './components/common/AppHeader.vue';
 import AppFooter from './components/common/AppFooter.vue';
 import { reissueAccessToken } from '@/api/index';
 import { getUserInfo } from '@/api/user';
-import { logoutUtil } from '@/utils/auth';
 import { getAccessTokenFromCookie } from '@/utils/cookies';
 
 export default {
@@ -41,14 +40,14 @@ export default {
               this.processLogin(data.accessToken);
             } catch (error) {
               alert('사용자 정보를 가져오는 과정에서 에러가 발생했습니다.');
-              logoutUtil();
+              this.processLogout();
             }
           } else {
             alert(data.message);
           }
         }
       } catch (error) {
-        logoutUtil();
+        this.processLogout();
       }
     },
     async processLogin(token) {
@@ -56,6 +55,12 @@ export default {
       this.$store.commit('LOGIN', token);
       const user = await getUserInfo();
       this.$store.commit('SET_USER', user.data);
+    },
+    processLogout() {
+      this.$store.commit('LOGOUT');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
     },
   },
   created() {
