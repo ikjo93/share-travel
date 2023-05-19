@@ -68,6 +68,7 @@
                 nickNameState && !duplicated && travelKeywordState,
               disabled: !(nickNameState && !duplicated && travelKeywordState),
             }"
+            @click="submit"
             >확인</b-button
           >
         </div>
@@ -78,7 +79,8 @@
 
 <script>
 import { getTravelKeywords } from '@/api/travel.js';
-import { validateUserNickName } from '@/api/user.js';
+import { validateUserNickName, registerUser } from '@/api/user.js';
+import { deleteCookie } from '@/utils/cookies';
 
 export default {
   data() {
@@ -143,8 +145,26 @@ export default {
         alert(data.message);
       }
     },
-    submit() {
-      console.log('todo');
+    async submit() {
+      const body = {
+        nickName: this.userInputNickName,
+        travelKeywords: this.userInputTravelKeywords,
+      };
+      try {
+        await registerUser(body);
+        alert('회원 정보가 정상적으로 처리되었습니다. 🎉');
+        this.$refs['my-modal'].hide();
+      } catch (error) {
+        alert('회원 정보를 등록하는 과정에서 에러가 발생했습니다. 😢');
+        this.processLogout();
+      }
+    },
+    processLogout() {
+      this.$store.commit('LOGOUT');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
+      deleteCookie('renew');
     },
   },
   mounted() {
