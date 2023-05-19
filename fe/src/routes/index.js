@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import MainPage from '../views/MainPage';
-import UserPage from '../views/UserPage';
-import ShareTravelPage from '../views/ShareTravelPage';
-import TravelRecommendPage from '../views/TravelRecommendPage';
 import BoardPage from '../views/BoardPage';
 
 Vue.use(Router);
@@ -18,7 +15,7 @@ export default new Router({
     {
       path: '/user',
       name: 'user',
-      component: UserPage,
+      component: () => import('@/views/UserPage.vue'),
     },
     {
       path: '/info',
@@ -33,12 +30,12 @@ export default new Router({
     {
       path: '/share',
       name: 'share',
-      component: ShareTravelPage,
+      component: () => import('@/views/ShareTravelPage.vue'),
     },
     {
       path: '/recommend',
       name: 'recommend',
-      component: TravelRecommendPage,
+      component: () => import('@/views/TravelRecommendPage.vue'),
     },
     {
       path: '/board',
