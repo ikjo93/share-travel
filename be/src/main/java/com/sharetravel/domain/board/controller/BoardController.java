@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sharetravel.domain.board.dto.BoardDto;
 import com.sharetravel.domain.board.entity.Board;
 import com.sharetravel.domain.board.service.BoardService;
-import com.sharetravel.global.ApiResponseCode;
-import com.sharetravel.global.ApiResponseMessage;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 
 import lombok.RequiredArgsConstructor;
 

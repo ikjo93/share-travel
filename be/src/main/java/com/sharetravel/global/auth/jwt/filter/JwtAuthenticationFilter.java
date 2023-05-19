@@ -1,10 +1,11 @@
 package com.sharetravel.global.auth.jwt.filter;
 
-import static com.sharetravel.global.ServletUtil.*;
+import static com.sharetravel.global.servlet.ServletUtil.setApiResponse;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.parseAccessToken;
 
 import com.sharetravel.global.auth.jwt.dto.JwtAuthenticationResult;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
-import com.sharetravel.global.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseCode;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,7 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AccessTokenService accessTokenService;
 
     private final String[][] excludePathAndMethod = {
-        {"/login", "GET"}, {"/oauth2", "GET"}, {"/api/token/reissue", "POST"}, {"/api/articles", "GET"}
+        {"/login", "GET"}, {"/oauth2", "GET"}, {"/api/token/reissue", "POST"}, {"/api/articles", "GET"},
+        {"/api/travelkeywords", "GET"}
     };
 
     @Override
@@ -36,15 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws IOException, ServletException {
 
         try {
-            log.debug("JwtAuthenticationFilter is running...");
-
             String token = parseAccessToken(request);
 
-            if (StringUtils.hasText(token) && !token.equalsIgnoreCase("null")) {
-                log.debug("Token is obtained...");
+            if (StringUtils.hasText(token)) {
 
                 Claims claims = accessTokenService.validateAndGetClaims(token);
-                log.debug("Token is successfully validated...");
 
                 JwtAuthenticationResult jwtAuthenticationResult = accessTokenService.getJwtAuthenticationResult(claims);
                 jwtAuthenticationResult.setAuthenticated(true);
@@ -56,7 +54,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            log.debug(e.getMessage());
             setApiResponse(response, ApiResponseCode.TOKEN_INVALID);
             return;
         }

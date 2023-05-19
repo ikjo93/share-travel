@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import MainPage from '../views/MainPage';
-import UserPage from '../views/UserPage';
-import ShareTravelPage from '../views/ShareTravelPage';
-import TravelRecommendPage from '../views/TravelRecommendPage';
-import BoardPage from '../views/BoardPage';
+import store from '@/store/index';
 
 Vue.use(Router);
 
@@ -13,42 +9,72 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/main',
-    },
-    {
-      path: '/main',
-      name: 'main',
-      component: MainPage,
-    },
-    {
-      path: '/user',
-      name: 'user',
-      component: UserPage,
+      component: () => import('@/views/MainPage.vue'),
     },
     {
       path: '/info',
       name: 'info',
-      redirect: '/main',
+      redirect: '/',
     },
     {
       path: '/event',
       name: 'event',
-      redirect: '/main',
+      redirect: '/',
     },
     {
       path: '/share',
       name: 'share',
-      component: ShareTravelPage,
+      component: () => import('@/views/ShareTravelPage.vue'),
     },
     {
       path: '/recommend',
       name: 'recommend',
-      component: TravelRecommendPage,
+      component: () => import('@/views/TravelRecommendPage.vue'),
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: () => import('@/views/UserPage.vue'),
+      redirect: '/user/info',
+      children: [
+        {
+          path: 'info',
+          name: 'userInfo',
+          component: () => import('@/components/user/mypage/UserInfo.vue'),
+          beforeEnter,
+        },
+        {
+          path: 'board',
+          name: 'userBoard',
+          component: () => import('@/components/user/mypage/UserBoard.vue'),
+          beforeEnter,
+        },
+        {
+          path: 'comment',
+          name: 'userBoardComment',
+          component: () =>
+            import('@/components/user/mypage/UserBoardComment.vue'),
+          beforeEnter,
+        },
+        {
+          path: 'travel',
+          name: 'userTravel',
+          component: () => import('@/components/user/mypage/UserTravel.vue'),
+          beforeEnter,
+        },
+        {
+          path: 'review',
+          name: 'userTravelReview',
+          component: () =>
+            import('@/components/user/mypage/UserTravelReview.vue'),
+          beforeEnter,
+        },
+      ],
     },
     {
       path: '/board',
       name: 'board',
-      component: BoardPage,
+      component: () => import('@/views/BoardPage.vue'),
       redirect: '/board/notice',
       children: [
         {
@@ -82,6 +108,7 @@ export default new Router({
           path: 'write',
           name: 'boardwrite',
           component: () => import('@/components/board/BoardWrite.vue'),
+          beforeEnter,
         },
         {
           path: 'qna',
@@ -92,3 +119,17 @@ export default new Router({
     },
   ],
 });
+
+function beforeEnter(to, from, next) {
+  if (store.getters['isLoggedIn']) {
+    if (store.getters['hasNecessaryUserInfo']) {
+      next();
+    } else {
+      alert('닉네임을 작성해주세요. 😂');
+      window.location.reload(true);
+    }
+  } else {
+    alert('로그인이 필요한 요청입니다.');
+    next('/');
+  }
+}

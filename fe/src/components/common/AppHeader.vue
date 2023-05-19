@@ -24,44 +24,7 @@
             >
           </template>
           <template v-else>
-            <b-nav-item id="show-btn" @click="showModal">로그인</b-nav-item>
-            <b-modal ref="my-modal" hide-footer title="로그인">
-              <div class="d-block text-center">
-                <h3>Welcome to the Share Travel!!!</h3>
-                <img src="/logo.png" width="150px" alt="logo" />
-              </div>
-              <b-button
-                class="mt-3"
-                variant="outline-primary"
-                block
-                @click="googleLogin"
-                ><img src="/google_logo.png" class="login-image" />
-                <span class="login-container">구글 로그인</span></b-button
-              >
-              <b-button
-                class="mt-3"
-                variant="outline-success"
-                block
-                @click="naverLogin"
-                ><img src="/naver_logo.png" class="login-image" />
-                <span class="login-container">네이버 로그인</span></b-button
-              >
-              <b-button
-                class="mt-3"
-                variant="outline-warning"
-                block
-                @click="kakaoLogin"
-                ><img src="/kakao_logo.png" class="login-image" />
-                <span class="login-container">카카오 로그인</span></b-button
-              >
-              <b-button
-                class="mt-3"
-                variant="outline-danger"
-                block
-                @click="hideModal"
-                >닫기</b-button
-              >
-            </b-modal>
+            <LoginModal></LoginModal>
           </template>
         </b-navbar-nav>
       </b-collapse>
@@ -71,8 +34,13 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { deleteCookie } from '@/utils/cookies';
+import LoginModal from '@/components/user/LoginModal.vue';
 
 export default {
+  components: {
+    LoginModal,
+  },
   computed: {
     ...mapGetters(['isLoggedIn']),
   },
@@ -83,20 +51,13 @@ export default {
     };
   },
   methods: {
-    showModal() {
-      this.$refs['my-modal'].show();
-    },
-    hideModal() {
-      this.$refs['my-modal'].hide();
-    },
-    googleLogin() {
-      console.log('TODO');
-    },
-    naverLogin() {
-      console.log('TODO');
-    },
-    kakaoLogin() {
-      console.log('TODO');
+    logout() {
+      this.$store.commit('LOGOUT');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
+      deleteCookie('renew');
+      alert('로그아웃이 처리되었습니다!');
     },
   },
 };
@@ -106,13 +67,6 @@ export default {
 .navbar-brand img {
   height: 30px;
   width: 40px;
-}
-.login-image {
-  width: 15px;
-  height: 15px;
-}
-.login-container {
-  margin-left: 10px;
 }
 body {
   padding-top: 0px;

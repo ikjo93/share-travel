@@ -4,6 +4,7 @@ import com.sharetravel.global.auth.oauth2.handler.CustomAuthenticationFailureHan
 import com.sharetravel.global.auth.oauth2.handler.CustomAuthenticationSuccessHandler;
 import com.sharetravel.global.auth.oauth2.service.CustomOAuth2UserService;
 import com.sharetravel.global.auth.jwt.filter.JwtAuthenticationFilter;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors().configurationSource(corsConfigurationSource())
+        .and()
             .csrf().disable().headers().frameOptions()
             .disable() // h2-console 화면 사용 위해 해당 옵션 disable
         .and()
@@ -52,14 +55,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern("http://localhost:3000");
-        configuration.addAllowedMethod("GET");
+        configuration.addAllowedOriginPattern("https://localhost:3000");
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(
-            true); // Cross Origin 에 요청을 보낼 때 요청에 인증(credential) 정보를 담아서 보낼 수 있는지 결정하는 항목
+        // Cross Origin 에 요청을 보낼 때 요청에 인증(credential) 정보를 담아서 보낼 수 있는지 결정하는 항목
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/articles/**", configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

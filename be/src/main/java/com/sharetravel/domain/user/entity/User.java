@@ -1,24 +1,36 @@
 package com.sharetravel.domain.user.entity;
 
-import com.sharetravel.global.BaseTimeEntity;
+import com.sharetravel.domain.travelkeyword.dto.TravelKeywordResponseDto;
+import com.sharetravel.global.domain.BaseTimeEntity;
 import com.sharetravel.global.auth.oauth2.dto.OAuth2Provider;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "`user`", indexes = @Index(name = "index_email_provider", columnList = "email, provider", unique = true))
+@NamedEntityGraph(
+    name = "User.withAll",
+    attributeNodes = {
+        @NamedAttributeNode(value = "userTravelKeywords", subgraph = "userTravelKeywords")
+    },
+    subgraphs = @NamedSubgraph(
+        name = "userTravelKeywords",
+        attributeNodes = {
+            @NamedAttributeNode("travelKeyword")
+        }
+    )
+)
+@Table(name = "`user`", indexes = {
+    @Index(name = "index_email_provider", columnList = "email, provider", unique = true),
+    @Index(name = "index_nickname", columnList = "nickname", unique = true)
+})
 @Entity
 public class User extends BaseTimeEntity {
 
@@ -30,7 +42,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 30, name = "nickname")
+    @Column(length = 15, name = "nickname")
     private String nickName;
 
     @Column(nullable = false)
@@ -38,6 +50,9 @@ public class User extends BaseTimeEntity {
 
     @Column(length = 500, name = "picture")
     private String picture;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -58,11 +73,18 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public User update(String name, String picture) {
-        this.name = name;
-        this.picture = picture;
+    public User registerNickNameAndTravelKeywords(String nickName, List<UserTravelKeyword> travelKeywords) {
+        this.nickName = nickName;
+        this.userTravelKeywords = travelKeywords;
 
         return this;
+    }
+
+    public List<TravelKeywordResponseDto> getTravelKeywords() {
+        return userTravelKeywords.stream()
+                .map(UserTravelKeyword::getTravelKeyword)
+                .map(TravelKeywordResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     public String getRoleKey() {

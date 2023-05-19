@@ -1,4 +1,4 @@
-package com.sharetravel.global;
+package com.sharetravel.global.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

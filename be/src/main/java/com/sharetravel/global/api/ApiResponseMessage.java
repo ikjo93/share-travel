@@ -1,4 +1,4 @@
-package com.sharetravel.global;
+package com.sharetravel.global.api;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

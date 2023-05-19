@@ -1,15 +1,15 @@
-package com.sharetravel.global.auth.jwt.handler;
+package com.sharetravel.global.auth.jwt.controller;
 
-import static com.sharetravel.global.ServletUtil.*;
+import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
+import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getRefreshTokenIdCookie;
 
-import com.sharetravel.global.CommonUtil;
 import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
 import com.sharetravel.global.auth.jwt.dto.AccessTokenResponse;
 import com.sharetravel.global.auth.jwt.exception.HackedTokenException;
 import com.sharetravel.global.auth.jwt.exception.InvalidTokenException;
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
-import com.sharetravel.global.ApiResponseCode;
-import com.sharetravel.global.ApiResponseMessage;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 import com.sharetravel.global.auth.jwt.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class TokenHandler {
+public class TokenController {
 
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/api/token/reissue")
-    public AccessTokenResponse reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
+    public ResponseEntity<AccessTokenResponse> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
         String refreshToken = refreshTokenService.validateAndGetToken(refreshTokenId);
 
         String renewedAccessToken = accessTokenService.renewAccessToken(refreshToken);
@@ -37,18 +37,26 @@ public class TokenHandler {
              이를 통해 리프레쉬 토큰 탈취 시 피해 파급 최소화
         */
         String renewedRefreshTokenId = refreshTokenService.renewRefreshToken(refreshTokenId, refreshToken);
-        addRefreshTokenCookie(response, renewedRefreshTokenId);
+        response.addCookie(getRefreshTokenIdCookie(renewedRefreshTokenId));
 
-        return new AccessTokenResponse(renewedAccessToken);
+        ApiResponseCode apiResponseCode = ApiResponseCode.TOKEN_REFRESHED;
+        return ResponseEntity
+                .status(apiResponseCode.getHttpStatusCode())
+                .body(
+                    AccessTokenResponse.of(
+                        renewedAccessToken,
+                        apiResponseCode.getCode(),
+                        apiResponseCode.getMessage())
+                );
     }
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ApiResponseMessage> handleInvalidTokenException() {
-        return CommonUtil.getResponseEntity(ApiResponseCode.TOKEN_INVALID);
+        return getResponseEntity(ApiResponseCode.TOKEN_INVALID);
     }
 
     @ExceptionHandler(HackedTokenException.class)
     public ResponseEntity<ApiResponseMessage> handleHackedTokenException() {
-        return CommonUtil.getResponseEntity(ApiResponseCode.TOKEN_HACKED);
+        return getResponseEntity(ApiResponseCode.TOKEN_HACKED);
     }
 }
