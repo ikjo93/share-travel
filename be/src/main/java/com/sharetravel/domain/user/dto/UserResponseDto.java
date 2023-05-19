@@ -1,5 +1,6 @@
 package com.sharetravel.domain.user.dto;
 
+import com.sharetravel.domain.travelkeyword.dto.TravelKeywordResponseDto;
 import com.sharetravel.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class UserResponseDto {
     private String email;
     private String picture;
     private String oauthProvider;
-    private List<String> keywords;
+    private List<TravelKeywordResponseDto> keywords;
 
     public static UserResponseDto from(User user) {
         return new UserResponseDto(

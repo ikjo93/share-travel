@@ -1,83 +1,112 @@
 <template>
   <div>
-    <div class="vertical-container">
-      <div class="navigation">
-        <ul>
-          <li>
-            <a href="#" class="nav-link">
-              <div class="nav-item">
-                <img src="/mypage/user.png" alt="Icon" class="nav-icon" />
-                <span>내 정보</span>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link">
-              <div class="nav-item">
-                <img src="/mypage/board.png" alt="Icon" class="nav-icon" />
-                <span>내 게시글 목록</span>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link">
-              <div class="nav-item">
-                <img src="/mypage/comment.png" alt="Icon" class="nav-icon" />
-                <span>내가 등록한 댓글 목록</span>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link">
-              <div class="nav-item">
-                <img src="/mypage/travel.png" alt="Icon" class="nav-icon" />
-                <span>나의 여행지 목록</span>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link">
-              <div class="nav-item">
-                <img src="/mypage/review.png" alt="Icon" class="nav-icon" />
-                <span>내가 등록한 리뷰 목록</span>
-              </div>
-            </a>
-          </li>
-          <li class="nav-bottom">
-            <a href="#" class="nav-link out">
-              <div class="nav-item">
-                <img src="/out-icon.png" alt="Icon" class="nav-icon" />
-                <span>회원 탈퇴</span>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <b-container class="bv-example-row">
+      <b-row>
+        <b-col cols="4">
+          <div class="vertical-container">
+            <div class="navigation">
+              <ul>
+                <li>
+                  <router-link to="info" class="nav-link">
+                    <div class="nav-item">
+                      <img src="/mypage/user.png" alt="Icon" class="nav-icon" />
+                      <span>내 정보</span>
+                    </div>
+                  </router-link>
+                </li>
+                <li>
+                  <router-link to="board" class="nav-link">
+                    <div class="nav-item">
+                      <img
+                        src="/mypage/board.png"
+                        alt="Icon"
+                        class="nav-icon"
+                      />
+                      <span>내 게시글 목록</span>
+                    </div>
+                  </router-link>
+                </li>
+                <li>
+                  <router-link to="comment" class="nav-link">
+                    <div class="nav-item">
+                      <img
+                        src="/mypage/comment.png"
+                        alt="Icon"
+                        class="nav-icon"
+                      />
+                      <span>내가 등록한 댓글 목록</span>
+                    </div>
+                  </router-link>
+                </li>
+                <li>
+                  <router-link to="travel" class="nav-link">
+                    <div class="nav-item">
+                      <img
+                        src="/mypage/travel.png"
+                        alt="Icon"
+                        class="nav-icon"
+                      />
+                      <span>나의 여행지 목록</span>
+                    </div>
+                  </router-link>
+                </li>
+                <li>
+                  <router-link to="review" class="nav-link">
+                    <div class="nav-item">
+                      <img
+                        src="/mypage/review.png"
+                        alt="Icon"
+                        class="nav-icon"
+                      />
+                      <span>내가 등록한 리뷰 목록</span>
+                    </div>
+                  </router-link>
+                </li>
+                <li @click="dropUser">
+                  <a href="javascript:;" class="nav-link">
+                    <div class="nav-item">
+                      <img src="/out-icon.png" alt="Icon" class="nav-icon" />
+                      <span>회원 탈퇴</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </b-col>
+        <b-col cols="8">
+          <div class="content-container">
+            <router-view></router-view>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    dropUser() {
+      console.log('todo');
+    },
+  },
+};
 </script>
 
 <style scoped>
 .vertical-container {
-  display: flex;
   padding-left: 10px;
-  padding-top: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .navigation {
-  flex: 0 0 300px;
   /* Adjust the width and height as needed */
-  background: #f0f0f0;
+  background: #f9f9f9;
   padding: 20px;
-  height: 700px;
-  width: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  height: 800px;
+  margin: auto;
 }
 
 .navigation ul {
@@ -89,17 +118,13 @@ export default {};
 .navigation ul li {
   margin-bottom: 20px;
   padding: 10px;
-  width: 275px;
-}
-
-.nav-bottom {
-  margin-top: 70%;
+  width: 300px;
 }
 
 .nav-link {
   display: block;
   padding: 10px;
-  background-color: #eaeaea;
+  background-color: #f2f2f2;
   border-radius: 5px;
   color: #333;
   text-decoration: none;

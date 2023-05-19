@@ -34,7 +34,6 @@ public class UserController {
 
     @PostMapping("/api/users")
     public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoRegisterForm userInfo) {
-        System.out.println(userInfo.toString());
         return userService.register(userId, userInfo);
     }
 
@@ -48,6 +47,5 @@ public class UserController {
         return getResponseEntity(ApiResponseCode.USER_NOT_FOUND);
     }
 
-    // TODO : 사용자 닉네임이 등록되지 않은 경우 클라이언트는 사용자가 닉네임을 등록하도록 하고 서버는 클라이언트로부터 사용자 닉네임을 받아 등록
     // TODO : 회원 탈퇴 기능(구글 SMTP)
 }

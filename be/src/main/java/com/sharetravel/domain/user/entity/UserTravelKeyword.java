@@ -34,8 +34,4 @@ public class UserTravelKeyword extends BaseTimeEntity {
     public static UserTravelKeyword from(User user, TravelKeyword travelKeyword) {
         return new UserTravelKeyword(user, travelKeyword);
     }
-
-    public String getTravelKeyWordName() {
-        return travelKeyword.getName();
-    }
 }
