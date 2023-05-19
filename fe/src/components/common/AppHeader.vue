@@ -35,7 +35,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { deleteCookie } from '@/utils/cookies';
+import { logoutUtil } from '@/utils/auth';
 import LoginModal from '@/components/user/LoginModal.vue';
 import UserInputModal from '@/components/user/UserInputModal.vue';
 
@@ -54,13 +54,9 @@ export default {
       isFixed: false,
     };
   },
-  methods: {
+  method: {
     logout() {
-      this.$store.commit('LOGOUT');
-      if (this.$route.path !== '/') {
-        this.$router.push('/');
-      }
-      deleteCookie('renew');
+      logoutUtil();
     },
   },
 };
