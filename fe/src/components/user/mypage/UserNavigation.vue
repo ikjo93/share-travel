@@ -89,7 +89,7 @@ export default {
 .navigation ul li {
   margin-bottom: 20px;
   padding: 10px;
-  width: 300px;
+  width: auto;
 }
 
 .nav-link {

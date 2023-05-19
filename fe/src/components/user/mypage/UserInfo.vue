@@ -1,45 +1,54 @@
 <template>
   <div class="profile-container">
     <div class="profile-header">
-      <img
-        class="profile-picture"
-        :src="this.$store.state.user.picture"
-        alt="Profile Picture"
-      />
+      <img class="profile-picture" :src="user.picture" alt="Profile Picture" />
     </div>
-    <div class="profile-info">
-      <h2>{{ this.$store.state.user.nickName }}</h2>
-      <p>{{ this.$store.state.user.email }}</p>
+    <div class="profile-info nickname">
+      <p>닉네임 : {{ user.nickName }}</p>
     </div>
-    <div class="profile-modify-button">
-      <button @click="openProfileModal">수정</button>
+    <div class="profile-info email">
+      <p>이메일 : {{ user.email }}</p>
     </div>
     <div class="keyword-container">
-      <h3>나의 여행지 키워드</h3>
-      <ul>
-        <li
-          v-for="keyword in this.$store.state.user.keywords"
+      <h2>나의 여행지 키워드</h2>
+      <div class="grid-container">
+        <button
+          class="radious grid-item"
+          v-for="keyword in user.keywords"
           :key="keyword.id"
         >
           {{ keyword.name }}
-        </li>
-      </ul>
+        </button>
+      </div>
     </div>
     <div class="keyword-modify-button">
       <button @click="openKeywordModal">수정</button>
     </div>
-    <div class="server-info">
-      <p>Logged in with: {{ this.$store.state.user.oauthProvider }}</p>
+    <div class="login-info">
+      <p>
+        Logged in with: {{ user.oauthProvider }}
+        <template v-if="user.oauthProvider === 'GOOGLE'"
+          ><img src="/google_logo.png" class="login-image" alt="logo"
+        /></template>
+        <template v-else-if="user.oauthProvider === 'NAVER'"
+          ><img src="/naver_logo.png" class="login-image" alt="logo"
+        /></template>
+        <template v-else-if="user.oauthProvider === 'KAKAO'"
+          ><img src="/kakao_logo.png" class="login-image" alt="logo"
+        /></template>
+      </p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  methods: {
-    openProfileModal() {
-      // Code to open the profile modification modal
+  computed: {
+    user() {
+      return this.$store.state.user;
     },
+  },
+  methods: {
     openKeywordModal() {
       // Code to open the keyword modification modal
     },
@@ -47,9 +56,19 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.login-image {
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
+}
+
 .profile-container {
+  background-color: #f9f9f9;
   text-align: center;
+  height: 800px;
+  margin: 15px;
+  padding: 15px;
 }
 
 .profile-header {
@@ -63,26 +82,75 @@ export default {
 }
 
 .profile-info {
-  margin-top: 20px;
+  margin: auto;
+  background-color: #f2f2f2;
+  width: 60%;
+  height: auto;
+  padding: 10px 10px;
+  margin-top: 50px;
+  font-size: 20px;
 }
 
-.profile-modify-button {
-  margin-top: 10px;
+.profile-info p {
+  margin-bottom: 5px;
 }
 
 .keyword-container {
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
-.keyword-container li {
-  list-style: none;
+.keyword-container h3 {
+  font-size: 24px;
+  font-weight: bold;
 }
 
-.keyword-modify-button {
+.keyword-container ul {
+  list-style-type: none;
+  padding: 0;
   margin-top: 10px;
 }
 
-.server-info {
-  margin-top: 30px;
+.keyword-container li {
+  margin-bottom: 5px;
+  background-color: #f2f2f2;
+  padding: 5px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.keyword-modify-button {
+  margin-top: 50px;
+}
+
+.keyword-modify-button button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-info {
+  margin-top: 50px;
+  font-size: 14px;
+}
+
+.radious {
+  cursor: default;
+  border-radius: 50px !important;
+  padding: 5px 12px !important;
+  overflow-x: auto !important;
+  margin: 5px !important;
+  white-space: nowrap !important;
+  border: 0px !important;
+}
+
+.grid-container {
+  display: flex;
+  justify-content: center; /* Align items horizontally (in this case, center) */
+  align-items: center; /* Align items vertically (in this case, center) */
+  flex-wrap: wrap;
 }
 </style>
