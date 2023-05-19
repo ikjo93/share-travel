@@ -16,11 +16,11 @@ export default new Vuex.Store({
       return state.token;
     },
     hasNecessaryUserInfo(state) {
-      if (!state.user) {
+      if (!state.user || !state.user.nickName || !state.user.keywords) {
         return false;
       }
-
-      return !!state.user.nickName;
+      const length = state.user.keywords.length;
+      return 1 <= length && length <= 3;
     },
   },
   mutations: {
