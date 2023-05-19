@@ -1,13 +1,6 @@
 <template>
   <div>
-    <b-modal
-      ref="my-modal"
-      hide-header
-      hide-footer
-      no-close-on-esc
-      no-close-on-backdrop
-      hide-header-close
-    >
+    <b-modal ref="my-modal" hide-footer>
       <b-jumbotron
         lead="서비스간 이용할 귀하의 정보를 입력해주세요 💁‍♂️"
         bg-variant="white"

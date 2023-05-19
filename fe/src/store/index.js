@@ -15,7 +15,7 @@ export default new Vuex.Store({
     userToken(state) {
       return state.token;
     },
-    hasNickName(state) {
+    hasNecessaryUserInfo(state) {
       if (!state.user) {
         return false;
       }

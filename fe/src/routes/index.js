@@ -122,7 +122,12 @@ export default new Router({
 
 function beforeEnter(to, from, next) {
   if (store.getters['isLoggedIn']) {
-    next();
+    if (store.getters['hasNecessaryUserInfo']) {
+      next();
+    } else {
+      alert('닉네임을 작성해주세요. 😂');
+      window.location.reload(true);
+    }
   } else {
     alert('로그인이 필요한 요청입니다.');
     next('/');
