@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import MainPage from '../views/MainPage';
+import store from '@/store/index';
 
 Vue.use(Router);
 
@@ -9,17 +9,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: MainPage,
+      component: () => import('@/views/MainPage.vue'),
     },
     {
       path: '/info',
       name: 'info',
-      redirect: '/main',
+      redirect: '/',
     },
     {
       path: '/event',
       name: 'event',
-      redirect: '/main',
+      redirect: '/',
     },
     {
       path: '/share',
@@ -41,28 +41,33 @@ export default new Router({
           path: 'info',
           name: 'userInfo',
           component: () => import('@/components/user/mypage/UserInfo.vue'),
+          beforeEnter,
         },
         {
           path: 'board',
           name: 'userBoard',
           component: () => import('@/components/user/mypage/UserBoard.vue'),
+          beforeEnter,
         },
         {
           path: 'comment',
           name: 'userBoardComment',
           component: () =>
             import('@/components/user/mypage/UserBoardComment.vue'),
+          beforeEnter,
         },
         {
           path: 'travel',
           name: 'userTravel',
           component: () => import('@/components/user/mypage/UserTravel.vue'),
+          beforeEnter,
         },
         {
           path: 'review',
           name: 'userTravelReview',
           component: () =>
             import('@/components/user/mypage/UserTravelReview.vue'),
+          beforeEnter,
         },
       ],
     },
@@ -103,6 +108,7 @@ export default new Router({
           path: 'write',
           name: 'boardwrite',
           component: () => import('@/components/board/BoardWrite.vue'),
+          beforeEnter,
         },
         {
           path: 'qna',
@@ -113,3 +119,12 @@ export default new Router({
     },
   ],
 });
+
+function beforeEnter(to, from, next) {
+  if (store.getters['isLoggedIn']) {
+    next();
+  } else {
+    alert('로그인이 필요한 요청입니다.');
+    next('/');
+  }
+}
