@@ -13,9 +13,10 @@ public enum ApiResponseCode {
     TOKEN_HACKED("A04", 401, "토큰 도용이 의심됩니다."),
 
     USER_NOT_FOUND("U01", 404, "존재하지 않는 회원입니다."),
-    USER_UPDATE_SUCCESS("U02", 200, "회원 정보 수정이 완료되었습니다.");
+    USER_UPDATE_SUCCESS("U02", 200, "회원 정보 수정이 완료되었습니다."),
 
-
+    BOARD_NOT_FOUND("B01", 404, "존재하지 않는 게시글 입니다."),
+    BOARD_DELETE_SUCCESS("B02", 200, "게시글 삭제가 완료되었습니다.");
 
     private final String code;
     private final int httpStatusCode;
