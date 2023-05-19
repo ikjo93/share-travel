@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="keyword-modify-button">
-      <button @click="openKeywordModal">수정</button>
+      <button @click="openUpdateModal">수정</button>
     </div>
     <div class="login-info">
       <p>
@@ -38,19 +38,25 @@
         /></template>
       </p>
     </div>
+    <UserUpdateModal></UserUpdateModal>
   </div>
 </template>
 
 <script>
+import UserUpdateModal from '@/components/user/mypage/UserUpdateModal';
+
 export default {
+  components: {
+    UserUpdateModal,
+  },
   computed: {
     user() {
       return this.$store.state.user;
     },
   },
   methods: {
-    openKeywordModal() {
-      // Code to open the keyword modification modal
+    openUpdateModal() {
+      this.$refs['my-modal'].show();
     },
   },
 };
