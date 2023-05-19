@@ -1,19 +1,18 @@
 package com.sharetravel.domain.user.controller;
 
+import com.sharetravel.domain.user.dto.UserInfoRegisterForm;
 import com.sharetravel.domain.user.dto.UserResponseDto;
-import com.sharetravel.domain.user.dto.UserUpdateRequestDto;
+import com.sharetravel.domain.user.dto.UserInfoUpdateRequestDto;
 import com.sharetravel.domain.user.service.UserService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
 
@@ -28,9 +27,19 @@ public class UserController {
         return userService.findById(userId);
     }
 
+    @GetMapping("/api/users/duplicate")
+    public ResponseEntity<ApiResponseMessage> validate(@RequestParam @Min(6) @Max(15) String nickName) {
+        return userService.validateDuplicate(nickName);
+    }
+
+    @PostMapping("/api/users")
+    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid UserInfoRegisterForm userInfo) {
+        return userService.register(userId, userInfo);
+    }
+
     @PatchMapping("/api/users")
-    public UserResponseDto update(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserUpdateRequestDto request) {
-        return userService.update(userId, request);
+    public UserResponseDto update(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoUpdateRequestDto userInfo) {
+        return userService.update(userId, userInfo);
     }
 
     @ExceptionHandler(IllegalStateException.class)

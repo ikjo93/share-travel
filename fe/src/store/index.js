@@ -16,6 +16,10 @@ export default new Vuex.Store({
       return state.token;
     },
     hasNickName(state) {
+      if (!state.user) {
+        return false;
+      }
+
       return !!state.user.nickName;
     },
   },

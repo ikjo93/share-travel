@@ -31,32 +31,35 @@ export default {
           // 액세스 토큰이 존재하지 않으면
         } else {
           // 서버에 리프레쉬 토큰 전송
-          const response = await reissueAccessToken.post();
+          const response = await reissueAccessToken.post(); // TODO : 토큰 탈취 감지시에는 어떻게 대응?
 
           // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
           const data = response.data;
           if (data.code === 'A05') {
-            this.processLogin(data.accessToken);
+            try {
+              this.processLogin(data.accessToken);
+            } catch (error) {
+              alert('사용자 정보를 가져오는 과정에서 에러가 발생했습니다.');
+              this.processLogout();
+            }
           } else {
             alert(data.message);
           }
         }
       } catch (error) {
-        this.$store.commit('LOGOUT');
-        if (this.$route.path !== '/') {
-          this.$router.push('/');
-        }
+        this.processLogout();
       }
     },
     async processLogin(token) {
       // 액세스 토큰을 스토어에 저장하고 사용자 정보를 가져옴
       this.$store.commit('LOGIN', token);
       const user = await getUserInfo();
-
       this.$store.commit('SET_USER', user.data);
-
-      if (!this.$store.getters.hasNickName) {
-        this.$router.push('/userinput');
+    },
+    processLogout() {
+      this.$store.commit('LOGOUT');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
       }
     },
   },

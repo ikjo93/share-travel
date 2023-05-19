@@ -8,4 +8,8 @@ function updateUser(data) {
   return users.put(`/${data.id}`, data);
 }
 
-export { getUserInfo, updateUser };
+function validateUserNickName(nickName) {
+  return users.get(`/duplicate?nickName=${nickName}`);
+}
+
+export { getUserInfo, updateUser, validateUserNickName };

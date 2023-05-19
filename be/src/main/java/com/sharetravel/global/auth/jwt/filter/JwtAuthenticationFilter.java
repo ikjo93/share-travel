@@ -29,7 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AccessTokenService accessTokenService;
 
     private final String[][] excludePathAndMethod = {
-        {"/login", "GET"}, {"/oauth2", "GET"}, {"/api/token/reissue", "POST"}, {"/api/articles", "GET"}
+        {"/login", "GET"}, {"/oauth2", "GET"}, {"/api/token/reissue", "POST"}, {"/api/articles", "GET"},
+        {"/api/travelkeywords", "GET"}
     };
 
     @Override
