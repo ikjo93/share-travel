@@ -36,10 +36,20 @@ public class UserController {
         return userService.register(userId, userInfo);
     }
 
+    @PostMapping("/api/users/mail")
+    public ResponseEntity<ApiResponseMessage> mail(@AuthenticationPrincipal Long userId) {
+        userService.sendMail(userId);
+        return getResponseEntity(ApiResponseCode.USER_EMAIL_SENDING_SUCCESS);
+    }
+
+    @DeleteMapping("/api/users")
+    public ResponseEntity<ApiResponseMessage> delete(@AuthenticationPrincipal Long userId, @RequestParam Integer code) {
+        userService.deleteUSer(userId, code);
+        return getResponseEntity(ApiResponseCode.USER_EMAIL_SENDING_SUCCESS);
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiResponseMessage> handleInvalidTokenException() {
         return getResponseEntity(ApiResponseCode.USER_NOT_FOUND);
     }
-
-    // TODO : 회원 탈퇴 기능(구글 SMTP)
 }
