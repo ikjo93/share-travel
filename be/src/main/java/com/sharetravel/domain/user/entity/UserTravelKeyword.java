@@ -4,7 +4,6 @@ import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.global.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,10 +26,13 @@ public class UserTravelKeyword extends BaseTimeEntity {
     @JoinColumn(name = "travel_keyword_id")
     private TravelKeyword travelKeyword;
 
-    @Builder
-    public UserTravelKeyword(User user, TravelKeyword travelKeyword) {
+    private UserTravelKeyword(User user, TravelKeyword travelKeyword) {
         this.user = user;
         this.travelKeyword = travelKeyword;
+    }
+
+    public static UserTravelKeyword from(User user, TravelKeyword travelKeyword) {
+        return new UserTravelKeyword(user, travelKeyword);
     }
 
     public String getTravelKeyWordName() {

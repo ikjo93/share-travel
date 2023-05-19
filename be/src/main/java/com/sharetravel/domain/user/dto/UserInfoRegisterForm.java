@@ -6,10 +6,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class UserInfoRegisterForm {
 
     @Length(min = 6, max = 15)

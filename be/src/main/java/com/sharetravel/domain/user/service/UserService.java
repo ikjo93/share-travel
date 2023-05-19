@@ -10,6 +10,7 @@ import com.sharetravel.domain.user.dto.UserInfoUpdateRequestDto;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.domain.user.entity.UserTravelKeyword;
 import com.sharetravel.domain.user.repository.UserRepository;
+import com.sharetravel.domain.user.repository.UserTravelKeywordRepository;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TravelKeywordRepository travelKeywordRepository;
+    private final UserTravelKeywordRepository userTravelKeywordRepository;
 
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
@@ -51,18 +53,17 @@ public class UserService {
     }
 
     private List<UserTravelKeyword> getUserTravelKeywords(User user, List<Long> travelKeywordIds) {
-        List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
-        for (Long travelKeywordId : travelKeywordIds) {
-            TravelKeyword travelKeyword = travelKeywordRepository.findById(travelKeywordId).orElseThrow(() -> {
-                throw new IllegalStateException("식별 번호가 " + travelKeywordId + "인 여행지 키워드가 존재하지 않습니다.");
-            });
-            userTravelKeywords.add(
-                    UserTravelKeyword.builder()
-                            .user(user)
-                            .travelKeyword(travelKeyword)
-                            .build()
-            );
+        List<TravelKeyword> travelKeywords = travelKeywordRepository.findInIds(travelKeywordIds);
+        if (travelKeywordIds.size() != travelKeywords.size()) {
+            throw new IllegalStateException("존재하지 않는 여행지 키워드입니다.");
         }
+
+        List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
+        for (TravelKeyword travelKeyword : travelKeywords) {
+            userTravelKeywords.add(UserTravelKeyword.from(user, travelKeyword));
+        }
+
+        userTravelKeywordRepository.saveAll(userTravelKeywords);
 
         return userTravelKeywords;
     }

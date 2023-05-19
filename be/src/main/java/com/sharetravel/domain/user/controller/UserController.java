@@ -33,7 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid UserInfoRegisterForm userInfo) {
+    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoRegisterForm userInfo) {
+        System.out.println(userInfo.toString());
         return userService.register(userId, userInfo);
     }
 
