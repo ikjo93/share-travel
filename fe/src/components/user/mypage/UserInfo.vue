@@ -36,17 +36,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      user: {
-        profilePicture: 'path/to/profile-picture.jpg',
-        nickname: 'John Doe',
-        email: 'john.doe@example.com',
-        keywords: ['keyword1', 'keyword2', 'keyword3'],
-        server: 'Third-Party Server',
-      },
-    };
-  },
   methods: {
     openProfileModal() {
       // Code to open the profile modification modal
@@ -54,10 +43,6 @@ export default {
     openKeywordModal() {
       // Code to open the keyword modification modal
     },
-  },
-  mounted() {
-    const { keywords } = this.$store.state.user.keywords;
-    console.log(keywords[0]);
   },
 };
 </script>

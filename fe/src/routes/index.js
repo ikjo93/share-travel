@@ -40,27 +40,29 @@ export default new Router({
         {
           path: 'info',
           name: 'userInfo',
-          component: () => import('@/components/user/UserInfo.vue'),
+          component: () => import('@/components/user/mypage/UserInfo.vue'),
         },
         {
           path: 'board',
           name: 'userBoard',
-          component: () => import('@/components/user/UserBoard.vue'),
+          component: () => import('@/components/user/mypage/UserBoard.vue'),
         },
         {
           path: 'comment',
           name: 'userBoardComment',
-          component: () => import('@/components/user/UserBoardComment.vue'),
+          component: () =>
+            import('@/components/user/mypage/UserBoardComment.vue'),
         },
         {
           path: 'travel',
           name: 'userTravel',
-          component: () => import('@/components/user/UserTravel.vue'),
+          component: () => import('@/components/user/mypage/UserTravel.vue'),
         },
         {
           path: 'review',
           name: 'userTravelReview',
-          component: () => import('@/components/user/UserTravelReview.vue'),
+          component: () =>
+            import('@/components/user/mypage/UserTravelReview.vue'),
         },
       ],
     },
