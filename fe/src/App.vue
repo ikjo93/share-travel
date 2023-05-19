@@ -13,7 +13,7 @@ import AppHeader from './components/common/AppHeader.vue';
 import AppFooter from './components/common/AppFooter.vue';
 import { reissueAccessToken } from '@/api/index';
 import { getUserInfo } from '@/api/user';
-import { getAccessTokenFromCookie } from '@/utils/cookies';
+import { getAccessTokenFromCookie, deleteCookie } from '@/utils/cookies';
 
 export default {
   components: {
@@ -61,6 +61,7 @@ export default {
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
+      deleteCookie('renew');
     },
   },
   created() {
