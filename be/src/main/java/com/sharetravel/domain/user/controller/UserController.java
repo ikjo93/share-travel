@@ -1,8 +1,7 @@
 package com.sharetravel.domain.user.controller;
 
-import com.sharetravel.domain.user.dto.UserInfoRegisterForm;
 import com.sharetravel.domain.user.dto.UserResponseDto;
-import com.sharetravel.domain.user.dto.UserInfoUpdateRequestDto;
+import com.sharetravel.domain.user.dto.UserInfoRequestDto;
 import com.sharetravel.domain.user.service.UserService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
@@ -33,13 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoRegisterForm userInfo) {
+    public UserResponseDto register(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoRequestDto userInfo) {
         return userService.register(userId, userInfo);
-    }
-
-    @PatchMapping("/api/users")
-    public UserResponseDto update(@AuthenticationPrincipal Long userId, @Valid @RequestBody UserInfoUpdateRequestDto userInfo) {
-        return userService.update(userId, userInfo);
     }
 
     @ExceptionHandler(IllegalStateException.class)

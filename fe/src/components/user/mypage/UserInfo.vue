@@ -21,9 +21,7 @@
         </button>
       </div>
     </div>
-    <div class="keyword-modify-button">
-      <button @click="openUpdateModal">수정</button>
-    </div>
+    <UserUpdateModal></UserUpdateModal>
     <div class="login-info">
       <p>
         Logged in with: {{ user.oauthProvider }}
@@ -38,7 +36,6 @@
         /></template>
       </p>
     </div>
-    <UserUpdateModal></UserUpdateModal>
   </div>
 </template>
 
@@ -54,15 +51,10 @@ export default {
       return this.$store.state.user;
     },
   },
-  methods: {
-    openUpdateModal() {
-      this.$refs['my-modal'].show();
-    },
-  },
 };
 </script>
 
-<style scoped>
+<style>
 .login-image {
   width: 15px;
   height: 15px;

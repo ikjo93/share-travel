@@ -1,7 +1,6 @@
 package com.sharetravel.domain.user.entity;
 
 import com.sharetravel.domain.travelkeyword.dto.TravelKeywordResponseDto;
-import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.global.domain.BaseTimeEntity;
 import com.sharetravel.global.auth.oauth2.dto.OAuth2Provider;
 import jakarta.persistence.*;
@@ -81,14 +80,7 @@ public class User extends BaseTimeEntity {
         return this;
     }
 
-    public User updateNickNameAndPicture(String nickName, String picture) {
-        this.nickName = nickName;
-        this.picture = picture;
-
-        return this;
-    }
-
-    public List<TravelKeywordResponseDto> getTravelKeywordsOfUser() {
+    public List<TravelKeywordResponseDto> getTravelKeywords() {
         return userTravelKeywords.stream()
                 .map(UserTravelKeyword::getTravelKeyword)
                 .map(TravelKeywordResponseDto::from)

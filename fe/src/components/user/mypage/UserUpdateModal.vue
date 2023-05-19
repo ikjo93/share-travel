@@ -1,6 +1,9 @@
 <template>
   <div>
-    <b-modal ref="my-modal" hide-footer>
+    <div class="keyword-modify-button">
+      <button @click="openUpdateModal">수정하기</button>
+    </div>
+    <b-modal ref="my-modal" hide-footer hide-header>
       <b-jumbotron
         lead="회원 정보 수정 💁‍♂️"
         bg-variant="white"
@@ -62,7 +65,14 @@
               disabled: !(nickNameState && !duplicated && travelKeywordState),
             }"
             @click="submit"
-            >확인</b-button
+            >수정하기</b-button
+          >
+          <b-button
+            size="lg"
+            variant="outline-danger"
+            @click="close"
+            style="margin-left: 5px;"
+            >닫기</b-button
           >
         </div>
       </b-jumbotron>
@@ -78,7 +88,6 @@ import { deleteCookie } from '@/utils/cookies';
 export default {
   data() {
     return {
-      show: this.showFlag,
       travelKeywords: [],
       userInputNickName: '',
       userInputTravelKeywords: [],
@@ -114,6 +123,12 @@ export default {
     },
   },
   methods: {
+    openUpdateModal() {
+      this.$refs['my-modal'].show();
+    },
+    close() {
+      this.$refs['my-modal'].hide();
+    },
     selectTravelKeyword(keyword) {
       keyword.selected = !keyword.selected;
       if (keyword.selected) {
@@ -145,12 +160,12 @@ export default {
         travelKeywords: this.userInputTravelKeywords,
       };
       try {
-        await registerUser(body);
+        const { data } = await registerUser(body);
+        this.$store.commit('SET_USER', data);
         alert('회원 정보 수정이 정상적으로 처리되었습니다. 🎉');
         this.$refs['my-modal'].hide();
       } catch (error) {
-        alert('회원 정보를 등록하는 과정에서 에러가 발생했습니다. 😢');
-        this.processLogout();
+        alert('회원 정보를 수정하는 과정에서 에러가 발생했습니다. 😢');
       }
     },
     processLogout() {
@@ -160,9 +175,6 @@ export default {
       }
       deleteCookie('renew');
     },
-  },
-  mounted() {
-    this.$refs['my-modal'].show();
   },
   async created() {
     const { data } = await getTravelKeywords();

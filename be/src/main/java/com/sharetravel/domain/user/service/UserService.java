@@ -4,9 +4,8 @@ import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
 
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.domain.travelkeyword.repository.TravelKeywordRepository;
-import com.sharetravel.domain.user.dto.UserInfoRegisterForm;
 import com.sharetravel.domain.user.dto.UserResponseDto;
-import com.sharetravel.domain.user.dto.UserInfoUpdateRequestDto;
+import com.sharetravel.domain.user.dto.UserInfoRequestDto;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.domain.user.entity.UserTravelKeyword;
 import com.sharetravel.domain.user.repository.UserRepository;
@@ -44,7 +43,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto register(Long userId, UserInfoRegisterForm userInfo) {
+    public UserResponseDto register(Long userId, UserInfoRequestDto userInfo) {
         User user = getUserById(userId);
 
         user.registerNickNameAndTravelKeywords(userInfo.getNickName(), getUserTravelKeywords(user, userInfo.getTravelKeywords()));
@@ -66,15 +65,6 @@ public class UserService {
         userTravelKeywordRepository.saveAll(userTravelKeywords);
 
         return userTravelKeywords;
-    }
-
-    @Transactional
-    public UserResponseDto update(Long id, UserInfoUpdateRequestDto userInfo) {
-        User user = getUserById(id);
-
-        user.updateNickNameAndPicture(userInfo.getNickName(), userInfo.getPicture());
-
-        return UserResponseDto.from(user);
     }
 
     private User getUserById(Long id) {

@@ -6,13 +6,11 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 @Getter
 @NoArgsConstructor
-@ToString
-public class UserInfoRegisterForm {
+public class UserInfoRequestDto {
 
     @Length(min = 6, max = 15)
     private String nickName;

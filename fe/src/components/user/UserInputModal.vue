@@ -69,7 +69,7 @@
               disabled: !(nickNameState && !duplicated && travelKeywordState),
             }"
             @click="submit"
-            >확인</b-button
+            >등록하기</b-button
           >
         </div>
       </b-jumbotron>
@@ -151,7 +151,8 @@ export default {
         travelKeywords: this.userInputTravelKeywords,
       };
       try {
-        await registerUser(body);
+        const { data } = await registerUser(body);
+        this.$store.commit('SET_USER', data);
         alert('회원 정보가 정상적으로 처리되었습니다. 🎉');
         this.$refs['my-modal'].hide();
       } catch (error) {

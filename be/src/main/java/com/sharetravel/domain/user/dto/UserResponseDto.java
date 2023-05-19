@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import lombok.ToString;
 
+@ToString
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,7 +27,7 @@ public class UserResponseDto {
     public static UserResponseDto from(User user) {
         return new UserResponseDto(
                 user.getId(), user.getName(), user.getNickName(), user.getEmail(),
-                user.getPicture(), user.getProvider().name(), user.getTravelKeywordsOfUser()
+                user.getPicture(), user.getProvider().name(), user.getTravelKeywords()
         );
     }
 }
