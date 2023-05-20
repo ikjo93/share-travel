@@ -19,8 +19,11 @@ public enum ApiResponseCode {
     USER_NOT_DUPLICATE_NICKNAME("U04", 200, "사용 가능한 닉네임입니다."),
     USER_REGISTER_SUCCESS("U05", 200, "회원 정보가 정상적으로 등록되었습니다."),
     USER_EMAIL_SENDING_SUCCESS("U06", 200, "사용자의 이메일로 인증 코드가 발송되었습니다."),
-    USER_DELETED_SUCCESS("U07", 200, "사용자의 회원 정보가 삭제되었습니다."),
-    USER_LOGOUT_SUCCESS("U08", 200, "로그아웃이 정상적으로 처리되었습니다."),
+    USER_INVALID_MAIL_AUTHORIZATION_CODE("U07", 401, "유효하지 않은 인증 코드입니다."),
+    USER_DELETED_SUCCESS("U08", 200, "사용자의 회원 정보가 삭제되었습니다."),
+    USER_LOGOUT_SUCCESS("U09", 200, "로그아웃이 정상적으로 처리되었습니다."),
+
+    TRAVEL_KEYWORD_NOT_FOUND("TK01", 404, "존재하지 않는 여행지 키워드입니다."),
 
     SERVER_INTERNAL_ERROR("G01", 500, "현재 서버 내부에서 에러가 발생했습니다.");
 
