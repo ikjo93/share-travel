@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,10 @@ import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
 @RestController
 public class UserController {
 
+    private static final int NICKNAME_MIN_LENGTH = 6;
+    private static final int NICKNAME_MAX_LENGTH = 15;
+    private static final int MAIL_AUTHORIZATION_CODE_LENGTH = 15;
+
     private final UserService userService;
 
     @GetMapping("/api/users")
@@ -27,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/api/users/duplicate")
-    public ResponseEntity<ApiResponseMessage> validate(@RequestParam @Min(6) @Max(15) String nickName) {
+    public ResponseEntity<ApiResponseMessage> validate(@RequestParam @Min(NICKNAME_MIN_LENGTH) @Max(NICKNAME_MAX_LENGTH) String nickName) {
         return userService.validateDuplicate(nickName);
     }
 
@@ -43,7 +48,8 @@ public class UserController {
     }
 
     @DeleteMapping("/api/users")
-    public ResponseEntity<ApiResponseMessage> delete(@AuthenticationPrincipal Long userId, @RequestParam Integer code) {
+    public ResponseEntity<ApiResponseMessage> delete(@AuthenticationPrincipal Long userId,
+        @RequestParam @Length(min = MAIL_AUTHORIZATION_CODE_LENGTH, max = MAIL_AUTHORIZATION_CODE_LENGTH) Integer code) {
         userService.deleteUSer(userId, code);
         return getResponseEntity(ApiResponseCode.USER_EMAIL_SENDING_SUCCESS);
     }

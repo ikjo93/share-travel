@@ -88,7 +88,7 @@ public class UserService {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(email);
         simpleMailMessage.setSubject("[Share Travel] 회원 탈퇴 인증 코드 발송");
-        simpleMailMessage.setText("안녕하세요,\n귀하꼐서 요청하신 회원 탈퇴 처리를 위한 인증 코드를 다음과 같이 안내해드립니다.\n인증 코드 : " + createAuthorizationCode(email));
+        simpleMailMessage.setText("안녕하세요,\n\n귀하께서 요청하신 회원 탈퇴 처리를 위한 인증 코드를 다음과 같이 안내해드립니다.\n\n인증 코드 : " + createAuthorizationCode(email));
 
         return simpleMailMessage;
     }
