@@ -3,20 +3,20 @@ package com.sharetravel.domain.user.service;
 import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
 
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
+import com.sharetravel.domain.travelkeyword.exception.NotFoundTravelKeywordException;
 import com.sharetravel.domain.travelkeyword.repository.TravelKeywordRepository;
 import com.sharetravel.domain.user.dto.UserResponseDto;
 import com.sharetravel.domain.user.dto.UserInfoRequestDto;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.domain.user.entity.UserTravelKeyword;
+import com.sharetravel.domain.user.exception.InvalidMailAuthorizationCodeException;
+import com.sharetravel.domain.user.repository.MailAuthorizationCodeRepository;
 import com.sharetravel.domain.user.repository.UserRepository;
 import com.sharetravel.domain.user.repository.UserTravelKeywordRepository;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,7 +36,7 @@ public class UserService {
 
     // 회원 탈퇴 처리를 위한 메일 발송 관련 의존성 주입
     private final JavaMailSender javaMailSender;
-    private final RedisTemplate<String, Integer> redisTemplate;
+    private final MailAuthorizationCodeRepository mailAuthorizationCodeRepository;
 
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
@@ -64,7 +64,7 @@ public class UserService {
     private List<UserTravelKeyword> getUserTravelKeywords(User user, List<Long> travelKeywordIds) {
         List<TravelKeyword> travelKeywords = travelKeywordRepository.findInIds(travelKeywordIds);
         if (travelKeywordIds.size() != travelKeywords.size()) {
-            throw new IllegalStateException("존재하지 않는 여행지 키워드입니다.");
+            throw new NotFoundTravelKeywordException("존재하지 않는 여행지 키워드입니다.");
         }
 
         List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
@@ -95,17 +95,17 @@ public class UserService {
 
    private int createAuthorizationCode(String email) {
        int authorizationCode = ThreadLocalRandom.current().nextInt(100_000, 1_000_000);
-       redisTemplate.opsForValue().set(email, authorizationCode, 190, TimeUnit.SECONDS);
+       mailAuthorizationCodeRepository.setCodeByEmail(email, authorizationCode);
        return authorizationCode;
     }
 
     @Transactional
     public void deleteUSer(Long userId, Integer code) {
         User user = getUserById(userId);
-        if (redisTemplate.opsForValue().get(user.getEmail()) == code) {
+        if (mailAuthorizationCodeRepository.validateCode(user.getEmail(), code)) {
             userRepository.delete(user);
         } else {
-            throw new IllegalStateException("회원 탈퇴 처리를 위한 인증 번호가 일치하지 않습니다.");
+            throw new InvalidMailAuthorizationCodeException("회원 탈퇴 처리를 위한 인증 번호가 일치하지 않습니다.");
         }
     }
 

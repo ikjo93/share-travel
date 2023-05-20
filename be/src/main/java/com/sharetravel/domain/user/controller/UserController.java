@@ -1,7 +1,9 @@
 package com.sharetravel.domain.user.controller;
 
+import com.sharetravel.domain.travelkeyword.exception.NotFoundTravelKeywordException;
 import com.sharetravel.domain.user.dto.UserResponseDto;
 import com.sharetravel.domain.user.dto.UserInfoRequestDto;
+import com.sharetravel.domain.user.exception.InvalidMailAuthorizationCodeException;
 import com.sharetravel.domain.user.service.UserService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
@@ -54,8 +56,18 @@ public class UserController {
         return getResponseEntity(ApiResponseCode.USER_EMAIL_SENDING_SUCCESS);
     }
 
+    @ExceptionHandler(NotFoundTravelKeywordException.class)
+    public ResponseEntity<ApiResponseMessage> handleNotFoundTravelKeywordException() {
+        return getResponseEntity(ApiResponseCode.TRAVEL_KEYWORD_NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidMailAuthorizationCodeException.class)
+    public ResponseEntity<ApiResponseMessage> handleInvalidMailAuthorizationCodeException() {
+        return getResponseEntity(ApiResponseCode.USER_EMAIL_SENDING_SUCCESS);
+    }
+
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiResponseMessage> handleInvalidTokenException() {
+    public ResponseEntity<ApiResponseMessage> handleUserNotFoundException() {
         return getResponseEntity(ApiResponseCode.USER_NOT_FOUND);
     }
 }
