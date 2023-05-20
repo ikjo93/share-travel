@@ -125,7 +125,7 @@ function beforeEnter(to, from, next) {
     if (store.getters['hasNecessaryUserInfo']) {
       next();
     } else {
-      alert('닉네임을 작성해주세요. 😂');
+      alert('서비스를 이용하기 전 필수 정보 작성이 필요합니다. 😂');
       window.location.reload(true);
     }
   } else {
