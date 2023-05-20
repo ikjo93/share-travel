@@ -171,6 +171,7 @@ export default {
       this.$store.commit('LOGIN', token);
       const user = await getUserInfo();
       this.$store.commit('SET_USER', user.data);
+
       if (!this.$store.getters.hasNecessaryUserInfo) {
         this.$refs['my-modal'].show();
         const { data } = await getTravelKeywords();
