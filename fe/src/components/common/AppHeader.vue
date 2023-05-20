@@ -52,6 +52,7 @@ export default {
         alert('로그아웃이 처리되었습니다!');
       } catch (error) {
         window.location.reload(true);
+        return;
       }
 
       if (this.$route.path !== '/') {
