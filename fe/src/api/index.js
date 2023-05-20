@@ -13,11 +13,22 @@ function createWithAuth(url, options) {
 }
 
 export const reissueAccessToken = create(
-  `${process.env.VUE_APP_API_URL}api/token/reissue`,
+  `${process.env.VUE_APP_API_URL}api/tokens`,
   { withCredentials: true },
 );
 
+export const logout = createWithAuth(
+  `${process.env.VUE_APP_API_URL}api/tokens`,
+  {
+    withCredentials: true,
+  },
+);
+
 export const users = createWithAuth(`${process.env.VUE_APP_API_URL}api/users`);
+
+export const commonApiWithAuth = createWithAuth(
+  `${process.env.VUE_APP_API_URL}api`,
+);
 
 export const travelKeywords = create(
   `${process.env.VUE_APP_API_URL}api/travelkeywords`,
