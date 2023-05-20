@@ -19,7 +19,7 @@
           <b-nav-item to="/board">커뮤니티</b-nav-item>
           <template v-if="isLoggedIn">
             <b-nav-item to="/user">마이페이지</b-nav-item>
-            <b-nav-item href="javascript:;" @click="logout"
+            <b-nav-item href="javascript:;" @click="userLogout"
               >로그아웃</b-nav-item
             >
           </template>
@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { deleteCookie } from '@/utils/cookies';
+import { logout } from '@/api/index.js';
 import LoginModal from '@/components/user/LoginModal.vue';
 
 export default {
@@ -44,20 +44,19 @@ export default {
   computed: {
     ...mapGetters(['isLoggedIn']),
   },
-  data() {
-    return {
-      navHeight: 0,
-      isFixed: false,
-    };
-  },
   methods: {
-    logout() {
-      this.$store.commit('LOGOUT');
+    async userLogout() {
+      try {
+        await logout.delete();
+        this.$store.commit('LOGOUT');
+        alert('로그아웃이 처리되었습니다!');
+      } catch (error) {
+        window.location.reload(true);
+      }
+
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
-      deleteCookie('renew');
-      alert('로그아웃이 처리되었습니다!');
     },
   },
 };
