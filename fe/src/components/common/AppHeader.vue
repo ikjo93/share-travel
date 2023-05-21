@@ -1,6 +1,11 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="light" variant="light">
+    <b-navbar
+      toggleable="lg"
+      type="light"
+      variant="light"
+      style="z-index: 1050;"
+    >
       <b-navbar-brand to="/">
         <img src="/logo.png" class="d-inline-block align-top" alt="logo" />
         Share-Travel
