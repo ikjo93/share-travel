@@ -7,6 +7,7 @@ import com.sharetravel.domain.user.exception.InvalidMailAuthorizationCodeExcepti
 import com.sharetravel.domain.user.service.UserService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
+import com.sharetravel.global.auth.jwt.argumentresolver.RefreshTokenId;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -51,8 +52,9 @@ public class UserController {
 
     @DeleteMapping("/api/users")
     public ResponseEntity<ApiResponseMessage> delete(@AuthenticationPrincipal Long userId,
+        @RefreshTokenId String refreshTokenId,
         @RequestParam @Length(min = MAIL_AUTHORIZATION_CODE_LENGTH, max = MAIL_AUTHORIZATION_CODE_LENGTH) Integer code) {
-        userService.deleteUSer(userId, code);
+        userService.deleteUSer(userId, refreshTokenId, code);
         return getResponseEntity(ApiResponseCode.USER_EMAIL_SENDING_SUCCESS);
     }
 
