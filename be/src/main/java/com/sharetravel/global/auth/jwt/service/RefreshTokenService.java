@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class RefreshTokenService extends TokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public String createRefreshToken(String userId) {
         String refreshToken = makeToken(userId, System.currentTimeMillis() + REFRESH_TOKEN_DURATION);
         String refreshTokenId = UUID.randomUUID().toString();
@@ -30,10 +32,11 @@ public class RefreshTokenService extends TokenService {
         return refreshTokenId;
     }
 
+    @Transactional
     public String validateAndGetToken(String refreshTokenId) {
         String refreshToken = refreshTokenRepository.findRefreshTokenById(refreshTokenId)
             .orElseThrow(() -> {
-                throw new InvalidTokenException(); // 리프레쉬 토큰이 존재하지 않는 경우(리프레쉬 토큰이 만료됐거나 유효하지않은 리프레쉬 토큰 아이디로 접근한 경우)
+                throw new InvalidTokenException(); // 리프레쉬 토큰이 리프레쉬 토큰이 만료됐거나 존재하지 않는 경우(유효하지않은 리프레쉬 토큰 아이디로 접근한 경우)
             });
 
         Claims claims = getClaims(refreshToken);
@@ -57,6 +60,7 @@ public class RefreshTokenService extends TokenService {
         refreshTokenRepository.deleteByKey(userId); // 해당 사용자 이름으로 발행된 모든 리프레쉬 토큰 아이디 set 삭제
     }
 
+    @Transactional
     public String renewRefreshToken(String refreshTokenId, String refreshToken) {
         Claims claims = getClaims(refreshToken);
         String userId = claims.getSubject();
@@ -86,5 +90,10 @@ public class RefreshTokenService extends TokenService {
             .setExpiration(new Date(expiration))
             .signWith(SECRET_KEY)
             .compact();
+    }
+
+    @Transactional
+    public void deleteToken(String refreshTokenId) {
+        refreshTokenRepository.deleteByKey(refreshTokenId);
     }
 }
