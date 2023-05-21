@@ -23,6 +23,7 @@ function setInterceptors(instance) {
           store.commit('LOGIN', data.accessToken);
           return instance(response.config);
         } else {
+          store.commit('LOGOUT');
           return Promise.reject(
             new Error(
               '로그인 시간 제한이 만료되었습니다. 다시 로그인해주세요.',
