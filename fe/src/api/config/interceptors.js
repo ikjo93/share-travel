@@ -1,5 +1,5 @@
 import store from '@/store/index.js';
-import { reissueAccessToken } from '@/api/index';
+import { reissueAccessToken } from '@/api/auth';
 
 function setInterceptors(instance) {
   instance.interceptors.request.use(
@@ -14,15 +14,14 @@ function setInterceptors(instance) {
     error => Promise.reject(error.response),
   );
   instance.interceptors.response.use(
-    config => {
+    async response => {
       // 액세스 토큰이 만료된 경우
-      if (config.data.code === 'A03') {
-        const res = requsetRenewAccessToken();
-        const code = res.data.code;
+      if (response.data.code === 'A03') {
+        const { data } = await reissueAccessToken();
         // 액세스 토큰이 재발급된 경우
-        if (code === 'A05') {
-          this.$store.commit('LOGIN');
-          return instance(config);
+        if (data.code === 'A05') {
+          store.commit('LOGIN', data.accessToken);
+          return instance(response.config);
         } else {
           return Promise.reject(
             new Error(
@@ -32,16 +31,11 @@ function setInterceptors(instance) {
         }
       }
 
-      return config;
+      return response;
     },
     error => Promise.reject(error.response),
   );
   return instance;
-}
-
-async function requsetRenewAccessToken() {
-  const response = await reissueAccessToken.post();
-  return response;
 }
 
 export { setInterceptors };
