@@ -80,7 +80,7 @@
           <b-button
             size="lg"
             variant="outline-danger"
-            @click="logout"
+            @click="exit"
             style="margin-left: 5px;"
             >로그아웃</b-button
           >
@@ -94,7 +94,7 @@
 import AppHeader from './components/common/AppHeader.vue';
 import AppFooter from './components/common/AppFooter.vue';
 import { getTravelKeywords } from '@/api/travel.js';
-import { reissueAccessToken, logout } from '@/api/index';
+import { reissueAccessToken, logout } from '@/api/auth';
 import { getUserInfo, validateUserNickName, registerUser } from '@/api/user';
 import { getAccessTokenFromCookie } from '@/utils/cookies';
 
@@ -141,47 +141,42 @@ export default {
   },
   methods: {
     async login() {
+      // OAuth2 로그인 완료 이후 Access Token 추출
+      const token = getAccessTokenFromCookie();
+      // 액세스 토큰이 존재하면
+      if (token) {
+        this.processLogin(token);
+        // 액세스 토큰이 존재하지 않으면
+      } else {
+        // 서버에 리프레쉬 토큰 전송
+        const { data } = await reissueAccessToken(); // TODO : 토큰 탈취 감지시에는 어떻게 대응?
+        // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
+        if (data.code === 'A05') {
+          this.processLogin(data.accessToken);
+        }
+      }
+    },
+    async processLogin(token) {
       try {
-        // OAuth2 로그인 완료 이후 Access Token 추출
-        const token = getAccessTokenFromCookie();
-        // 액세스 토큰이 존재하면
-        if (token) {
-          this.processLogin(token);
-          // 액세스 토큰이 존재하지 않으면
-        } else {
-          // 서버에 리프레쉬 토큰 전송
-          const { data } = await reissueAccessToken.post(); // TODO : 토큰 탈취 감지시에는 어떻게 대응?
+        // 액세스 토큰을 스토어에 저장하고 사용자 정보를 가져옴
+        this.$store.commit('LOGIN', token);
+        const user = await getUserInfo();
+        this.$store.commit('SET_USER', user.data);
 
-          // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
-          if (data.code === 'A05') {
-            try {
-              this.processLogin(data.accessToken);
-            } catch (error) {
-              alert('사용자 정보를 가져오는 과정에서 에러가 발생했습니다.');
-              this.processLogout();
-            }
+        if (!this.$store.getters.hasNecessaryUserInfo) {
+          this.$refs['my-modal'].show();
+          const { data } = await getTravelKeywords();
+          for (let i = 0; i < data.length; i++) {
+            this.travelKeywords.push({
+              id: data[i].id,
+              name: data[i].name,
+              selected: false,
+            });
           }
         }
       } catch (error) {
         this.processLogout();
-      }
-    },
-    async processLogin(token) {
-      // 액세스 토큰을 스토어에 저장하고 사용자 정보를 가져옴
-      this.$store.commit('LOGIN', token);
-      const user = await getUserInfo();
-      this.$store.commit('SET_USER', user.data);
-
-      if (!this.$store.getters.hasNecessaryUserInfo) {
-        this.$refs['my-modal'].show();
-        const { data } = await getTravelKeywords();
-        for (let i = 0; i < data.length; i++) {
-          this.travelKeywords.push({
-            id: data[i].id,
-            name: data[i].name,
-            selected: false,
-          });
-        }
+        alert('로그인을 처리하는 과정에서 에러가 발생했습니다!');
       }
     },
     processLogout() {
@@ -231,23 +226,20 @@ export default {
         this.processLogout();
       }
     },
-    async logout() {
+    async exit() {
       try {
-        await logout.delete();
+        await logout();
         this.$store.commit('LOGOUT');
         alert('로그아웃이 처리되었습니다!');
       } catch (error) {
-        window.location.reload(true);
-        return;
+        this.$store.commit('LOGOUT');
+        alert('로그아웃을 처리하는 과정에서 에러가 발생했습니다.');
       }
 
-      if (this.$route.path !== '/') {
-        this.$router.push('/');
-      }
       this.$refs['my-modal'].hide();
     },
   },
-  async mounted() {
+  mounted() {
     // 새로고침 시에도 리프레쉬 토큰이 존재하는 경우 액세스 토큰을 재발급 받음
     this.login();
   },

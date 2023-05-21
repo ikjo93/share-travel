@@ -192,14 +192,16 @@ export default {
         this.TimeCounter = 0;
         alert('회원 탈퇴가 정상적으로 처리되었습니다.');
         this.$refs['my-modal'].hide();
+        this.$store.commit('LOGOUT');
+        this.$router.push('/');
       } catch (error) {
         clearInterval(this.Timer);
         this.Timer = null;
         this.TimeCounter = 0;
         alert('올바르지 않은 인증 코드입니다.');
         this.$refs['my-modal'].hide();
+        this.loading = false;
       }
-      this.loading = false;
     },
     cancelAuth() {
       clearInterval(this.Timer);

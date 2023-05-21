@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { logout } from '@/api/index.js';
+import { logout } from '@/api/auth';
 import LoginModal from '@/components/user/LoginModal.vue';
 
 export default {
@@ -47,12 +47,12 @@ export default {
   methods: {
     async userLogout() {
       try {
-        await logout.delete();
+        await logout();
         this.$store.commit('LOGOUT');
         alert('로그아웃이 처리되었습니다!');
       } catch (error) {
-        window.location.reload(true);
-        return;
+        this.$store.commit('LOGOUT');
+        alert('로그아웃을 처리하는 과정에서 에러가 발생했습니다.');
       }
 
       if (this.$route.path !== '/') {

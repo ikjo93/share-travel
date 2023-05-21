@@ -12,23 +12,17 @@ function createWithAuth(url, options) {
   return instance;
 }
 
-export const reissueAccessToken = create(
-  `${process.env.VUE_APP_API_URL}api/tokens`,
+// user.js 에서 회원 탈퇴 처리 시 사용
+export const commonApiWithAuth = createWithAuth(
+  `${process.env.VUE_APP_API_URL}api`,
   { withCredentials: true },
 );
 
-export const logout = createWithAuth(
-  `${process.env.VUE_APP_API_URL}api/tokens`,
-  {
-    withCredentials: true,
-  },
-);
+export const auth = create(`${process.env.VUE_APP_API_URL}api/tokens`, {
+  withCredentials: true,
+});
 
 export const users = createWithAuth(`${process.env.VUE_APP_API_URL}api/users`);
-
-export const commonApiWithAuth = createWithAuth(
-  `${process.env.VUE_APP_API_URL}api`,
-);
 
 export const travelKeywords = create(
   `${process.env.VUE_APP_API_URL}api/travelkeywords`,
