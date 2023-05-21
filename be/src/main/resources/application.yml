@@ -71,11 +71,4 @@ logging:
       springframework:
         security: INFO
 
-server:
-  ssl:
-    enabled: true
-    key-store: keystore.p12
-    key-store-password: ssafy123
-    key-store-type: PKCS12
-    key-alias: bns-ssl
-  port: 8080
+spring.profiles.include: ssl

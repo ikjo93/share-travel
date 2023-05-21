@@ -1,5 +1,4 @@
-### OAuth ###
-application-oauth.yml
+application-ssl.yml
 
 HELP.md
 .gradle

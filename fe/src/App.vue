@@ -140,22 +140,6 @@ export default {
     },
   },
   methods: {
-    async login() {
-      // OAuth2 로그인 완료 이후 Access Token 추출
-      const token = getAccessTokenFromCookie();
-      // 액세스 토큰이 존재하면
-      if (token) {
-        this.processLogin(token);
-        // 액세스 토큰이 존재하지 않으면
-      } else {
-        // 서버에 리프레쉬 토큰 전송
-        const { data } = await reissueAccessToken(); // TODO : 토큰 탈취 감지시에는 어떻게 대응?
-        // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
-        if (data.code === 'A05') {
-          this.processLogin(data.accessToken);
-        }
-      }
-    },
     async processLogin(token) {
       try {
         // 액세스 토큰을 스토어에 저장하고 사용자 정보를 가져옴
@@ -239,9 +223,22 @@ export default {
       this.$refs['my-modal'].hide();
     },
   },
-  mounted() {
+  async mounted() {
     // 새로고침 시에도 리프레쉬 토큰이 존재하는 경우 액세스 토큰을 재발급 받음
-    this.login();
+    // OAuth2 로그인 완료 이후 Access Token 추출
+    const token = getAccessTokenFromCookie();
+    // 액세스 토큰이 존재하면
+    if (token) {
+      this.processLogin(token);
+      // 액세스 토큰이 존재하지 않으면
+    } else {
+      // 서버에 리프레쉬 토큰 전송
+      const { data } = await reissueAccessToken(); // TODO : 토큰 탈취 감지시에는 어떻게 대응?
+      // 리프레쉬 토큰을 통해 성공적으로 액세스 토큰을 재발급 받은 경우
+      if (data.code === 'A05') {
+        this.processLogin(data.accessToken);
+      }
+    }
   },
 };
 </script>
