@@ -27,11 +27,13 @@ public class UserTravelKeyword extends BaseTimeEntity {
     private TravelKeyword travelKeyword;
 
     private UserTravelKeyword(User user, TravelKeyword travelKeyword) {
+        user.addUserTravelKeyword(this);
         this.user = user;
+        travelKeyword.addUserTravelKeyword(this);
         this.travelKeyword = travelKeyword;
     }
 
-    public static UserTravelKeyword from(User user, TravelKeyword travelKeyword) {
+    public static UserTravelKeyword createUserTravelKeyword(User user, TravelKeyword travelKeyword) {
         return new UserTravelKeyword(user, travelKeyword);
     }
 

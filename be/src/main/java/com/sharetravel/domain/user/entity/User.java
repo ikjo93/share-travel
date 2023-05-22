@@ -73,14 +73,19 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public User registerNickNameAndTravelKeywords(String nickName, List<UserTravelKeyword> travelKeywords) {
-        this.nickName = nickName;
-        for (UserTravelKeyword travelKeyword : travelKeywords) {
-            this.userTravelKeywords.add(travelKeyword);
-            travelKeyword.setUser(this);
+    public void clearUserTravelKeyword() {
+        for (UserTravelKeyword userTravelKeyword : userTravelKeywords) {
+            userTravelKeyword.setUser(null);
         }
+        userTravelKeywords.clear();
+    }
 
-        return this;
+    public void addUserTravelKeyword(UserTravelKeyword userTravelKeyword) {
+        userTravelKeywords.add(userTravelKeyword);
+    }
+
+    public void updateNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public List<TravelKeywordResponseDto> getTravelKeywords() {

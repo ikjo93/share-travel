@@ -42,7 +42,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
-        return UserResponseDto.from(getUserById(id));
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            throw new IllegalStateException("식별 번호가 " + id + "에 해당되는 사용자가 없습니다.");
+        });
+        return UserResponseDto.from(user);
     }
 
     @Transactional(readOnly = true)
@@ -58,12 +61,16 @@ public class UserService {
     public UserResponseDto register(Long userId, UserInfoRequestDto userInfo) {
         User user = getUserById(userId);
 
-        user.registerNickNameAndTravelKeywords(userInfo.getNickName(), getUserTravelKeywords(user, userInfo.getTravelKeywords()));
+        user.clearUserTravelKeyword();
+
+        List<UserTravelKeyword> userTravelKeywords = createUserTravelKeywords(user, userInfo.getTravelKeywords());
+        userTravelKeywordRepository.saveAll(userTravelKeywords);
+        user.updateNickName(userInfo.getNickName());
 
         return UserResponseDto.from(user);
     }
 
-    private List<UserTravelKeyword> getUserTravelKeywords(User user, List<Long> travelKeywordIds) {
+    private List<UserTravelKeyword> createUserTravelKeywords(User user, List<Long> travelKeywordIds) {
         List<TravelKeyword> travelKeywords = travelKeywordRepository.findInIds(travelKeywordIds);
         if (travelKeywordIds.size() != travelKeywords.size()) {
             throw new NotFoundTravelKeywordException("존재하지 않는 여행지 키워드입니다.");
@@ -71,10 +78,8 @@ public class UserService {
 
         List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
         for (TravelKeyword travelKeyword : travelKeywords) {
-            userTravelKeywords.add(UserTravelKeyword.from(user, travelKeyword));
+            userTravelKeywords.add(UserTravelKeyword.createUserTravelKeyword(user, travelKeyword));
         }
-
-        userTravelKeywordRepository.saveAll(userTravelKeywords);
 
         return userTravelKeywords;
     }
