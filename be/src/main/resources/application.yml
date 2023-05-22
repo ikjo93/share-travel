@@ -10,7 +10,7 @@ spring:
         show_sql: true # 하이버네이트가 DB에 날리는 모든 쿼리(DDL, DML)를 콘솔창에 보여줌
         format_sql: true # SQL 예쁘게 보기
     hibernate:
-      ddl-auto: create # none으로 돌려주기
+      ddl-auto: none
   data:
     redis:
       host: ${REDIS_HOST}
