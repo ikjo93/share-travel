@@ -2,7 +2,13 @@
   <div>
     <TravelSearchBar></TravelSearchBar>
     <div id="map"></div>
-    <b-modal ref="my-modal" hide-footer hide-header>
+    <b-modal
+      ref="my-modal"
+      hide-footer
+      hide-header
+      no-close-on-esc
+      no-close-on-backdrop
+    >
       <b-jumbotron
         lead="나만의 여행지 등록하기 💁‍♂️"
         bg-variant="white"
@@ -62,13 +68,46 @@
             </button>
           </div>
         </b-form-group>
+        <b-form-group
+          id="fieldset-1"
+          label="해당 여행지 관련 최소 1개 최대 3개의 사진을 등록해주세요. 🎞 (jpg, png 파일 및 최대 10MB)"
+          label-for="input-1"
+          valid-feedback="확인되었습니다. 🎉"
+          :invalid-feedback="invalidTravelPictureFeedback"
+          :state="travelPictureState"
+          accept=".jpg, .png"
+        >
+          <b-form-file
+            multiple
+            v-model="userInputTravelPictures"
+            :state="travelPictureState"
+            placeholder="사진을 이곳에 등록해주세요. 💁‍♂️"
+            drop-placeholder="이곳에 드래그하세요. 💁‍♂️"
+          ></b-form-file>
+        </b-form-group>
         <div class="button-container">
           <b-button
-            :disabled="!(travelNameState && travelKeywordState)"
+            :disabled="
+              !(
+                travelNameState &&
+                travelKeywordState &&
+                travelDescriptionState &&
+                travelPictureState
+              )
+            "
             size="lg"
             :class="{
-              'custom-button': travelNameState && travelKeywordState,
-              disabled: !(travelNameState && travelKeywordState),
+              'custom-button':
+                travelNameState &&
+                travelKeywordState &&
+                travelDescriptionState &&
+                travelPictureState,
+              disabled: !(
+                travelNameState &&
+                travelKeywordState &&
+                travelDescriptionState &&
+                travelPictureState
+              ),
             }"
             @click="submit"
             >등록하기</b-button
@@ -103,6 +142,9 @@ export default {
       userInputTravelName: '',
       userInputTravelDescription: '',
       userInputTravelKeywords: [],
+      userInputTravelPictures: [],
+      longitude: 0,
+      latitude: 0,
     };
   },
   computed: {
@@ -140,6 +182,19 @@ export default {
         return '';
       } else {
         return '최소 1자, 최대 500 자 이내로 작성해주세요.';
+      }
+    },
+    travelPictureState() {
+      return (
+        this.userInputTravelPictures.length >= 1 &&
+        this.userInputTravelPictures.length <= 3
+      );
+    },
+    invalidTravelPictureFeedback() {
+      if (this.travelPictureState) {
+        return '';
+      } else {
+        return '최소 1개, 최대 3개의 사진 파일을 등록해주세요.';
       }
     },
   },
@@ -214,6 +269,8 @@ export default {
         function(mouseEvent) {
           // 클릭한 위도, 경도 정보를 가져옴
           let latlng = mouseEvent.latLng;
+          this.longitude = latlng.La;
+          this.latitude = latlng.Ma;
 
           let marker = new kakao.maps.Marker({
             map: map,
@@ -237,9 +294,7 @@ export default {
         }.bind(this),
       );
     },
-    moveRegisterForm() {
-      this.$refs['my-modal'].show();
-
+    async moveRegisterForm() {
       // 기존 인포윈도우 삭제
       this.infoWin.setMap(null);
       this.infoWin = null;
@@ -248,8 +303,20 @@ export default {
       for (let i = 0; i < this.markers.length; i++) {
         this.markers[i].setMap(null);
       }
+
+      if (!this.$store.getters.isLoggedIn) {
+        alert('로그인이 필요한 작업입니다.');
+        return;
+      }
+      this.$refs['my-modal'].show();
     },
     close() {
+      this.userInputTravelName = '';
+      this.userInputTravelDescription = '';
+      this.userInputTravelKeywords = [];
+      this.userInputTravelPictures = [];
+      this.longitude = 0;
+      this.latitude = 0;
       this.$refs['my-modal'].hide();
     },
     selectTravelKeyword(keyword) {
@@ -268,9 +335,12 @@ export default {
     },
     async submit() {
       const body = {
-        travelName: this.userInputTravelName,
-        travelDescription: this.userInputTravelDescription,
-        travelKeywords: this.userInputTravelKeywords[0],
+        name: this.userInputTravelName,
+        description: this.userInputTravelDescription,
+        travelKeywordId: this.userInputTravelKeywords[0],
+        files: this.userInputTravelPictures,
+        longitude: this.longitude,
+        latitude: this.latitude,
       };
       try {
         await registerTravel(body);
