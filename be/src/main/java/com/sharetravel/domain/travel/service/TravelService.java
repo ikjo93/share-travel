@@ -36,7 +36,6 @@ public class TravelService {
                 .travelKeyword(travelKeyword)
                 .writer(user)
                 .location(travelInfo.getPoint())
-                .images(images)
                 .build();
 
         for (Image image : images) {
