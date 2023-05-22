@@ -29,13 +29,13 @@
           label="등록하실 여행지에 대해 설명해주세요. 📢"
           label-for="input-1"
           valid-feedback="확인되었습니다. 🎉"
-          :invalid-feedback="invalidTravelDescFeedback"
-          :state="travelDescState"
+          :invalid-feedback="invalidTravelDescriptionFeedback"
+          :state="travelDescriptionState"
         >
           <b-form-textarea
             id="textarea"
-            v-model="userInputTravelDesc"
-            :state="travelDescState"
+            v-model="userInputTravelDescription"
+            :state="travelDescriptionState"
             placeholder="여행지에 대한 설명을 자유롭게 작성해주세요. 😁"
             rows="6"
             class="form-input"
@@ -101,7 +101,7 @@ export default {
       infoWin: null,
       travelKeywords: [],
       userInputTravelName: '',
-      userInputTravelDesc: '',
+      userInputTravelDescription: '',
       userInputTravelKeywords: [],
     };
   },
@@ -129,13 +129,13 @@ export default {
         return '하나의 여행지 키워드를 선택해주세요. 🙌';
       }
     },
-    travelDescState() {
+    travelDescriptionState() {
       return (
-        this.userInputTravelDesc.length >= 1 &&
-        this.userInputTravelDesc.length <= 500
+        this.userInputTravelDescription.length >= 1 &&
+        this.userInputTravelDescription.length <= 500
       );
     },
-    invalidTravelDescFeedback() {
+    invalidTravelDescriptionFeedback() {
       if (this.travelNameState) {
         return '';
       } else {
@@ -269,7 +269,7 @@ export default {
     async submit() {
       const body = {
         travelName: this.userInputTravelName,
-        travelDesc: this.userInputTravelDesc,
+        travelDescription: this.userInputTravelDescription,
         travelKeywords: this.userInputTravelKeywords[0],
       };
       try {
