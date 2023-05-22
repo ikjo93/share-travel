@@ -96,7 +96,7 @@ import AppFooter from './components/common/AppFooter.vue';
 import { getTravelKeywords } from '@/api/travel.js';
 import { reissueAccessToken, logout } from '@/api/auth';
 import { getUserInfo, validateUserNickName, registerUser } from '@/api/user';
-import { getAccessTokenFromCookie } from '@/utils/cookies';
+import { getAccessTokenFromCookie, deleteCookie } from '@/utils/cookies';
 
 export default {
   components: {
@@ -168,6 +168,8 @@ export default {
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
+
+      this.$refs['my-modal'].hide();
     },
     // 사용자 필수 정보 입력 모달창 관련 메서드
     selectTravelKeyword(keyword) {
@@ -229,6 +231,7 @@ export default {
     const token = getAccessTokenFromCookie();
     // 액세스 토큰이 존재하면
     if (token) {
+      deleteCookie('auth');
       this.processLogin(token);
       // 액세스 토큰이 존재하지 않으면
     } else {
