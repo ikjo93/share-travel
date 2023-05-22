@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Table(name = "'board_category'")
+@Table(name = "`board_category`")
 @Entity
 public class BoardCategory {
 

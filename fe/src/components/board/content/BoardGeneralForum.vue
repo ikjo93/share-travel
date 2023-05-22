@@ -55,12 +55,14 @@
   </div>
 </template>
 <script>
+import { getListByCategory } from '@/api/board.js';
+
 export default {
   data() {
     return {
       perPage: 10,
       currentPage: 1,
-      fields: ['title', 'author', 'writeDate', 'boardType'],
+      fields: ['title', 'author', 'boardType', 'writeDate'],
       items: [
         {
           title: '임시제목',
@@ -225,7 +227,11 @@ export default {
         },
       ],
       isHovering: false,
+      categoryId: 1,
     };
+  },
+  async created() {
+    this.items = await getListByCategory(this.categoryId);
   },
   methods: {
     moveDetail() {

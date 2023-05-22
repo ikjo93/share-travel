@@ -33,7 +33,9 @@ public class BoardController {
 	}
 
 	// 카테고리 별 게시글 가져오기
-	public List<BoardDto> findAllByCategory(Long categoryId) {
+	@GetMapping("/api/boards/{categoryId}")
+	public List<BoardDto> findAllByCategory(@PathVariable("categoryId") Long categoryId) {
+		System.out.println("여기오나요 ?");
 		return boardService.findAllByCategory(categoryId);
 	}
 

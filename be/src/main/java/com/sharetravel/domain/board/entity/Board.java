@@ -1,9 +1,7 @@
 package com.sharetravel.domain.board.entity;
 
-import java.time.LocalDateTime;
-
 import com.sharetravel.domain.boardCategory.entity.BoardCategory;
-import com.sharetravel.global.BaseTimeEntity;
+import com.sharetravel.global.domain.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
