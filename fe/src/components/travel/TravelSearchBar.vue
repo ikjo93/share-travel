@@ -4,19 +4,24 @@
       v-b-toggle.sidebar-1
       class="position-fixed top-0 left-0 mt-3 ml-3"
       style="z-index: 1050;"
-      variant="primary"
+      :variant="searchBarFlag"
       @click="toggle"
     >
       <div v-if="searchBar">여행지 검색창 닫기</div>
       <div v-else>여행지 검색창 열기</div>
     </b-button>
-    <b-sidebar id="sidebar-1" shadow no-header width="25%">
-      <div class="px-3 py-2" style="margin-top: 23%;">
+    <b-sidebar
+      id="sidebar-1"
+      shadow
+      title="원하시는 여행지를 검색해보세요! 📢"
+      width="25%"
+    >
+      <div class="px-3 py-2" style="margin-top: 15%;">
         <b-nav-form>
           <b-form-input
             size="lg"
             class="mr-sm-2"
-            placeholder="검색하실 여행지명을 작성해주세요."
+            placeholder="현재 위치에서 찾으실 여행지를 작성해주세요"
           ></b-form-input>
           <b-button size="lg" class="my-2 my-sm-0" type="submit">검색</b-button>
         </b-nav-form>
@@ -38,6 +43,11 @@ export default {
     return {
       searchBar: false,
     };
+  },
+  computed: {
+    searchBarFlag() {
+      return this.searchBar ? 'danger' : 'primary';
+    },
   },
   methods: {
     toggle() {
