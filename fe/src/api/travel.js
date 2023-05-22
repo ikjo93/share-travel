@@ -1,7 +1,11 @@
-import { travelKeywords } from '@/api/index';
+import { travelKeywords, travels } from '@/api/index';
 
 function getTravelKeywords() {
   return travelKeywords.get();
 }
 
-export { getTravelKeywords };
+function registerTravel(data) {
+  return travels.post('', data);
+}
+
+export { getTravelKeywords, registerTravel };
