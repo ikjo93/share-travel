@@ -51,7 +51,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 500, name = "picture")
     private String picture;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

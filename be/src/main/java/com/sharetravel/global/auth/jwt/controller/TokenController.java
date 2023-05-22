@@ -14,6 +14,7 @@ import com.sharetravel.global.auth.jwt.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class TokenController {
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/api/token/reissue")
+    @PostMapping("/api/tokens")
     public ResponseEntity<AccessTokenResponse> reissue(@RefreshTokenId String refreshTokenId, HttpServletResponse response) {
         String refreshToken = refreshTokenService.validateAndGetToken(refreshTokenId);
 
@@ -48,6 +49,12 @@ public class TokenController {
                         apiResponseCode.getCode(),
                         apiResponseCode.getMessage())
                 );
+    }
+
+    @DeleteMapping("/api/tokens")
+    public ResponseEntity<ApiResponseMessage> logout(@RefreshTokenId String refreshTokenId) {
+        refreshTokenService.deleteToken(refreshTokenId);
+        return getResponseEntity(ApiResponseCode.USER_LOGOUT_SUCCESS);
     }
 
     @ExceptionHandler(InvalidTokenException.class)

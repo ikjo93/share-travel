@@ -42,18 +42,17 @@ public class TokenUtils {
         throw new InvalidTokenException();
     }
 
-    // TODO : https 적용 시 Secure 설정 필요
     public static Cookie getAccessTokenCookie(String accessToken) {
         Cookie accessTokenCookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setHttpOnly(false);
+        accessTokenCookie.setSecure(true);
         accessTokenCookie.setAttribute("SameSite", "Strict");
         accessTokenCookie.setMaxAge(ACCESS_TOKEN_COOKIE_DURATION);
 
         return accessTokenCookie;
     }
 
-    // TODO : https 적용 시 Secure 설정 필요
     public static Cookie getRefreshTokenIdCookie(String refreshTokenId) {
         Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_ID_COOKIE_NAME, refreshTokenId);
         refreshTokenCookie.setPath("/");

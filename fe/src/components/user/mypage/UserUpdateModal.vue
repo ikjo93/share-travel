@@ -83,7 +83,6 @@
 <script>
 import { getTravelKeywords } from '@/api/travel.js';
 import { validateUserNickName, registerUser } from '@/api/user.js';
-import { deleteCookie } from '@/utils/cookies';
 
 export default {
   data() {
@@ -123,7 +122,16 @@ export default {
     },
   },
   methods: {
-    openUpdateModal() {
+    async openUpdateModal() {
+      const { data } = await getTravelKeywords();
+      for (let i = 0; i < data.length; i++) {
+        this.travelKeywords.push({
+          id: data[i].id,
+          name: data[i].name,
+          selected: false,
+        });
+      }
+
       this.$refs['my-modal'].show();
     },
     close() {
@@ -168,23 +176,6 @@ export default {
         alert('회원 정보를 수정하는 과정에서 에러가 발생했습니다. 😢');
       }
     },
-    processLogout() {
-      this.$store.commit('LOGOUT');
-      if (this.$route.path !== '/') {
-        this.$router.push('/');
-      }
-      deleteCookie('renew');
-    },
-  },
-  async created() {
-    const { data } = await getTravelKeywords();
-    for (let i = 0; i < data.length; i++) {
-      this.travelKeywords.push({
-        id: data[i].id,
-        name: data[i].name,
-        selected: false,
-      });
-    }
   },
 };
 </script>
