@@ -2,15 +2,18 @@ package com.sharetravel.domain.travel.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.geo.Point;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class TravelRequestDto {
 
@@ -23,15 +26,16 @@ public class TravelRequestDto {
     @NotNull
     private Long travelKeywordId;
 
-    @Size(max = 3)
-    private List<MultipartFile> images;
+    @Size(min = 1, max = 3)
+    private List<MultipartFile> files;
 
     @NotNull
-    private Double latitude; // 위도
+    private Double longitude; // 위도 127...
 
     @NotNull
-    private Double longitude; // 경도
+    private Double latitude; // 경도 37...
 
+    // the x field represents the longitude, and the y field represents the latitude.
     public Point getPoint() {
         return new Point(longitude, latitude);
     }

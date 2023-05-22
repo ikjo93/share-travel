@@ -33,7 +33,7 @@ public class Image extends BaseTimeEntity {
         this.url = url;
     }
 
-    public static Image getImage(String url) {
+    public static Image createImage(String url) {
         return new Image(url);
     }
 }

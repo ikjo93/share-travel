@@ -29,11 +29,9 @@ public class ImageService {
     private final AmazonS3 amazonS3;
 
     public List<Image> uploadFiles(List<MultipartFile> multipartFiles) {
-        List<Image> fileUrls = new ArrayList<>();
-
+        List<Image> images = new ArrayList<>();
         multipartFiles.forEach(file -> {
             String savedFileName = createSavedFileName(file.getOriginalFilename());
-
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
@@ -42,14 +40,15 @@ public class ImageService {
                 amazonS3.putObject(new PutObjectRequest(bucket, savedFileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
 
-                fileUrls.add(Image.getImage(amazonS3.getUrl(bucket, savedFileName).toString()));
+                Image image = Image.createImage(amazonS3.getUrl(bucket, savedFileName).toString());
+                images.add(image);
 
             } catch (IOException e) {
                 throw new ImageUploadException("파일 업로드에 실패했습니다.");
             }
         });
 
-        return fileUrls;
+        return images;
     }
 
     private String createSavedFileName(String originalFilename) {

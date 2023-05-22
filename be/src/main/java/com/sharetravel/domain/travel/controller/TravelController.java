@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,7 +24,9 @@ public class TravelController {
     private final TravelService travelService;
 
     @PostMapping("/api/travels")
-    public TravelResponseDto save(@AuthenticationPrincipal Long userId, @Valid @RequestPart TravelRequestDto travelInfo) {
+    public TravelResponseDto save(
+        @AuthenticationPrincipal Long userId,
+        @Valid @ModelAttribute TravelRequestDto travelInfo) {
         return travelService.save(userId, travelInfo);
     }
 

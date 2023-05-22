@@ -52,14 +52,12 @@ public class Travel extends BaseTimeEntity {
 
     @Builder
     public Travel(String name, String description, Point location, User writer,
-                  TravelKeyword travelKeyword, List<TravelReview> reviews, List<Image> images) {
+                  TravelKeyword travelKeyword) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.writer = writer;
         this.travelKeyword = travelKeyword;
-        this.reviews = reviews;
-        this.images = images;
     }
 
     public void addImage(Image image) {
