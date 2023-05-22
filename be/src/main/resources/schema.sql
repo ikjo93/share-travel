@@ -54,6 +54,8 @@ create table `travel`
     description varchar(500) not null,
     location varbinary(255) not null,
     name varchar(30) not null,
+    created_date           TIMESTAMP,
+    modified_date          TIMESTAMP,
     primary key (travel_id),
     foreign key (travel_travel_keyword_id) references `travel_keyword` (travel_keyword_id),
     foreign key (travel_user_id) references `user` (user_id)
@@ -66,6 +68,8 @@ create table `travel_review`
     travel_review_user_id bigint not null,
     comment varchar(300) not null,
     score integer not null,
+    created_date           TIMESTAMP,
+    modified_date          TIMESTAMP,
     primary key (travel_review_id),
     foreign key (travel_review_travel_id) references `travel` (travel_id),
     foreign key (travel_review_user_id) references `user` (user_id)
@@ -76,6 +80,8 @@ create table `image`
     image_id bigint not null auto_increment,
     image_travel_id bigint,
     url varchar(500) not null,
+    created_date           TIMESTAMP,
+    modified_date          TIMESTAMP,
     primary key (image_id),
     foreign key (image_travel_id) references `travel` (travel_id)
 );
