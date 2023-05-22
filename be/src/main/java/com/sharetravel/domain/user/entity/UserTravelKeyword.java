@@ -34,4 +34,8 @@ public class UserTravelKeyword extends BaseTimeEntity {
     public static UserTravelKeyword from(User user, TravelKeyword travelKeyword) {
         return new UserTravelKeyword(user, travelKeyword);
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

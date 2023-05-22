@@ -2,6 +2,7 @@ package com.sharetravel.domain.travelreview.entity;
 
 import com.sharetravel.domain.travel.entity.Travel;
 import com.sharetravel.domain.user.entity.User;
+import com.sharetravel.global.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "`travel_review`")
 @Entity
-public class TravelReview {
+public class TravelReview extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
