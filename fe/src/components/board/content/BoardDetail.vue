@@ -83,6 +83,7 @@ export default {
   },
   async created() {
     this.board.boardId = this.$route.query.boardId;
+    console.log(this.board.boardId);
     this.board = await getDetail(this.$route.query.boardId);
   },
   methods: {
@@ -90,13 +91,17 @@ export default {
       this.$router.push({ name: 'boardgeneral' });
     },
     boardModify() {
-      this.$router.push({
-        name: 'boardmodify',
-        query: { boardId: this.board.boardId },
-      });
+      if (confirm('수정하시겠습니까 ?')) {
+        this.$router.push({
+          name: 'boardmodify',
+          query: { boardId: this.board.boardId },
+        });
+      }
     },
     boardDelete() {
-      deleteBoard(this.board.boardId);
+      if (confirm('정말 삭제하시겠습니까 ?')) {
+        deleteBoard(this.board.boardId).then(alert('삭제가 완료되었습니다'));
+      }
     },
   },
 };

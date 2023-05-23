@@ -105,11 +105,6 @@ export default new Router({
           component: () => import('@/components/board/content/BoardDetail.vue'),
         },
         {
-          path: 'qna',
-          name: 'boardqna',
-          component: () => import('@/components/board/content/BoardQna.vue'),
-        },
-        {
           path: 'write',
           name: 'boardwrite',
           component: () => import('@/components/board/BoardWrite.vue'),

@@ -29,12 +29,6 @@
       >
         꿀팁 게시판
       </button>
-      <button
-        :class="['radious', { clickedBtn: isClicked[4] }]"
-        @click="moveQna(4)"
-      >
-        QnA
-      </button>
     </b-jumbotron>
   </div>
 </template>
@@ -42,7 +36,7 @@
 export default {
   data: function() {
     return {
-      isClicked: [true, false, false, false, false],
+      isClicked: [true, false, false, false],
     };
   },
   created() {
@@ -70,11 +64,6 @@ export default {
       this.isClicked.fill(false);
       this.$set(this.isClicked, idx, true);
       this.$router.push({ name: 'boardtip' });
-    },
-    moveQna(idx) {
-      this.isClicked.fill(false);
-      this.$set(this.isClicked, idx, true);
-      this.$router.push({ name: 'boardqna' });
     },
   },
 };

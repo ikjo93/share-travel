@@ -34,7 +34,9 @@ public class BoardCategory {
 	private List<Board> boards = new ArrayList<>();
 
 	@Builder
-	public BoardCategory(String categoryName) {
+	public BoardCategory(Long categoryId, String categoryName) {
+		this.id = categoryId;
 		this.categoryName = categoryName;
 	}
+
 }

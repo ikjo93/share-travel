@@ -14,12 +14,13 @@ function registBoard(board) {
   return boardsWithAuth.post(``, board);
 }
 
-function updatBoard(boardId, data) {
-  return boards.put(`/${boardId}`, data);
+function updateBoard(boardId, data) {
+  return boardsWithAuth.put(`/${boardId}`, data);
 }
 
 function deleteBoard(boardId) {
-  return boards.delete(`/${boardId}`);
+  console.log('악시오스 안 ', boardId);
+  return boardsWithAuth.delete(`/${boardId}`);
 }
 
-export { getListByCategory, getDetail, registBoard, updatBoard, deleteBoard };
+export { getListByCategory, getDetail, registBoard, updateBoard, deleteBoard };

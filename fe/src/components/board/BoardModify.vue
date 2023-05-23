@@ -23,13 +23,13 @@
       ></b-form-textarea>
     </div>
     <div class="board-write-btn">
-      <button class="radious" @click="redirectBoard()">취소</button>
-      <button class="radious" @click="regist()">수정완료</button>
+      <button class="radious" @click="cancle()">취소</button>
+      <button class="radious" @click="modify()">수정완료</button>
     </div>
   </div>
 </template>
 <script>
-import { getDetail, updatBoard } from '@/api/board.js';
+import { getDetail, updateBoard } from '@/api/board.js';
 
 export default {
   data() {
@@ -37,7 +37,7 @@ export default {
       board: {
         categoryId: '',
         nickName: '',
-        title: null,
+        title: '',
         subTitle: null,
         content: null,
       },
@@ -49,7 +49,7 @@ export default {
     this.board = await getDetail(this.$route.query.boardId);
   },
   methods: {
-    regist() {
+    modify() {
       let err = true;
       let msg = '';
       !this.board.title &&
@@ -68,14 +68,15 @@ export default {
         this.$refs.textarea.focus());
 
       if (!err) alert(msg);
-      else
-        updatBoard(this.board.boardId, {
+      else if (confirm('수정을 완료하시겠습니까 ?')) {
+        updateBoard(this.board.boardId, {
           title: this.board.title,
           subTitle: this.board.subTitle,
           content: this.board.content,
         }).then(this.$router.push({ name: 'boardgeneral' }));
+      }
     },
-    redirectBoard() {
+    cancle() {
       if (confirm('취소하면 수정한 모든 내용이 적용되지 않습니다 !')) {
         if (this.categoryId == 1) {
           this.$router.push({ name: 'boardgeneral' });
