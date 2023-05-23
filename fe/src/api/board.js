@@ -3,7 +3,7 @@ import { boards, boardsWithAuth } from '@/api/index';
 // function getListByCondition() {}
 
 function getListByCategory(categoryId) {
-  return boards.get(`/${categoryId}`); //파라미터 주소 확인해서 수정
+  return boards.get(`/category/${categoryId}`);
 }
 
 function getDetail(boardId) {

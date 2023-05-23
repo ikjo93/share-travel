@@ -33,32 +33,31 @@ public class BoardController {
 	}
 
 	// 카테고리 별 게시글 가져오기
-	@GetMapping("/api/boards/{categoryId}")
+	@GetMapping("/api/boards/category/{categoryId}")
 	public List<BoardDto> findAllByCategory(@PathVariable("categoryId") Long categoryId) {
-		System.out.println("여기오나요 ?");
 		return boardService.findAllByCategory(categoryId);
 	}
 
 	// 게시글(1개) 상세보기
-	@GetMapping("/api/board/{boardId}")
+	@GetMapping("/api/boards/{boardId}")
 	public BoardDto find(@PathVariable("boardId") Long boardId) {
 		return boardService.findById(boardId);
 	}
 
 	// 새로운 게시글 작성
-	@PostMapping("/api/board")
+	@PostMapping("/api/boards")
 	public Board save(@RequestBody BoardDto boardDto) {
 		return boardService.save(boardDto);
 	}
 
 	// 기존 게시글 수정
-	@PutMapping("/api/board/{boardId}")
+	@PutMapping("/api/boards/{boardId}")
 	public Board update(@PathVariable("boardId") Long boardId, String title, String subTitle, String content) {
 		return boardService.update(boardId,title,subTitle,content);
 	}
 
 	// 게시글 삭제
-	@DeleteMapping("/api/board/{boardId}")
+	@DeleteMapping("/api/boards/{boardId}")
 	public ResponseEntity<ApiResponseMessage> delete(@PathVariable("boardId") Long boardId) {
 		boardService.delete(boardId);
 		ApiResponseCode apiResponseCode = ApiResponseCode.BOARD_DELETE_SUCCESS;
