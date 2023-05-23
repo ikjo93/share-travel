@@ -1,5 +1,6 @@
 package com.sharetravel.domain.user.entity;
 
+import com.sharetravel.domain.board.entity.Board;
 import com.sharetravel.domain.travelkeyword.dto.TravelKeywordResponseDto;
 import com.sharetravel.global.domain.BaseTimeEntity;
 import com.sharetravel.global.auth.oauth2.dto.OAuth2Provider;
@@ -50,6 +51,9 @@ public class User extends BaseTimeEntity {
 
     @Column(length = 500, name = "picture")
     private String picture;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
