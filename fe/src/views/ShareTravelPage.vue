@@ -3,7 +3,7 @@
     <TravelSearchBar></TravelSearchBar>
     <div id="map"></div>
     <b-modal
-      ref="my-modal"
+      ref="registerTravelModal"
       hide-footer
       hide-header
       no-close-on-esc
@@ -122,13 +122,41 @@
         </div>
       </b-jumbotron>
     </b-modal>
+    <b-modal ref="detailTravelModal" hide-footer hide-header>
+      <b-jumbotron
+        lead="여행지 상세정보 💁‍♂️"
+        bg-variant="white"
+        style="font-family: 'hanna-pro';"
+      >
+        <b-form-group
+          id="fieldset-1"
+          label="장소 이름 : {{ detailTravelInfo.name }}"
+        >
+        </b-form-group>
+        <h2>여행지 키워드 : {{ detailTravelInfo.travelKeyword }}</h2>
+        <h3>장소 설명</h3>
+        <p>
+          {{ detailTravelInfo.description }}
+        </p>
+        <div class="button-container">
+          <b-button
+            size="lg"
+            variant="outline-danger"
+            @click="closeDetailTravelInfo"
+            style="margin-left: 5px;"
+            >닫기</b-button
+          >
+        </div>
+      </b-jumbotron>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import {
   getTravelKeywords,
-  getTravelInfo,
+  getTravelInfoById,
+  getTravelInfoAroundCoordinate,
   registerTravel,
 } from '@/api/travel.js';
 import TravelSearchBar from '@/components/travel/TravelSearchBar.vue';
@@ -142,6 +170,7 @@ export default {
     return {
       map: null,
       markers: [],
+      travelMarkers: [],
       infoWin: null,
       travelKeywords: [],
       userInputTravelName: '',
@@ -151,6 +180,7 @@ export default {
       longitude: 0,
       latitude: 0,
       travelInfo: [],
+      detailTravelInfo: '',
     };
   },
   computed: {
@@ -229,13 +259,6 @@ export default {
       let map = new kakao.maps.Map(container, options);
       this.map = map;
 
-      // 마커 이미지 생성
-      let markerImage = new kakao.maps.MarkerImage(
-        '/logo.png', // 마커이미지의 주소
-        new kakao.maps.Size(50, 65), // 마커이미지의 크기
-        { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
-      );
-
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옴
         navigator.geolocation.getCurrentPosition(
@@ -274,6 +297,13 @@ export default {
           let latlng = mouseEvent.latLng;
           this.longitude = latlng.La;
           this.latitude = latlng.Ma;
+
+          // 마커 이미지 생성
+          let markerImage = new kakao.maps.MarkerImage(
+            '/search_icon.png', // 마커이미지의 주소
+            new kakao.maps.Size(50, 65), // 마커이미지의 크기
+            { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+          );
 
           let marker = new kakao.maps.Marker({
             map: map,
@@ -321,6 +351,13 @@ export default {
           let latlng = mouseEvent.latLng;
           this.longitude = latlng.La;
           this.latitude = latlng.Ma;
+
+          // 마커 이미지 생성
+          let markerImage = new kakao.maps.MarkerImage(
+            '/logo.png', // 마커이미지의 주소
+            new kakao.maps.Size(50, 65), // 마커이미지의 크기
+            { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+          );
 
           let marker = new kakao.maps.Marker({
             map: map,
@@ -370,7 +407,10 @@ export default {
       // 기존 여행지 데이터 삭제
       this.travelInfo = [];
 
-      const { data } = await getTravelInfo(this.longitude, this.latitude);
+      const { data } = await getTravelInfoAroundCoordinate(
+        this.longitude,
+        this.latitude,
+      );
       console.log('travel info data response...');
 
       // 받은 여행지 정보 좌표 기반 지도에 뿌려주기
@@ -396,14 +436,32 @@ export default {
           image: markerImage,
         });
 
-        this.markers.push(marker);
+        kakao.maps.event.addListener(
+          marker,
+          'click',
+          function() {
+            let travelInfoWindowContent = `<div click="openTravelInfoModal(${info.travelId})" style="width: 250px; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);">
+                                            <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">장소 이름 : ${info.name}</h2>
+                                            <p style="margin-bottom: 15px;">여행지 키워드 : ${info.travelKeyword}</p>
+                                            <img src="${info.url}" style="display: inline-block; padding: 8px 15px; background-color: #337ab7; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s;">
+                                          </div>`;
 
-        // kakao.maps.event.addListener(
-        //   this.map,
-        //   'click',
-        //   function() {}.bind(this),
-        // );
+            let travelInfoWindow = new kakao.maps.InfoWindow({
+              content: travelInfoWindowContent,
+              removable: true,
+            });
+
+            travelInfoWindow.open(this.map, marker);
+          }.bind(this),
+        );
+
+        this.markers.push(marker);
       });
+    },
+    async openTravelInfoModal(travelId) {
+      const { data } = await getTravelInfoById(travelId);
+      this.detailTravelInfo = data;
+      this.$refs['detailTravelModal'].show();
     },
     /* 여행지 등록 모달창 열기 */
     async moveRegisterForm() {
@@ -420,7 +478,7 @@ export default {
         alert('로그인이 필요한 작업입니다.');
         return;
       }
-      this.$refs['my-modal'].show();
+      this.$refs['registerTravelModal'].show();
     },
     /* 여행지 등록 모달창 닫기 */
     close() {
@@ -435,7 +493,11 @@ export default {
       this.userInputTravelPictures = [];
       this.longitude = 0;
       this.latitude = 0;
-      this.$refs['my-modal'].hide();
+      this.$refs['registerTravelModal'].hide();
+    },
+    closeDetailTravelInfo() {
+      this.detailTravelInfo = '';
+      this.$refs['detailTravelModal'].hide();
     },
     /* 여행지 키워드 선택하기(토글) */
     selectTravelKeyword(keyword) {
@@ -466,7 +528,7 @@ export default {
       try {
         await registerTravel(body);
         alert('여행지 등록이 정상적으로 처리되었습니다. 🎉');
-        this.$refs['my-modal'].hide();
+        this.$refs['registerTravelModal'].hide();
       } catch (error) {
         alert('여행지를 등록하는 과정에서 에러가 발생했습니다. 😢');
       }
