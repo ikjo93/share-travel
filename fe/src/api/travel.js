@@ -1,11 +1,30 @@
-import { travelKeywords, commonApi, travelsWithAuth } from '@/api/index';
+import {
+  travelKeywords,
+  commonApi,
+  travelsWithAuth,
+  travels,
+} from '@/api/index';
 
 function getTravelKeywords() {
   return travelKeywords.get();
 }
 
-function getTravelInfo(longitude, latitude) {
+function getTravelInfoById(travelId) {
+  return travels.get(`${travelId}`);
+}
+
+function getTravelInfoAroundCoordinate(longitude, latitude) {
   return commonApi.get(`travels?longitude=${longitude}&latitude=${latitude}`);
+}
+
+function getTravelInfoAroundCoordinateByKeywordId(
+  keywordId,
+  longitude,
+  latitude,
+) {
+  return commonApi.get(
+    `travels?keywordId=${keywordId}&longitude=${longitude}&latitude=${latitude}`,
+  );
 }
 
 function registerTravel(data) {
@@ -28,4 +47,10 @@ function registerTravel(data) {
   });
 }
 
-export { getTravelKeywords, getTravelInfo, registerTravel };
+export {
+  getTravelKeywords,
+  getTravelInfoById,
+  getTravelInfoAroundCoordinate,
+  getTravelInfoAroundCoordinateByKeywordId,
+  registerTravel,
+};
