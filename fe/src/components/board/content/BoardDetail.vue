@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-import { getDetail } from '@/api/board';
+import { getDetail, deleteBoard } from '@/api/board';
 
 export default {
   data() {
@@ -82,8 +82,8 @@ export default {
     };
   },
   async created() {
-    this.board = await getDetail(4);
-    console.log(getDetail(4));
+    this.board.boardId = this.$route.query.boardId;
+    this.board = await getDetail(this.$route.query.boardId);
   },
   methods: {
     moveGeneral() {
@@ -93,7 +93,7 @@ export default {
       console.log('수정버튼');
     },
     boardDelete() {
-      console.log('삭제버튼');
+      deleteBoard(this.board.boardId);
     },
   },
 };

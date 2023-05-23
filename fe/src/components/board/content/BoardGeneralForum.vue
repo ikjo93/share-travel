@@ -46,7 +46,7 @@
         :fields="fields"
         :per-page="perPage"
         :current-page="currentPage"
-        @row-clicked="moveDetail()"
+        @row-clicked="moveDetail"
       >
       </b-table>
       <!-- https://bootstrap-vue.org/docs/components/pagination#component-reference 꾸밀때 참고 -->
@@ -77,9 +77,10 @@ export default {
     return {
       perPage: 10,
       currentPage: 1,
-      fields: ['title', 'author', 'boardType', 'writeDate'],
+      fields: ['boardId', 'title', 'author', 'boardType', 'writeDate'],
       items: [
         {
+          boardId: 4,
           title: '임시제목',
           author: '오승기',
           writeDate: 'yyyy-mm-dd',
@@ -247,15 +248,15 @@ export default {
       searchType: null,
     };
   },
-  // async created() {
-  //   this.items = await getListByCategory(this.categoryId);
-  // },
   created() {
     this.categoryId = this.$store.state.categoryId;
   },
   methods: {
-    moveDetail() {
-      this.$router.push({ name: 'boarddetail' });
+    moveDetail(board) {
+      this.$router.push({
+        name: 'boarddetail',
+        query: { boardId: board.boardId },
+      });
     },
     moveWrite() {
       this.$router.push({ name: 'boardwrite' });

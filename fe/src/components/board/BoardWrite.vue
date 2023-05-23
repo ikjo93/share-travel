@@ -75,7 +75,7 @@ export default {
           title: this.board.title,
           subTitle: this.board.subTitle,
           content: this.board.content,
-        });
+        }).then(this.$router.push({ name: 'boardgeneral' }));
     },
     redirectBoard() {
       if (confirm('취소하면 작성한 모든 내용이 사라집니다 !')) {
