@@ -1,13 +1,14 @@
 <template>
   <div>
     <div class="board-write-tab">
-      <b-input type="text" name="title" placeholder="대제목" />
-      <b-input type="text" name="subTitle" placeholder="소제목" />
+      <b-input type="text" placeholder="대제목" v-model="board.title" />
+      <b-input type="text" placeholder="소제목" v-model="board.subTitle" />
       <b-form-textarea
         id="textarea-rows"
         placeholder="게시판 작성창"
         rows="35"
         no-resize
+        v-model="board.content"
       ></b-form-textarea>
     </div>
     <div class="board-write-btn">
@@ -17,24 +18,37 @@
   </div>
 </template>
 <script>
+import registBoard from '@/api/board.js';
+
 export default {
   data() {
     return {
-      categoryId: '',
-      nickName: '',
+      board: {
+        categoryId: '',
+        nickName: '',
+        title: null,
+        subTitle: null,
+        content: null,
+      },
     };
   },
   computed: {},
   created() {
-    this.categoryId = this.$store.state.categoryId;
-    this.nickName = this.$store.state.user.nickName;
+    this.board.categoryId = this.$store.state.categoryId;
+    this.board.nickName = this.$store.state.user.nickName;
   },
   methods: {
     boardRegist() {
-      console.log('등록버튼 클릭함');
+      registBoard(this.board);
     },
     redirectBoard() {
-      console.log('취소버튼 클릭함');
+      if (confirm('취소하면 작성한 모든 내용이 사라집니다 !')) {
+        if (this.categoryId == 1) {
+          this.$router.push({ name: 'boardgeneral' });
+        } else {
+          this.$router.push({ name: 'boardtip' });
+        }
+      }
     },
   },
 };

@@ -1,5 +1,4 @@
-import { boards } from '@/api/index';
-import { board } from '@/api/index';
+import { boards, boardsWithAuth } from '@/api/index';
 
 // function getListByCondition() {}
 
@@ -8,19 +7,19 @@ function getListByCategory(categoryId) {
 }
 
 function getDetail(boardId) {
-  return board.get(`/${boardId}`);
+  return boards.get(`/${boardId}`);
 }
 
-function registBoard(data) {
-  return board.post(``, data);
+function registBoard(board) {
+  return boardsWithAuth.post(``, board);
 }
 
 function updatBoard(boardId, data) {
-  return board.put(`/${boardId}`, data);
+  return boards.put(`/${boardId}`, data);
 }
 
 function deleteBoard(boardId) {
-  return board.delete(`/${boardId}`);
+  return boards.delete(`/${boardId}`);
 }
 
 export { getListByCategory, getDetail, registBoard, updatBoard, deleteBoard };
