@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <div>
-      <button class="radious" @click="moveWrite()">글쓰기</button>
+      <button class="radious writeBtn" @click="moveWrite()">글쓰기</button>
     </div>
     <div v-if="items.length">
       <b-table
@@ -29,9 +29,9 @@
         align="center"
       ></b-pagination>
     </div>
-    <div v-else>
+    <div v-else class="no-content">
       <img src="../../../../public/icon_noresult.png" />
-      <p>글이 없졍..</p>
+      <p>글이 없졍.. 글 좀 써주랑 ..</p>
     </div>
   </div>
 </template>
@@ -60,7 +60,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .radious {
   border-radius: 50px !important;
   padding: 5px 12px !important;
@@ -68,5 +68,13 @@ export default {
   margin: 5px !important;
   white-space: nowrap !important;
   border: 0px !important;
+}
+.no-content {
+  width: fit-content;
+  margin: auto;
+  padding-top: 60px;
+}
+.writeBtn {
+  float: right;
 }
 </style>

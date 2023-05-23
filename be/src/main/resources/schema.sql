@@ -8,6 +8,8 @@ drop table if exists `travel`;
 drop table if exists `user_travel_keyword`;
 drop table if exists `travel_keyword`;
 drop table if exists `user`;
+drop table if exists `board`;
+drop table if exists `board_category`;
 
 create table `travel_keyword`
 (

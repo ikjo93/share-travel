@@ -31,3 +31,5 @@ export const travelKeywords = create(
 export const travels = createWithAuth(
   `${process.env.VUE_APP_API_URL}api/travels`,
 );
+
+export const boards = create(`${process.env.VUE_APP_API_URL}api/boards`);

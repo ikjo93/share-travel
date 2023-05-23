@@ -4,7 +4,15 @@
       <button class="radious searchTypeBtn">제목</button>
       <button class="radious searchTypeBtn">제목+작성자</button>
       <button class="radious searchTypeBtn">작성자</button>
-      <button class="radious writeBtn" @click="moveWrite()">글쓰기</button>
+      <button
+        :class="['radious', { changeColor: isHovering }]"
+        id="writeBtn"
+        @click="moveWrite()"
+        @mouseover="hover()"
+        @mouseleave="hover()"
+      >
+        글쓰기
+      </button>
     </div>
     <div class="article-search-input">
       <label>
@@ -40,19 +48,21 @@
         align="center"
       ></b-pagination>
     </div>
-    <div v-else>
+    <div v-else class="no-content">
       <img src="../../../../public/icon_noresult.png" />
       <p>글이 없졍..</p>
     </div>
   </div>
 </template>
 <script>
+import { getListByCategory } from '@/api/board.js';
+
 export default {
   data() {
     return {
       perPage: 10,
       currentPage: 1,
-      fields: ['title', 'author', 'writeDate', 'boardType'],
+      fields: ['title', 'author', 'boardType', 'writeDate'],
       items: [
         {
           title: '임시제목',
@@ -216,7 +226,12 @@ export default {
           secret: '안보여야해',
         },
       ],
+      isHovering: false,
+      categoryId: 1,
     };
+  },
+  async created() {
+    this.items = await getListByCategory(this.categoryId);
   },
   methods: {
     moveDetail() {
@@ -224,6 +239,9 @@ export default {
     },
     moveWrite() {
       this.$router.push({ name: 'boardwrite' });
+    },
+    hover() {
+      this.isHovering = !this.isHovering;
     },
   },
   computed: {
@@ -242,7 +260,7 @@ export default {
   white-space: nowrap !important;
   border: 0px !important;
 }
-.writeBtn {
+#writeBtn {
   float: right;
 }
 .searchTypeBtn {
@@ -259,5 +277,14 @@ export default {
 #submitImage {
   width: 10px;
   height: 10px;
+}
+.no-content {
+  width: fit-content;
+  margin: auto;
+  padding-top: 60px;
+}
+.changeColor {
+  background-color: black;
+  color: white;
 }
 </style>
