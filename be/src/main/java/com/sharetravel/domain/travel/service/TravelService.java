@@ -5,6 +5,8 @@ import com.sharetravel.domain.image.repository.ImageRepository;
 import com.sharetravel.domain.image.service.ImageService;
 import com.sharetravel.domain.travel.dto.TravelRequestDto;
 import com.sharetravel.domain.travel.dto.TravelResponseDto;
+import com.sharetravel.domain.travel.dto.TravelSearchResponseDto;
+import com.sharetravel.domain.travel.entity.Travel;
 import com.sharetravel.domain.travel.repository.TravelRepository;
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.domain.travelkeyword.repository.TravelKeywordRepository;
@@ -28,7 +30,16 @@ public class TravelService {
     private final TravelKeywordRepository travelKeywordRepository;
 
     @Transactional(readOnly = true)
-    public List<TravelResponseDto> findAllAroundCoordinate(Double longitude, Double latitude) {
+    public TravelResponseDto findById(Long travelId) {
+        Travel travel = travelRepository.findWithAllById(travelId).orElseThrow(() -> {
+            throw new IllegalStateException("식별 변호가 " + travelId + "에 해당하는 사용자가 없습니다.");
+        });
+
+        return TravelResponseDto.from(travel);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TravelSearchResponseDto> findAllAroundCoordinate(Double longitude, Double latitude) {
         String point = getPoint(longitude, latitude);
         return travelRepository.findAllByPoint(point);
     }
@@ -55,13 +66,13 @@ public class TravelService {
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
-            throw new IllegalStateException("식별 변호가" + userId + "에 해당하는 사용자가 없습니다.");
+            throw new IllegalStateException("식별 변호가 " + userId + "에 해당하는 사용자가 없습니다.");
         });
     }
 
     private TravelKeyword getTravelKeywordById(Long travelKeywordId) {
         return travelKeywordRepository.findById(travelKeywordId).orElseThrow(() -> {
-            throw new IllegalStateException("식별 변호가" + travelKeywordId + "에 해당하는 여행 키워드가 없습니다.");
+            throw new IllegalStateException("식별 변호가 " + travelKeywordId + "에 해당하는 여행 키워드가 없습니다.");
         });
     }
 }

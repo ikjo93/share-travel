@@ -3,6 +3,7 @@ package com.sharetravel.domain.travel.controller;
 import com.sharetravel.domain.image.exception.ImageUploadException;
 import com.sharetravel.domain.travel.dto.TravelRequestDto;
 import com.sharetravel.domain.travel.dto.TravelResponseDto;
+import com.sharetravel.domain.travel.dto.TravelSearchResponseDto;
 import com.sharetravel.domain.travel.service.TravelService;
 import com.sharetravel.global.api.ApiResponseCode;
 import com.sharetravel.global.api.ApiResponseMessage;
@@ -24,8 +25,13 @@ public class TravelController {
     private final TravelService travelService;
 
     @GetMapping("/api/travels")
-    public List<TravelResponseDto> find(@RequestParam Double longitude, @RequestParam Double latitude) {
+    public List<TravelSearchResponseDto> findAround(@RequestParam Double longitude, @RequestParam Double latitude) {
         return travelService.findAllAroundCoordinate(longitude, latitude);
+    }
+
+    @GetMapping("/api/travels/{id}")
+    public TravelResponseDto findById(@PathVariable Long id) {
+        return travelService.findById(id);
     }
 
     @PostMapping("/api/travels")

@@ -1,7 +1,9 @@
 package com.sharetravel.domain.travel.repository;
 
-import com.sharetravel.domain.travel.dto.TravelResponseDto;
+import com.sharetravel.domain.travel.dto.TravelSearchResponseDto;
 import com.sharetravel.domain.travel.entity.Travel;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,9 +14,12 @@ import java.util.List;
 
 public interface TravelRepository extends JpaRepository<Travel, Long> {
 
+    @EntityGraph(value = "Travel.withAll")
+    Optional<Travel> findWithAllById(@Param("id") Long id);
+
     String SEARCH_RADIUS = "1000";
 
-    String SELECT_TRAVEL_QUERY = "select " +
+    String SELECT_TRAVEL_QUERY = "select t.travel_id as travelId, " +
             "t.name as name, t.description as description, " +
             "tk.name as travelKeyword, MAX(i.url) as url, " +
             "ST_X(t.location) as longitude, ST_Y(t.location) as latitude " +
@@ -25,7 +30,7 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
             "group by t.travel_id";
 
     @Query(value = SELECT_TRAVEL_QUERY, nativeQuery = true)
-    List<TravelResponseDto> findAllByPoint(@Param("point") String point);
+    List<TravelSearchResponseDto> findAllByPoint(@Param("point") String point);
 
     String INSERT_TRAVEL_QUERY = "insert into travel (travel_travel_keyword_id, travel_user_id, name, description, location, created_date, modified_date) " +
             "values (:travelKeywordId, :userId, :name, :description, ST_GeomFromText(:point), now(), now())";

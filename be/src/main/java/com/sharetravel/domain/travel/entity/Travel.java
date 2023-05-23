@@ -2,20 +2,22 @@ package com.sharetravel.domain.travel.entity;
 
 import com.sharetravel.domain.image.entity.Image;
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
-import com.sharetravel.domain.travelreview.entity.TravelReview;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.global.domain.BaseTimeEntity;
 import jakarta.persistence.*;
+import java.util.stream.Collectors;
 import lombok.*;
 import org.springframework.data.geo.Point;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NamedEntityGraph(name = "Travel.withAll", attributeNodes = {
+    @NamedAttributeNode("writer"), @NamedAttributeNode("travelKeyword"),
+    @NamedAttributeNode("images")
+})
 @Table(name = "`travel`")
 @Entity
 public class Travel extends BaseTimeEntity {
@@ -43,8 +45,19 @@ public class Travel extends BaseTimeEntity {
     private TravelKeyword travelKeyword;
 
     @OneToMany(mappedBy = "travel")
-    private List<TravelReview> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "travel")
     private List<Image> images = new ArrayList<>();
+
+    public String getTravelKeyword() {
+        return travelKeyword.getName();
+    }
+
+    public String getWriterNickName() {
+        return writer.getNickName();
+    }
+
+    public List<String> getImageUrls() {
+        return images.stream()
+            .map(Image::getUrl)
+            .collect(Collectors.toList());
+    }
 }
