@@ -45,6 +45,9 @@ export default {
       isClicked: [true, false, false, false, false],
     };
   },
+  created() {
+    this.moveNotice(0);
+  },
   methods: {
     moveNotice(idx) {
       // TODO:클릭한 버튼에 대해서 검은색 처리 및 나머지 버튼 색상해제
@@ -60,6 +63,7 @@ export default {
     moveGeneral(idx) {
       this.isClicked.fill(false);
       this.$set(this.isClicked, idx, true);
+      this.$store.commit('SET_CATEGORY_ID', 1);
       this.$router.push({ name: 'boardgeneral' });
     },
     moveTip(idx) {

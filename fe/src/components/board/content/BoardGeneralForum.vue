@@ -1,9 +1,24 @@
 <template lang="">
   <div>
     <div calss="article-search-type">
-      <button class="radious searchTypeBtn">제목</button>
-      <button class="radious searchTypeBtn">제목+작성자</button>
-      <button class="radious searchTypeBtn">작성자</button>
+      <button
+        :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[0] }]"
+        @click="selectType(0, 'title')"
+      >
+        제목
+      </button>
+      <button
+        :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[1] }]"
+        @click="selectType(1, 'all')"
+      >
+        제목+작성자
+      </button>
+      <button
+        :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[2] }]"
+        @click="selectType(2, 'nickName')"
+      >
+        작성자
+      </button>
       <button
         :class="['radious', { changeColor: isHovering }]"
         id="writeBtn"
@@ -16,8 +31,8 @@
     </div>
     <div class="article-search-input">
       <label>
-        <input id="search-input" />
-        <button type="button" class="radious">
+        <input id="search-input" placeholder="검색어를 입력하세요" />
+        <button type="button" class="radious" @click="submit()">
           <img id="submitImage" src="../../../../public/search_icon.png" />
         </button>
       </label>
@@ -55,7 +70,7 @@
   </div>
 </template>
 <script>
-import { getListByCategory } from '@/api/board.js';
+// import { getListByCategory } from '@/api/board.js';
 
 export default {
   data() {
@@ -227,11 +242,16 @@ export default {
         },
       ],
       isHovering: false,
-      categoryId: 1,
+      categoryId: '',
+      isClicked: [true, false, false],
+      searchType: null,
     };
   },
-  async created() {
-    this.items = await getListByCategory(this.categoryId);
+  // async created() {
+  //   this.items = await getListByCategory(this.categoryId);
+  // },
+  created() {
+    this.categoryId = this.$store.state.categoryId;
   },
   methods: {
     moveDetail() {
@@ -242,6 +262,17 @@ export default {
     },
     hover() {
       this.isHovering = !this.isHovering;
+    },
+    selectType(idx, type) {
+      this.isClicked.fill(false);
+      this.$set(this.isClicked, idx, true);
+      this.searchType = type;
+    },
+    submit() {
+      console.log('TODO');
+      console.log(this.categoryId);
+      // TODO : 클릭 시 searchType과 input내용 가져와서 검색 후
+      // 화면에 뿌려주기
     },
   },
   computed: {
@@ -284,6 +315,10 @@ export default {
   padding-top: 60px;
 }
 .changeColor {
+  background-color: black;
+  color: white;
+}
+.clickedBtn {
   background-color: black;
   color: white;
 }

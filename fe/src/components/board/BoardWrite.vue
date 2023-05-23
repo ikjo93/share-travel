@@ -1,28 +1,14 @@
 <template>
   <div>
     <div class="board-write-tab">
-      <b-tabs content-class="mt-3">
-        <b-tab title="자유" active>
-          <b-input type="text" name="title" placeholder="대제목" />
-          <b-input type="text" name="subTitle" placeholder="소제목" />
-          <b-form-textarea
-            id="textarea-rows"
-            placeholder="자유 게시판 작성창"
-            rows="35"
-            no-resize
-          ></b-form-textarea>
-        </b-tab>
-        <b-tab title="꿀팁">
-          <b-input type="text" name="title" placeholder="대제목" />
-          <b-input type="text" name="subTitle" placeholder="소제목" />
-          <b-form-textarea
-            id="textarea-rows"
-            placeholder="꿀팁 게시판 작성창"
-            rows="35"
-            no-resize
-          ></b-form-textarea>
-        </b-tab>
-      </b-tabs>
+      <b-input type="text" name="title" placeholder="대제목" />
+      <b-input type="text" name="subTitle" placeholder="소제목" />
+      <b-form-textarea
+        id="textarea-rows"
+        placeholder="게시판 작성창"
+        rows="35"
+        no-resize
+      ></b-form-textarea>
     </div>
     <div class="board-write-btn">
       <button class="radious" @click="redirectBoard()">취소</button>
@@ -32,6 +18,17 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      categoryId: '',
+      nickName: '',
+    };
+  },
+  computed: {},
+  created() {
+    this.categoryId = this.$store.state.categoryId;
+    this.nickName = this.$store.state.user.nickName;
+  },
   methods: {
     boardRegist() {
       console.log('등록버튼 클릭함');
