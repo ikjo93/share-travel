@@ -3,7 +3,6 @@ CREATE DATABASE IF NOT EXISTS sharetravel CHARACTER SET utf8mb4 COLLATE utf8mb4_
 use sharetravel;
 
 drop table if exists `image`;
-drop table if exists `travel_review`;
 drop table if exists `travel`;
 drop table if exists `user_travel_keyword`;
 drop table if exists `travel_keyword`;
@@ -61,20 +60,6 @@ create table `travel`
     primary key (travel_id),
     foreign key (travel_travel_keyword_id) references `travel_keyword` (travel_keyword_id),
     foreign key (travel_user_id) references `user` (user_id)
-);
-
-create table `travel_review`
-(
-    travel_review_id bigint not null auto_increment,
-    travel_review_travel_id bigint not null,
-    travel_review_user_id bigint not null,
-    comment varchar(300) not null,
-    score integer not null,
-    created_date           TIMESTAMP,
-    modified_date          TIMESTAMP,
-    primary key (travel_review_id),
-    foreign key (travel_review_travel_id) references `travel` (travel_id),
-    foreign key (travel_review_user_id) references `user` (user_id)
 );
 
 create table `image`

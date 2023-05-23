@@ -3,7 +3,7 @@
     <TravelSearchBar></TravelSearchBar>
     <div id="map"></div>
     <b-modal
-      ref="my-modal"
+      ref="registerTravelModal"
       hide-footer
       hide-header
       no-close-on-esc
@@ -122,11 +122,43 @@
         </div>
       </b-jumbotron>
     </b-modal>
+    <b-modal ref="detailTravelModal" hide-footer hide-header>
+      <b-jumbotron
+        lead="여행지 상세정보 💁‍♂️"
+        bg-variant="white"
+        style="font-family: 'hanna-pro';"
+      >
+        <b-form-group
+          id="fieldset-1"
+          label="장소 이름 : {{ detailTravelInfo.name }}"
+        >
+        </b-form-group>
+        <h2>여행지 키워드 : {{ detailTravelInfo.travelKeyword }}</h2>
+        <h3>장소 설명</h3>
+        <p>
+          {{ detailTravelInfo.description }}
+        </p>
+        <div class="button-container">
+          <b-button
+            size="lg"
+            variant="outline-danger"
+            @click="closeDetailTravelInfo"
+            style="margin-left: 5px;"
+            >닫기</b-button
+          >
+        </div>
+      </b-jumbotron>
+    </b-modal>
   </div>
 </template>
 
 <script>
-import { getTravelKeywords, registerTravel } from '@/api/travel.js';
+import {
+  getTravelKeywords,
+  getTravelInfoById,
+  getTravelInfoAroundCoordinate,
+  registerTravel,
+} from '@/api/travel.js';
 import TravelSearchBar from '@/components/travel/TravelSearchBar.vue';
 
 export default {
@@ -136,7 +168,9 @@ export default {
   },
   data() {
     return {
+      map: null,
       markers: [],
+      travelMarkers: [],
       infoWin: null,
       travelKeywords: [],
       userInputTravelName: '',
@@ -145,6 +179,8 @@ export default {
       userInputTravelPictures: [],
       longitude: 0,
       latitude: 0,
+      travelInfo: [],
+      detailTravelInfo: '',
     };
   },
   computed: {
@@ -210,6 +246,7 @@ export default {
     }
   },
   methods: {
+    /* 카카오맵 지도 초기화 */
     initMap() {
       const container = document.getElementById('map');
       const DEFAULT_LAT = 37.566535;
@@ -220,29 +257,7 @@ export default {
       };
 
       let map = new kakao.maps.Map(container, options);
-
-      // 마커 이미지 생성
-      let imageSrc = '/logo.png', // 마커이미지의 주소
-        imageSize = new kakao.maps.Size(50, 65), // 마커이미지의 크기
-        imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
-
-      let markerImage = new kakao.maps.MarkerImage(
-        imageSrc,
-        imageSize,
-        imageOption,
-      );
-
-      // 인포윈도우 생성
-      let iwContent = document.createElement('div');
-      iwContent.style =
-        'background: #50627f; color: #fff; text-align: center; width: 190px; height: 24px; line-height: 22px; border-radius: 4px; padding: 0px 10px; cursor: pointer';
-      iwContent.textContent = '여행지 등록하기 🏁';
-      iwContent.onclick = this.moveRegisterForm;
-
-      let infowindow = new kakao.maps.InfoWindow({
-        content: iwContent,
-        removable: true,
-      });
+      this.map = map;
 
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옴
@@ -263,20 +278,42 @@ export default {
         map.setCenter(locPosition);
       }
 
+      let searchContent = document.createElement('div');
+      searchContent.style =
+        'background: #FFFF33; color: #000; text-align: center; width: 190px; height: 24px; line-height: 22px; border-radius: 4px; padding: 0px 10px; cursor: pointer';
+      searchContent.textContent = '👉 여행지 검색하기';
+      searchContent.onclick = this.searchTravels;
+
+      let searchInfowindow = new kakao.maps.InfoWindow({
+        content: searchContent,
+        removable: true,
+      });
+
       kakao.maps.event.addListener(
         map,
-        'rightclick',
+        'click',
         function(mouseEvent) {
           // 클릭한 위도, 경도 정보를 가져옴
           let latlng = mouseEvent.latLng;
           this.longitude = latlng.La;
           this.latitude = latlng.Ma;
 
+          // 마커 이미지 생성
+          let markerImage = new kakao.maps.MarkerImage(
+            '/search_icon.png', // 마커이미지의 주소
+            new kakao.maps.Size(50, 65), // 마커이미지의 크기
+            { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+          );
+
           let marker = new kakao.maps.Marker({
             map: map,
             position: latlng,
             image: markerImage,
           });
+
+          if (this.infoWin != null) {
+            this.infoWin.setMap(null);
+          }
 
           // 기존 마커 삭제
           for (let i = 0; i < this.markers.length; i++) {
@@ -286,14 +323,147 @@ export default {
           this.markers.push(marker);
 
           // 인포윈도우를 마커 위에 표시
-          infowindow.open(map, marker);
-          this.infoWin = infowindow;
+          searchInfowindow.open(map, marker);
+          this.infoWin = searchInfowindow;
 
           // 지도 중심좌표를 접속위치로 변경
           map.setCenter(latlng);
         }.bind(this),
       );
+
+      // 인포윈도우 생성
+      let registerContent = document.createElement('div');
+      registerContent.style =
+        'background: #50627f; color: #fff; text-align: center; width: 190px; height: 24px; line-height: 22px; border-radius: 4px; padding: 0px 10px; cursor: pointer';
+      registerContent.textContent = '🏁 여행지 등록하기';
+      registerContent.onclick = this.moveRegisterForm;
+
+      let registerInfowindow = new kakao.maps.InfoWindow({
+        content: registerContent,
+        removable: true,
+      });
+
+      kakao.maps.event.addListener(
+        map,
+        'rightclick',
+        function(mouseEvent) {
+          // 클릭한 위도, 경도 정보를 가져옴
+          let latlng = mouseEvent.latLng;
+          this.longitude = latlng.La;
+          this.latitude = latlng.Ma;
+
+          // 마커 이미지 생성
+          let markerImage = new kakao.maps.MarkerImage(
+            '/logo.png', // 마커이미지의 주소
+            new kakao.maps.Size(50, 65), // 마커이미지의 크기
+            { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+          );
+
+          let marker = new kakao.maps.Marker({
+            map: map,
+            position: latlng,
+            image: markerImage,
+          });
+
+          if (this.infoWin != null) {
+            this.infoWin.setMap(null);
+          }
+
+          // 기존 마커 삭제
+          for (let i = 0; i < this.markers.length; i++) {
+            this.markers[i].setMap(null);
+          }
+
+          this.markers.push(marker);
+
+          // 인포윈도우를 마커 위에 표시
+          registerInfowindow.open(map, marker);
+          this.infoWin = registerInfowindow;
+
+          // 지도 중심좌표를 접속위치로 변경
+          map.setCenter(latlng);
+        }.bind(this),
+      );
+
+      /* 현재 지도 중심 좌표 기준 여행지 검색 API 호출  */
+      let center = this.map.getCenter();
+      this.longitude = center.getLng();
+      this.latitude = center.getLat();
+      this.searchTravels();
     },
+    /* 클릭한 부분 여행지 검색 API 호출 */
+    async searchTravels() {
+      // 기존 인포윈도우 삭제
+      if (this.infoWin != null) {
+        this.infoWin.setMap(null);
+        this.infoWin = null;
+      }
+
+      // 기존 마커 삭제
+      for (let i = 0; i < this.markers.length; i++) {
+        this.markers[i].setMap(null);
+      }
+
+      // 기존 여행지 데이터 삭제
+      this.travelInfo = [];
+
+      const { data } = await getTravelInfoAroundCoordinate(
+        this.longitude,
+        this.latitude,
+      );
+      console.log('travel info data response...');
+
+      // 받은 여행지 정보 좌표 기반 지도에 뿌려주기
+      data.forEach(info => {
+        this.travelInfo.push(info);
+        console.log(info);
+
+        // 클릭한 위도, 경도 정보를 가져옴
+        let longitude = info.longitude;
+        let latitude = info.latitude;
+        console.log(longitude, latitude);
+
+        // 마커 이미지 생성
+        let markerImage = new kakao.maps.MarkerImage(
+          '/logo.png', // 마커이미지의 주소
+          new kakao.maps.Size(50, 65), // 마커이미지의 크기
+          { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+        );
+
+        let marker = new kakao.maps.Marker({
+          map: this.map,
+          position: new kakao.maps.LatLng(latitude, longitude),
+          image: markerImage,
+        });
+
+        kakao.maps.event.addListener(
+          marker,
+          'click',
+          function() {
+            let travelInfoWindowContent = `<div click="openTravelInfoModal(${info.travelId})" style="width: 250px; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);">
+                                            <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">장소 이름 : ${info.name}</h2>
+                                            <p style="margin-bottom: 15px;">여행지 키워드 : ${info.travelKeyword}</p>
+                                            <img src="${info.url}" style="display: inline-block; padding: 8px 15px; background-color: #337ab7; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s;">
+                                          </div>`;
+
+            let travelInfoWindow = new kakao.maps.InfoWindow({
+              content: travelInfoWindowContent,
+              removable: true,
+            });
+
+            travelInfoWindow.open(this.map, marker);
+          }.bind(this),
+        );
+
+        this.markers.push(marker);
+      });
+    },
+    async openTravelInfoModal(travelId) {
+      const { data } = await getTravelInfoById(travelId);
+      this.detailTravelInfo = data;
+      this.$refs['detailTravelModal'].show();
+    },
+    /* 여행지 등록 모달창 열기 */
     async moveRegisterForm() {
       // 기존 인포윈도우 삭제
       this.infoWin.setMap(null);
@@ -308,17 +478,28 @@ export default {
         alert('로그인이 필요한 작업입니다.');
         return;
       }
-      this.$refs['my-modal'].show();
+      this.$refs['registerTravelModal'].show();
     },
+    /* 여행지 등록 모달창 닫기 */
     close() {
       this.userInputTravelName = '';
       this.userInputTravelDescription = '';
+      for (let travelKeyword of this.travelKeywords) {
+        if (travelKeyword.selected) {
+          travelKeyword.selected = false;
+        }
+      }
       this.userInputTravelKeywords = [];
       this.userInputTravelPictures = [];
       this.longitude = 0;
       this.latitude = 0;
-      this.$refs['my-modal'].hide();
+      this.$refs['registerTravelModal'].hide();
     },
+    closeDetailTravelInfo() {
+      this.detailTravelInfo = '';
+      this.$refs['detailTravelModal'].hide();
+    },
+    /* 여행지 키워드 선택하기(토글) */
     selectTravelKeyword(keyword) {
       keyword.selected = !keyword.selected;
       if (keyword.selected) {
@@ -327,12 +508,14 @@ export default {
         this.deleteTravelKeyword(keyword);
       }
     },
+    /* 선택한 여행지 키워드 취소 */
     deleteTravelKeyword(keyword) {
       const idx = this.userInputTravelKeywords.indexOf(keyword.id);
       if (idx > -1) {
         this.userInputTravelKeywords.splice(idx, 1);
       }
     },
+    /* 여행지 등록 메서드 */
     async submit() {
       const body = {
         name: this.userInputTravelName,
@@ -345,12 +528,25 @@ export default {
       try {
         await registerTravel(body);
         alert('여행지 등록이 정상적으로 처리되었습니다. 🎉');
-        this.$refs['my-modal'].hide();
+        this.$refs['registerTravelModal'].hide();
       } catch (error) {
         alert('여행지를 등록하는 과정에서 에러가 발생했습니다. 😢');
       }
+
+      this.userInputTravelName = '';
+      this.userInputTravelDescription = '';
+      for (let travelKeyword of this.travelKeywords) {
+        if (travelKeyword.selected) {
+          travelKeyword.selected = false;
+        }
+      }
+      this.userInputTravelKeywords = [];
+      this.userInputTravelPictures = [];
+      this.longitude = 0;
+      this.latitude = 0;
     },
   },
+  /* 컴포넌트 생성 시 여행지 키워드 삽입 */
   async created() {
     const { data } = await getTravelKeywords();
     for (let i = 0; i < data.length; i++) {

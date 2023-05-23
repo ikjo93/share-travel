@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.geo.Point;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -30,13 +29,8 @@ public class TravelRequestDto {
     private List<MultipartFile> files;
 
     @NotNull
-    private Double longitude; // 위도 127...
+    private Double longitude; // 경도 127...
 
     @NotNull
-    private Double latitude; // 경도 37...
-
-    // the x field represents the longitude, and the y field represents the latitude.
-    public Point getPoint() {
-        return new Point(longitude, latitude);
-    }
+    private Double latitude; // 위도 37...
 }
