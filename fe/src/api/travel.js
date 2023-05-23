@@ -1,7 +1,11 @@
-import { travelKeywords, travels } from '@/api/index';
+import { travelKeywords, commonApi, travelsWithAuth } from '@/api/index';
 
 function getTravelKeywords() {
   return travelKeywords.get();
+}
+
+function getTravelInfo(longitude, latitude) {
+  return commonApi.get(`travels?longitude=${longitude}&latitude=${latitude}`);
 }
 
 function registerTravel(data) {
@@ -17,11 +21,11 @@ function registerTravel(data) {
   formData.append('longitude', data.longitude);
   formData.append('latitude', data.latitude);
 
-  return travels.post('', formData, {
+  return travelsWithAuth.post('', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
 }
 
-export { getTravelKeywords, registerTravel };
+export { getTravelKeywords, getTravelInfo, registerTravel };
