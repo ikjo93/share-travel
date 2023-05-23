@@ -63,20 +63,6 @@ create table `travel`
     foreign key (travel_user_id) references `user` (user_id)
 );
 
-create table `travel_review`
-(
-    travel_review_id bigint not null auto_increment,
-    travel_review_travel_id bigint not null,
-    travel_review_user_id bigint not null,
-    comment varchar(300) not null,
-    score integer not null,
-    created_date           TIMESTAMP,
-    modified_date          TIMESTAMP,
-    primary key (travel_review_id),
-    foreign key (travel_review_travel_id) references `travel` (travel_id),
-    foreign key (travel_review_user_id) references `user` (user_id)
-);
-
 create table `image`
 (
     image_id bigint not null auto_increment,
