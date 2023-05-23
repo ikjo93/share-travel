@@ -1,16 +1,25 @@
 package com.sharetravel.domain.travel.dto;
 
-public interface TravelResponseDto {
+import com.sharetravel.domain.travel.entity.Travel;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    String getName();
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class TravelResponseDto {
 
-    String getDescription();
+    private String name;
+    private String description;
+    private String travelKeyword;
+    private String writer;
+    private List<String> url;
 
-    String getTravelKeyword();
-
-    String getUrl();
-
-    Double getLongitude(); // 경도
-
-    Double getLatitude(); // 위도
+    public static TravelResponseDto from(Travel travel) {
+        return new TravelResponseDto(travel.getName(), travel.getDescription(),
+            travel.getTravelKeyword(), travel.getWriterNickName(), travel.getImageUrls());
+    }
 }
