@@ -150,6 +150,7 @@ export default {
       userInputTravelPictures: [],
       longitude: 0,
       latitude: 0,
+      travelInfo: [],
     };
   },
   computed: {
@@ -215,6 +216,7 @@ export default {
     }
   },
   methods: {
+    /* 카카오맵 지도 초기화 */
     initMap() {
       const container = document.getElementById('map');
       const DEFAULT_LAT = 37.566535;
@@ -228,14 +230,10 @@ export default {
       this.map = map;
 
       // 마커 이미지 생성
-      let imageSrc = '/logo.png', // 마커이미지의 주소
-        imageSize = new kakao.maps.Size(50, 65), // 마커이미지의 크기
-        imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
-
       let markerImage = new kakao.maps.MarkerImage(
-        imageSrc,
-        imageSize,
-        imageOption,
+        '/logo.png', // 마커이미지의 주소
+        new kakao.maps.Size(50, 65), // 마커이미지의 크기
+        { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
       );
 
       if (navigator.geolocation) {
@@ -256,10 +254,6 @@ export default {
         // 지도 중심좌표를 기본 위치로 변경
         map.setCenter(locPosition);
       }
-
-      /*
-          여행지 검색 이벤트
-      */
 
       let searchContent = document.createElement('div');
       searchContent.style =
@@ -306,10 +300,6 @@ export default {
           map.setCenter(latlng);
         }.bind(this),
       );
-
-      /*
-          여행지 등록 이벤트
-      */
 
       // 인포윈도우 생성
       let registerContent = document.createElement('div');
@@ -360,6 +350,7 @@ export default {
 
       this.getTravelInfoInCenter();
     },
+    /* 현재 지도 중심 좌표 기준 여행지 검색 API 호출  */
     async getTravelInfoInCenter() {
       let center = this.map.getCenter();
       let longitude = center.getLng();
@@ -367,7 +358,9 @@ export default {
 
       const { data } = await getTravelInfo(longitude, latitude);
       console.log(data);
+      // TODO : 받은 여행지 정보 좌표 기반 지도에 뿌려주기
     },
+    /* 클릭한 부분 여행지 검색 API 호출 */
     async searchTravels() {
       // 기존 인포윈도우 삭제
       this.infoWin.setMap(null);
@@ -378,9 +371,44 @@ export default {
         this.markers[i].setMap(null);
       }
 
+      // 기존 여행지 데이터 삭제
+      this.travelInfo = [];
+
       const { data } = await getTravelInfo(this.longitude, this.latitude);
-      console.log(data);
+
+      // 받은 여행지 정보 좌표 기반 지도에 뿌려주기
+      data.forEach(info => {
+        this.travelInfo.push(info);
+        console.log(info);
+
+        // 클릭한 위도, 경도 정보를 가져옴
+        let longitude = info.longitude;
+        let latitude = info.latitude;
+        console.log(longitude, latitude);
+
+        // 마커 이미지 생성
+        let markerImage = new kakao.maps.MarkerImage(
+          '/logo.png', // 마커이미지의 주소
+          new kakao.maps.Size(50, 65), // 마커이미지의 크기
+          { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
+        );
+
+        let marker = new kakao.maps.Marker({
+          map: this.map,
+          position: new kakao.maps.LatLng(longitude, latitude),
+          image: markerImage,
+        });
+
+        this.markers.push(marker);
+
+        // kakao.maps.event.addListener(
+        //   this.map,
+        //   'click',
+        //   function() {}.bind(this),
+        // );
+      });
     },
+    /* 여행지 등록 모달창 열기 */
     async moveRegisterForm() {
       // 기존 인포윈도우 삭제
       this.infoWin.setMap(null);
@@ -397,6 +425,7 @@ export default {
       }
       this.$refs['my-modal'].show();
     },
+    /* 여행지 등록 모달창 닫기 */
     close() {
       this.userInputTravelName = '';
       this.userInputTravelDescription = '';
@@ -411,6 +440,7 @@ export default {
       this.latitude = 0;
       this.$refs['my-modal'].hide();
     },
+    /* 여행지 키워드 선택하기(토글) */
     selectTravelKeyword(keyword) {
       keyword.selected = !keyword.selected;
       if (keyword.selected) {
@@ -419,12 +449,14 @@ export default {
         this.deleteTravelKeyword(keyword);
       }
     },
+    /* 선택한 여행지 키워드 취소 */
     deleteTravelKeyword(keyword) {
       const idx = this.userInputTravelKeywords.indexOf(keyword.id);
       if (idx > -1) {
         this.userInputTravelKeywords.splice(idx, 1);
       }
     },
+    /* 여행지 등록 메서드 */
     async submit() {
       const body = {
         name: this.userInputTravelName,
@@ -455,6 +487,7 @@ export default {
       this.latitude = 0;
     },
   },
+  /* 컴포넌트 생성 시 여행지 키워드 삽입 */
   async created() {
     const { data } = await getTravelKeywords();
     for (let i = 0; i < data.length; i++) {
