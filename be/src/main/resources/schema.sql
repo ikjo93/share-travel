@@ -1,6 +1,8 @@
-CREATE DATABASE IF NOT EXISTS sharetravel CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE
+DATABASE IF NOT EXISTS sharetravel CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-use sharetravel;
+use
+sharetravel;
 
 drop table if exists `image`;
 drop table if exists `travel`;
@@ -49,14 +51,14 @@ create table `user_travel_keyword`
 
 create table `travel`
 (
-    travel_id bigint not null auto_increment,
-    travel_travel_keyword_id bigint not null,
-    travel_user_id bigint not null,
-    name varchar(30) not null,
-    description varchar(500) not null,
-    location varbinary(255) not null,
-    created_date           TIMESTAMP,
-    modified_date          TIMESTAMP,
+    travel_id                bigint       not null auto_increment,
+    travel_travel_keyword_id bigint       not null,
+    travel_user_id           bigint       not null,
+    name                     varchar(30)  not null,
+    description              varchar(500) not null,
+    location                 varbinary(255) not null,
+    created_date             TIMESTAMP,
+    modified_date            TIMESTAMP,
     primary key (travel_id),
     foreign key (travel_travel_keyword_id) references `travel_keyword` (travel_keyword_id),
     foreign key (travel_user_id) references `user` (user_id)
@@ -64,11 +66,35 @@ create table `travel`
 
 create table `image`
 (
-    image_id bigint not null auto_increment,
+    image_id        bigint       not null auto_increment,
     image_travel_id bigint,
-    url varchar(500) not null,
-    created_date           TIMESTAMP,
-    modified_date          TIMESTAMP,
+    url             varchar(500) not null,
+    created_date    TIMESTAMP,
+    modified_date   TIMESTAMP,
     primary key (image_id),
     foreign key (image_travel_id) references `travel` (travel_id)
+);
+
+CREATE TABLE board_category
+(
+    board_category_id bigint       not null auto_increment,
+    name              varchar(255) not null,
+    created_date      TIMESTAMP,
+    modified_date     TIMESTAMP,
+    PRIMARY KEY (board_category_id)
+);
+
+CREATE TABLE board
+(
+    board_id          bigint        NOT NULL AUTO_INCREMENT,
+    user_id           bigint        NOT NULL,
+    board_category_id bigint,
+    title             VARCHAR(50)   NOT NULL,
+    subtitle          VARCHAR(100)  NOT NULL,
+    content           VARCHAR(1500) NOT NULL,
+    created_date      TIMESTAMP,
+    modified_date     TIMESTAMP,
+    PRIMARY KEY (board_id),
+    FOREIGN KEY (user_id) REFERENCES `user` (user_id),
+    FOREIGN KEY (board_category_id) REFERENCES `board_category` (board_category_id)
 );
