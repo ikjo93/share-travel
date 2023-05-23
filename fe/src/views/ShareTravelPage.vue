@@ -348,23 +348,19 @@ export default {
         }.bind(this),
       );
 
-      this.getTravelInfoInCenter();
-    },
-    /* 현재 지도 중심 좌표 기준 여행지 검색 API 호출  */
-    async getTravelInfoInCenter() {
+      /* 현재 지도 중심 좌표 기준 여행지 검색 API 호출  */
       let center = this.map.getCenter();
-      let longitude = center.getLng();
-      let latitude = center.getLat();
-
-      const { data } = await getTravelInfo(longitude, latitude);
-      console.log(data);
-      // TODO : 받은 여행지 정보 좌표 기반 지도에 뿌려주기
+      this.longitude = center.getLng();
+      this.latitude = center.getLat();
+      this.searchTravels();
     },
     /* 클릭한 부분 여행지 검색 API 호출 */
     async searchTravels() {
       // 기존 인포윈도우 삭제
-      this.infoWin.setMap(null);
-      this.infoWin = null;
+      if (this.infoWin != null) {
+        this.infoWin.setMap(null);
+        this.infoWin = null;
+      }
 
       // 기존 마커 삭제
       for (let i = 0; i < this.markers.length; i++) {
@@ -375,6 +371,7 @@ export default {
       this.travelInfo = [];
 
       const { data } = await getTravelInfo(this.longitude, this.latitude);
+      console.log('travel info data response...');
 
       // 받은 여행지 정보 좌표 기반 지도에 뿌려주기
       data.forEach(info => {
@@ -395,7 +392,7 @@ export default {
 
         let marker = new kakao.maps.Marker({
           map: this.map,
-          position: new kakao.maps.LatLng(longitude, latitude),
+          position: new kakao.maps.LatLng(latitude, longitude),
           image: markerImage,
         });
 

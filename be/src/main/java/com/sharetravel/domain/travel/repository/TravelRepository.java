@@ -17,7 +17,7 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
     String SELECT_TRAVEL_QUERY = "select " +
             "t.name as name, t.description as description, " +
             "tk.name as travelKeyword, MAX(i.url) as url, " +
-            "ST_X(t.location) as latitude, ST_Y(t.location) as longitude " +
+            "ST_X(t.location) as longitude, ST_Y(t.location) as latitude " +
             "from travel t " +
             "join travel_keyword tk on t.travel_travel_keyword_id = tk.travel_keyword_id " +
             "join image i on t.travel_id = i.image_travel_id " +
