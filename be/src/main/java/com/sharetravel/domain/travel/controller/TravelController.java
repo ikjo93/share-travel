@@ -34,6 +34,11 @@ public class TravelController {
         return travelService.findById(id);
     }
 
+    @GetMapping("/api/travels")
+    public List<TravelSearchResponseDto> findAroundByKeyword(@RequestParam Long keywordId, @RequestParam Double longitude, @RequestParam Double latitude) {
+        return travelService.findAllAroundCoordinateByKeywordId(keywordId, longitude, latitude);
+    }
+
     @PostMapping("/api/travels")
     public ResponseEntity<ApiResponseMessage> save(
         @AuthenticationPrincipal Long userId,

@@ -32,6 +32,20 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
     @Query(value = SELECT_TRAVEL_QUERY, nativeQuery = true)
     List<TravelSearchResponseDto> findAllByPoint(@Param("point") String point);
 
+    String SELECT_TRAVEL_BY_KEYWORD_QUERY = "select t.travel_id as travelId, " +
+        "t.name as name, t.description as description, " +
+        "tk.name as travelKeyword, MAX(i.url) as url, " +
+        "ST_X(t.location) as longitude, ST_Y(t.location) as latitude " +
+        "from travel t " +
+        "join travel_keyword tk on t.travel_travel_keyword_id = tk.travel_keyword_id " +
+        "join image i on t.travel_id = i.image_travel_id " +
+        "where ST_Distance_Sphere(t.location, ST_GeomFromText(:point)) <= " + SEARCH_RADIUS + " " +
+        "and t.travel_travel_keyword_id = :keywordId " +
+        "group by t.travel_id";
+
+    @Query(value = SELECT_TRAVEL_BY_KEYWORD_QUERY, nativeQuery = true)
+    List<TravelSearchResponseDto> findAllByKeywordIdAndPoint(@Param("keywordId") Long keywordId, @Param("point") String point);
+
     String INSERT_TRAVEL_QUERY = "insert into travel (travel_travel_keyword_id, travel_user_id, name, description, location, created_date, modified_date) " +
             "values (:travelKeywordId, :userId, :name, :description, ST_GeomFromText(:point), now(), now())";
 

@@ -3,7 +3,6 @@ CREATE DATABASE IF NOT EXISTS sharetravel CHARACTER SET utf8mb4 COLLATE utf8mb4_
 use sharetravel;
 
 drop table if exists `image`;
-drop table if exists `travel_review`;
 drop table if exists `travel`;
 drop table if exists `user_travel_keyword`;
 drop table if exists `travel_keyword`;
