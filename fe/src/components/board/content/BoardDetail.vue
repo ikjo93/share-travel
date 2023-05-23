@@ -90,7 +90,10 @@ export default {
       this.$router.push({ name: 'boardgeneral' });
     },
     boardModify() {
-      console.log('수정버튼');
+      this.$router.push({
+        name: 'boardmodify',
+        query: { boardId: this.board.boardId },
+      });
     },
     boardDelete() {
       deleteBoard(this.board.boardId);
