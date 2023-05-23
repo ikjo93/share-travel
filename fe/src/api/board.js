@@ -3,7 +3,13 @@ import { boards, boardsWithAuth } from '@/api/index';
 // function getListByCondition() {}
 
 function getListByCategory(categoryId) {
-  return boards.get(`/category/${categoryId}`);
+  return boards.get(`?categoryId=${categoryId}`);
+}
+
+function getListByCondition(categoryId, searchType, keyword) {
+  return boards.get(
+    `?categoryId=${categoryId}&searchType=${searchType}&keyword=${keyword}`,
+  );
 }
 
 function getDetail(boardId) {
@@ -19,8 +25,14 @@ function updateBoard(boardId, data) {
 }
 
 function deleteBoard(boardId) {
-  console.log('악시오스 안 ', boardId);
   return boardsWithAuth.delete(`/${boardId}`);
 }
 
-export { getListByCategory, getDetail, registBoard, updateBoard, deleteBoard };
+export {
+  getListByCategory,
+  getListByCondition,
+  getDetail,
+  registBoard,
+  updateBoard,
+  deleteBoard,
+};

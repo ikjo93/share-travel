@@ -25,7 +25,12 @@
         </button>
 
         <label>
-          <input id="search-input" placeholder="검색어를 입력하세요" />
+          <input
+            id="search-input"
+            placeholder="검색어를 입력하세요"
+            v-model="keyword"
+            @keyup.enter="submit()"
+          />
           <button type="button" class="radious" @click="submit()">
             <img id="submitImage" src="../../../../public/search_icon.png" />
           </button>
@@ -59,13 +64,13 @@
       </div>
       <div v-else class="no-content">
         <img src="../../../../public/icon_noresult.png" />
-        <p>글이 없졍..</p>
+        <p>글이 없졍.. 글 좀 써주랑..</p>
       </div>
     </div>
   </div>
 </template>
 <script>
-// import { getListByCategory } from '@/api/board.js';
+import { getListByCategory, getListByCondition } from '@/api/board.js';
 
 export default {
   data() {
@@ -241,10 +246,15 @@ export default {
       categoryId: '',
       isClicked: [true, false],
       searchType: null,
+      keyword: null,
     };
   },
   created() {
     this.categoryId = this.$store.state.categoryId;
+    this.items = getListByCategory(this.categoryId);
+  },
+  mounted() {
+    this.selectType(0, 'title');
   },
   methods: {
     moveDetail(board) {
@@ -265,10 +275,17 @@ export default {
       this.searchType = type;
     },
     submit() {
-      console.log('TODO');
       console.log(this.categoryId);
-      // TODO : 클릭 시 searchType과 input내용 가져와서 검색 후
-      // 화면에 뿌려주기
+      if (this.keyword != null) {
+        console.log(this.categoryId);
+        this.items = getListByCondition(
+          this.categoryId,
+          this.searchType,
+          this.keyword,
+        );
+      } else {
+        alert('검색어를 입력하세요 !');
+      }
     },
   },
   computed: {
