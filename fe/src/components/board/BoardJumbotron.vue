@@ -63,6 +63,7 @@ export default {
     moveTip(idx) {
       this.isClicked.fill(false);
       this.$set(this.isClicked, idx, true);
+      this.$store.commit('SET_CATEGORY_ID', 2);
       this.$router.push({ name: 'boardtip' });
     },
   },

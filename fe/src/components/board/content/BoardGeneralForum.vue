@@ -1,71 +1,66 @@
 <template lang="">
   <div>
-    <div calss="article-search-type">
-      <button
-        :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[0] }]"
-        @click="selectType(0, 'title')"
-      >
-        제목
-      </button>
-      <button
-        :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[1] }]"
-        @click="selectType(1, 'all')"
-      >
-        제목+작성자
-      </button>
-      <button
-        :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[2] }]"
-        @click="selectType(2, 'nickName')"
-      >
-        작성자
-      </button>
-      <button
-        :class="['radious', { changeColor: isHovering }]"
-        id="writeBtn"
-        @click="moveWrite()"
-        @mouseover="hover()"
-        @mouseleave="hover()"
-      >
-        글쓰기
-      </button>
-    </div>
+    <button
+      :class="['radious', { changeColor: isHovering }]"
+      id="writeBtn"
+      @click="moveWrite()"
+      @mouseover="hover()"
+      @mouseleave="hover()"
+    >
+      글쓰기
+    </button>
     <div class="article-search-input">
-      <label>
-        <input id="search-input" placeholder="검색어를 입력하세요" />
-        <button type="button" class="radious" @click="submit()">
-          <img id="submitImage" src="../../../../public/search_icon.png" />
+      <div calss="article-search-type">
+        <button
+          :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[0] }]"
+          @click="selectType(0, 'title')"
+        >
+          제목
         </button>
-      </label>
-    </div>
-    <div v-if="items.length">
-      <b-table
-        id="articleTable"
-        samll
-        hover
-        :items="items"
-        :fields="fields"
-        :per-page="perPage"
-        :current-page="currentPage"
-        @row-clicked="moveDetail"
-      >
-      </b-table>
-      <!-- https://bootstrap-vue.org/docs/components/pagination#component-reference 꾸밀때 참고 -->
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="rows"
-        :per-page="perPage"
-        aria-controls="articleTable"
-        first-text="⏮"
-        prev-text="⏪"
-        next-text="⏩"
-        last-text="⏭"
-        class="mt-4"
-        align="center"
-      ></b-pagination>
-    </div>
-    <div v-else class="no-content">
-      <img src="../../../../public/icon_noresult.png" />
-      <p>글이 없졍..</p>
+        <button
+          :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[1] }]"
+          @click="selectType(1, 'nickName')"
+        >
+          작성자
+        </button>
+
+        <label>
+          <input id="search-input" placeholder="검색어를 입력하세요" />
+          <button type="button" class="radious" @click="submit()">
+            <img id="submitImage" src="../../../../public/search_icon.png" />
+          </button>
+        </label>
+      </div>
+      <div v-if="items.length">
+        <b-table
+          id="articleTable"
+          samll
+          hover
+          :items="items"
+          :fields="fields"
+          :per-page="perPage"
+          :current-page="currentPage"
+          @row-clicked="moveDetail"
+        >
+        </b-table>
+        <!-- https://bootstrap-vue.org/docs/components/pagination#component-reference 꾸밀때 참고 -->
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+          aria-controls="articleTable"
+          first-text="⏮"
+          prev-text="⏪"
+          next-text="⏩"
+          last-text="⏭"
+          class="mt-4"
+          align="center"
+        ></b-pagination>
+      </div>
+      <div v-else class="no-content">
+        <img src="../../../../public/icon_noresult.png" />
+        <p>글이 없졍..</p>
+      </div>
     </div>
   </div>
 </template>
@@ -244,7 +239,7 @@ export default {
       ],
       isHovering: false,
       categoryId: '',
-      isClicked: [true, false, false],
+      isClicked: [true, false],
       searchType: null,
     };
   },
