@@ -24,6 +24,7 @@ footer {
   align-items: center;
   background: #fffefc;
   color: black;
+  font-size: large;
 }
 footer a {
   color: black;

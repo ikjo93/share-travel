@@ -29,6 +29,7 @@ public enum ApiResponseCode {
     USER_LOGOUT_SUCCESS("U09", 200, "로그아웃이 정상적으로 처리되었습니다."),
 
     TRAVEL_KEYWORD_NOT_FOUND("TK01", 404, "존재하지 않는 여행지 키워드입니다."),
+    TRAVEL_SAVING_FAILED("TK02", 500, "여행지 정보를 등록하는데 실패했습니다."),
 
     SERVER_INTERNAL_ERROR("G01", 500, "현재 서버 내부에서 에러가 발생했습니다.");
 
