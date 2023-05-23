@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.geo.Point;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -34,9 +33,4 @@ public class TravelRequestDto {
 
     @NotNull
     private Double latitude; // 경도 37...
-
-    // the x field represents the longitude, and the y field represents the latitude.
-    public Point getPoint() {
-        return new Point(longitude, latitude);
-    }
 }

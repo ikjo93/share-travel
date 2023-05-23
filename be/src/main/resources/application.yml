@@ -11,6 +11,8 @@ spring:
         format_sql: true # SQL 예쁘게 보기
     hibernate:
       ddl-auto: none
+    database: mysql
+    database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
   data:
     redis:
       host: ${REDIS_HOST}

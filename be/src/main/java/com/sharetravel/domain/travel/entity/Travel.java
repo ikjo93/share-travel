@@ -6,16 +6,14 @@ import com.sharetravel.domain.travelreview.entity.TravelReview;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.global.domain.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.geo.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "`travel`")
@@ -49,37 +47,4 @@ public class Travel extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "travel")
     private List<Image> images = new ArrayList<>();
-
-    @Builder
-    public Travel(String name, String description, Point location, User writer,
-                  TravelKeyword travelKeyword) {
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.writer = writer;
-        this.travelKeyword = travelKeyword;
-    }
-
-    public void addImage(Image image) {
-        images.add(image);
-        image.setTravel(this);
-    }
-
-    public String getTravelKeywordName() {
-        return travelKeyword.getName();
-    }
-
-    public List<String> getImageUrls() {
-        return images.stream()
-                .map(Image::getUrl)
-                .collect(Collectors.toList());
-    }
-
-    public Double getLongitude() {
-        return location.getY();
-    }
-
-    public Double getLatitude() {
-        return location.getY();
-    }
 }

@@ -5,13 +5,13 @@ import com.sharetravel.domain.image.repository.ImageRepository;
 import com.sharetravel.domain.image.service.ImageService;
 import com.sharetravel.domain.travel.dto.TravelRequestDto;
 import com.sharetravel.domain.travel.dto.TravelResponseDto;
-import com.sharetravel.domain.travel.entity.Travel;
 import com.sharetravel.domain.travel.repository.TravelRepository;
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.domain.travelkeyword.repository.TravelKeywordRepository;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.domain.user.repository.UserRepository;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,32 +23,34 @@ public class TravelService {
     private final ImageService imageService;
 
     private final TravelRepository travelRepository;
-    private final TravelKeywordRepository travelKeywordRepository;
-    private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
+    private final TravelKeywordRepository travelKeywordRepository;
+
+    @Transactional(readOnly = true)
+    public List<TravelResponseDto> findAllAroundCoordinate(Double longitude, Double latitude) {
+        String point = getPoint(longitude, latitude);
+        return travelRepository.findAllByPoint(point);
+    }
 
     @Transactional
-    public TravelResponseDto save(Long userId, TravelRequestDto travelInfo) {
+    public void save(Long userId, TravelRequestDto travelInfo) {
         User user = getUserById(userId);
         TravelKeyword travelKeyword = getTravelKeywordById(travelInfo.getTravelKeywordId());
-        Travel travel = Travel.builder()
-                .name(travelInfo.getName())
-                .description(travelInfo.getDescription())
-                .travelKeyword(travelKeyword)
-                .writer(user)
-                .location(travelInfo.getPoint())
-                .build();
+        String point = getPoint(travelInfo.getLongitude(), travelInfo.getLatitude());
+        travelRepository.save(travelKeyword.getId(), user.getId(), travelInfo.getName(), travelInfo.getDescription(), point);
+
+        Long travelId = travelRepository.findLastTravelId();
 
         List<Image> images = imageService.uploadFiles(travelInfo.getFiles());
+
         for (Image image : images) {
-            travel.addImage(image);
+            imageRepository.save(travelId, image.getUrl());
         }
+    }
 
-        // 실행 순서 중요 -> 불필요한 더티 체킹 유발 가능
-        travelRepository.save(travel);
-        imageRepository.saveAll(images);
-
-        return TravelResponseDto.from(travel);
+    private String getPoint(Double longitude, Double latitude) {
+        return String.format("POINT(%s %s)", longitude, latitude);
     }
 
     private User getUserById(Long userId) {
