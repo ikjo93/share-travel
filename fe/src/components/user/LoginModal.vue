@@ -1,8 +1,10 @@
 <template>
   <div>
-    <b-nav-item id="show-btn" @click="showLoginModal">로그인</b-nav-item>
+    <b-nav-item id="show-btn" @click="showLoginModal"
+      ><span>로그인</span></b-nav-item
+    >
     <b-modal ref="my-modal" hide-footer title="로그인">
-      <div class="d-block text-center">
+      <div class="d-block text-center" style="font-family: 'hanna-pro';">
         <h3>Welcome to the Share Travel!!!</h3>
         <img src="/logo.png" width="150px" alt="logo" />
       </div>
@@ -27,6 +29,7 @@
         variant="outline-danger"
         block
         @click="hideLoginModal"
+        style="font-family: 'hanna-pro';"
         >닫기</b-button
       >
     </b-modal>
@@ -60,7 +63,9 @@ export default {
   width: 15px;
   height: 15px;
 }
+
 .login-container {
   margin-left: 10px;
+  font-family: 'hanna-pro';
 }
 </style>

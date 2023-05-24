@@ -130,7 +130,7 @@
       >
         <b-form-group
           id="fieldset-1"
-          label="장소 이름 : {{ detailTravelInfo.name }}"
+          :label="`장소 이름 : {{ detailTravelInfo.name }}`"
         >
         </b-form-group>
         <h2>여행지 키워드 : {{ detailTravelInfo.travelKeyword }}</h2>
@@ -180,7 +180,7 @@ export default {
       longitude: 0,
       latitude: 0,
       travelInfo: [],
-      detailTravelInfo: '',
+      detailTravelInfo: {},
     };
   },
   computed: {
@@ -443,7 +443,7 @@ export default {
             let travelInfoWindowContent = `<div click="openTravelInfoModal(${info.travelId})" style="width: 250px; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);">
                                             <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">장소 이름 : ${info.name}</h2>
                                             <p style="margin-bottom: 15px;">여행지 키워드 : ${info.travelKeyword}</p>
-                                            <img src="${info.url}" style="display: inline-block; padding: 8px 15px; background-color: #337ab7; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s;">
+                                            <img src="${info.url}" width="40px" height="40px" style="display: inline-block; padding: 8px 15px; background-color: #337ab7; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s;">
                                           </div>`;
 
             let travelInfoWindow = new kakao.maps.InfoWindow({
