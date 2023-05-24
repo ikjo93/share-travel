@@ -1,4 +1,4 @@
-package com.sharetravel.domain.boardCategory.controller;
+package com.sharetravel.domain.boardcategory.controller;
 
 import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
 

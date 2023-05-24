@@ -1,7 +1,7 @@
 package com.sharetravel.domain.board.entity;
 
 import com.sharetravel.domain.board.dto.BoardUpdateRequestDto;
-import com.sharetravel.domain.boardCategory.entity.BoardCategory;
+import com.sharetravel.domain.boardcategory.entity.BoardCategory;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.global.domain.BaseTimeEntity;
 
