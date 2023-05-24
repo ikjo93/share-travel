@@ -1,9 +1,37 @@
 <template lang="">
   <div>
-    <div>
-      <button class="radious writeBtn" @click="moveWrite()">글쓰기</button>
-    </div>
+    <button
+      :class="['radious', { changeColor: isHovering }]"
+      id="writeBtn"
+      @click="moveWrite()"
+      @mouseover="hover()"
+      @mouseleave="hover()"
+    >
+      글쓰기
+    </button>
     <div v-if="items.length">
+      <div calss="article-search-type">
+        <button
+          :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[0] }]"
+          @click="selectType(0, 'title')"
+        >
+          제목
+        </button>
+        <button
+          :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[1] }]"
+          @click="selectType(1, 'nickName')"
+        >
+          작성자
+        </button>
+      </div>
+      <div class="article-search-input">
+        <label>
+          <input id="search-input" placeholder="검색어를 입력하세요" />
+          <button type="button" class="radious" @click="submit()">
+            <img id="submitImage" src="../../../../public/search_icon.png" />
+          </button>
+        </label>
+      </div>
       <b-table
         id="articleTable"
         samll
@@ -43,14 +71,38 @@ export default {
       currentPage: 1,
       fields: ['title', 'author', 'writeDate', 'boardType'],
       items: [],
+      isHovering: false,
+      categoryId: '',
+      isClicked: [true, false],
+      searchType: null,
     };
   },
+  created() {
+    this.categoryId = this.$store.state.categoryId;
+  },
   methods: {
-    moveDetail() {
-      this.$router.push({ name: 'boarddetail' });
+    moveDetail(board) {
+      this.$router.push({
+        name: 'boarddetail',
+        query: { boardId: board.boardId },
+      });
     },
     moveWrite() {
       this.$router.push({ name: 'boardwrite' });
+    },
+    hover() {
+      this.isHovering = !this.isHovering;
+    },
+    selectType(idx, type) {
+      this.isClicked.fill(false);
+      this.$set(this.isClicked, idx, true);
+      this.searchType = type;
+    },
+    submit() {
+      console.log('TODO');
+      console.log(this.categoryId);
+      // TODO : 클릭 시 searchType과 input내용 가져와서 검색 후
+      // 화면에 뿌려주기
     },
   },
   computed: {
@@ -74,7 +126,30 @@ export default {
   margin: auto;
   padding-top: 60px;
 }
-.writeBtn {
+#writeBtn {
   float: right;
+}
+.searchTypeBtn {
+  float: left;
+}
+#search-input {
+  border-radius: 50px !important;
+  padding: 2.5px 12px !important;
+  overflow-x: auto !important;
+  margin: 5px !important;
+  white-space: nowrap !important;
+  outline: none;
+}
+#submitImage {
+  width: 10px;
+  height: 10px;
+}
+.changeColor {
+  background-color: black;
+  color: white;
+}
+.clickedBtn {
+  background-color: black;
+  color: white;
 }
 </style>

@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     user: {},
     token: '',
+    categoryId: '',
   },
   getters: {
     isLoggedIn(state) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
       const length = state.user.keywords.length;
       return 1 <= length && length <= 3;
     },
+    getCategoryId(state) {
+      return state.categoryId;
+    },
   },
   mutations: {
     SET_USER(state, user) {
@@ -33,6 +37,9 @@ export default new Vuex.Store({
     LOGOUT(state) {
       state.user = null;
       state.token = null;
+    },
+    SET_CATEGORY_ID(state, categoryId) {
+      state.categoryId = categoryId;
     },
   },
 });

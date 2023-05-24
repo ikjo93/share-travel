@@ -75,8 +75,13 @@ export default new Router({
       path: '/board',
       name: 'board',
       component: () => import('@/views/BoardPage.vue'),
-      redirect: '/board/notice',
+      redirect: '/board/general',
       children: [
+        {
+          path: 'jumbotron',
+          name: 'boardjumbotron',
+          component: () => import('@/components/board/BoardJumbotron.vue'),
+        },
         {
           path: 'notice',
           name: 'boardnotice',
@@ -111,9 +116,10 @@ export default new Router({
           beforeEnter,
         },
         {
-          path: 'qna',
-          name: 'boardqna',
-          component: () => import('@/components/board/content/BoardQna.vue'),
+          path: 'modify',
+          name: 'boardmodify',
+          component: () => import('@/components/board/BoardModify.vue'),
+          beforeEnter,
         },
       ],
     },

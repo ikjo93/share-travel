@@ -40,3 +40,7 @@ export const travelsWithAuth = createWithAuth(
 );
 
 export const boards = create(`${process.env.VUE_APP_API_URL}api/boards`);
+
+export const boardsWithAuth = createWithAuth(
+  `${process.env.VUE_APP_API_URL}api/boards`,
+);

@@ -1,26 +1,38 @@
-import { boards } from '@/api/index';
-import { board } from '@/api/index';
+import { boards, boardsWithAuth } from '@/api/index';
 
 // function getListByCondition() {}
 
 function getListByCategory(categoryId) {
-  return boards.get(`/${categoryId}`); //파라미터 주소 확인해서 수정
+  return boards.get(`?categoryId=${categoryId}`);
+}
+
+function getListByCondition(categoryId, searchType, keyword) {
+  return boards.get(
+    `?categoryId=${categoryId}&searchType=${searchType}&keyword=${keyword}`,
+  );
 }
 
 function getDetail(boardId) {
-  return board.get(`/${boardId}`);
+  return boards.get(`/${boardId}`);
 }
 
-function registBoard(data) {
-  return board.post(``, data);
+function registBoard(board) {
+  return boardsWithAuth.post(``, board);
 }
 
-function updatBoard(boardId, data) {
-  return board.put(`/${boardId}`, data);
+function updateBoard(boardId, data) {
+  return boardsWithAuth.put(`/${boardId}`, data);
 }
 
 function deleteBoard(boardId) {
-  return board.delete(`/${boardId}`);
+  return boardsWithAuth.delete(`/${boardId}`);
 }
 
-export { getListByCategory, getDetail, registBoard, updatBoard, deleteBoard };
+export {
+  getListByCategory,
+  getListByCondition,
+  getDetail,
+  registBoard,
+  updateBoard,
+  deleteBoard,
+};

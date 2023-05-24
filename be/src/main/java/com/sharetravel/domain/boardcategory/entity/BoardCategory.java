@@ -23,29 +23,29 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @NamedEntityGraph(
-    name = "BoardCategoryWithAll",
-    attributeNodes = {
-        @NamedAttributeNode(value = "boards", subgraph = "boards")
-    },
-    subgraphs = @NamedSubgraph(
-        name = "boards",
-        attributeNodes = {
-            @NamedAttributeNode("author")
-        }
-    )
+	name = "BoardCategoryWithAll",
+	attributeNodes = {
+		@NamedAttributeNode(value = "boards", subgraph = "boards")
+	},
+	subgraphs = @NamedSubgraph(
+		name = "boards",
+		attributeNodes = {
+			@NamedAttributeNode("author")
+		}
+	)
 )
 @Table(name = "board_category")
 @Entity
 public class BoardCategory extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_category_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "board_category_id")
+	private Long id;
 
-    @Column(name = "category_name")
-    private String name;
+	@Column(name = "category_name")
+	private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<Board> boards = new ArrayList<>();
+	@OneToMany(mappedBy = "category")
+	private List<Board> boards = new ArrayList<>();
 }

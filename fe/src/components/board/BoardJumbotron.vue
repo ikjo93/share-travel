@@ -7,33 +7,27 @@
     >
       <button
         :class="['radious', { clickedBtn: isClicked[0] }]"
-        @click="moveNotice(0)"
-      >
-        공지사항
-      </button>
-      <button
-        :class="['radious', { clickedBtn: isClicked[1] }]"
-        @click="moveEvent(1)"
-      >
-        이벤트
-      </button>
-      <button
-        :class="['radious', { clickedBtn: isClicked[2] }]"
-        @click="moveGeneral(2)"
+        @click="moveCategory(0)"
       >
         자유 게시판
       </button>
       <button
-        :class="['radious', { clickedBtn: isClicked[3] }]"
-        @click="moveTip(3)"
+        :class="['radious', { clickedBtn: isClicked[1] }]"
+        @click="moveCategory(1)"
       >
         꿀팁 게시판
       </button>
       <button
-        :class="['radious', { clickedBtn: isClicked[4] }]"
-        @click="moveQna(4)"
+        :class="['radious', { clickedBtn: isClicked[2] }]"
+        @click="moveCategory(2)"
       >
-        QnA
+        공지사항
+      </button>
+      <button
+        :class="['radious', { clickedBtn: isClicked[3] }]"
+        @click="moveCategory(3)"
+      >
+        이벤트
       </button>
     </b-jumbotron>
   </div>
@@ -42,35 +36,27 @@
 export default {
   data: function() {
     return {
-      isClicked: [true, false, false, false, false],
+      isClicked: [false, false, false, false],
     };
   },
   methods: {
-    moveNotice(idx) {
-      // TODO:클릭한 버튼에 대해서 검은색 처리 및 나머지 버튼 색상해제
+    moveCategory(idx) {
       this.isClicked.fill(false);
       this.$set(this.isClicked, idx, true);
-      this.$router.push({ name: 'boardnotice' });
-    },
-    moveEvent(idx) {
-      this.isClicked.fill(false);
-      this.$set(this.isClicked, idx, true);
-      this.$router.push({ name: 'boardevent' });
-    },
-    moveGeneral(idx) {
-      this.isClicked.fill(false);
-      this.$set(this.isClicked, idx, true);
-      this.$router.push({ name: 'boardgeneral' });
-    },
-    moveTip(idx) {
-      this.isClicked.fill(false);
-      this.$set(this.isClicked, idx, true);
-      this.$router.push({ name: 'boardtip' });
-    },
-    moveQna(idx) {
-      this.isClicked.fill(false);
-      this.$set(this.isClicked, idx, true);
-      this.$router.push({ name: 'boardqna' });
+      console.log(this.isClicked);
+      if (idx == 0) {
+        this.$store.commit('SET_CATEGORY_ID', 1);
+        this.$router.push({ name: 'boardgeneral' });
+      } else if (idx == 1) {
+        this.$store.commit('SET_CATEGORY_ID', 2);
+        this.$router.push({ name: 'boardtip' });
+      } else if (idx == 2) {
+        this.$store.commit('SET_CATEGORY_ID', 3);
+        this.$router.push({ name: 'boardnotice' });
+      } else if (idx == 3) {
+        this.$store.commit('SET_CATEGORY_ID', 4);
+        this.$router.push({ name: 'boardevent' });
+      }
     },
   },
 };

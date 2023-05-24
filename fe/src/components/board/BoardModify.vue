@@ -23,13 +23,13 @@
       ></b-form-textarea>
     </div>
     <div class="board-write-btn">
-      <button class="radious" @click="redirectBoard()">취소</button>
-      <button class="radious" @click="regist()">등록</button>
+      <button class="radious" @click="cancle()">취소</button>
+      <button class="radious" @click="modify()">수정완료</button>
     </div>
   </div>
 </template>
 <script>
-import { registBoard } from '@/api/board.js';
+import { getDetail, updateBoard } from '@/api/board.js';
 
 export default {
   data() {
@@ -37,19 +37,19 @@ export default {
       board: {
         categoryId: '',
         nickName: '',
-        title: null,
+        title: '',
         subTitle: null,
         content: null,
       },
     };
   },
   computed: {},
-  created() {
-    this.board.categoryId = this.$store.state.categoryId;
-    this.board.nickName = this.$store.state.user.nickName;
+  async created() {
+    this.board.boardId = this.$route.query.boardId;
+    this.board = await getDetail(this.$route.query.boardId);
   },
   methods: {
-    regist() {
+    modify() {
       let err = true;
       let msg = '';
       !this.board.title &&
@@ -68,17 +68,16 @@ export default {
         this.$refs.textarea.focus());
 
       if (!err) alert(msg);
-      else
-        registBoard({
-          categoryId: this.board.categoryId,
-          nickName: this.board.nickName,
+      else if (confirm('수정을 완료하시겠습니까 ?')) {
+        updateBoard(this.board.boardId, {
           title: this.board.title,
           subTitle: this.board.subTitle,
           content: this.board.content,
         }).then(this.$router.push({ name: 'boardgeneral' }));
+      }
     },
-    redirectBoard() {
-      if (confirm('취소하면 작성한 모든 내용이 사라집니다 !')) {
+    cancle() {
+      if (confirm('취소하면 수정한 모든 내용이 적용되지 않습니다 !')) {
         if (this.categoryId == 1) {
           this.$router.push({ name: 'boardgeneral' });
         } else {
