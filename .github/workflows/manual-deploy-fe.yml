@@ -1,4 +1,4 @@
-name: FRONTEND CI/CD
+name: Manual Deploy Frontend
 
 on:
   workflow_dispatch:
