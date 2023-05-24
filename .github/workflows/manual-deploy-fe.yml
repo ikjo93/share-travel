@@ -35,6 +35,9 @@ jobs:
       - name: Build project
         run: |
           npm run build --if-present
+          pwd
+          ls -al
+          ls build
 
       - name: init build outputs at AWS EC2
         uses: appleboy/ssh-action@master
