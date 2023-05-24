@@ -31,11 +31,10 @@ public class TravelService {
 
     @Transactional(readOnly = true)
     public TravelResponseDto findById(Long travelId) {
-        Travel travel = travelRepository.findWithAllById(travelId).orElseThrow(() -> {
-            throw new IllegalStateException("식별 변호가 " + travelId + "에 해당하는 여행지 정보가 없습니다.");
-        });
+        TravelSearchResponseDto travel = travelRepository.findWithAllById(travelId);
+        List<String> urls = travelRepository.findImagesById(travelId);
 
-        return TravelResponseDto.from(travel);
+        return TravelResponseDto.from(travel, urls);
     }
 
     @Transactional(readOnly = true)

@@ -2,8 +2,7 @@ package com.sharetravel.domain.travel.repository;
 
 import com.sharetravel.domain.travel.dto.TravelSearchResponseDto;
 import com.sharetravel.domain.travel.entity.Travel;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.EntityGraph;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +13,24 @@ import java.util.List;
 
 public interface TravelRepository extends JpaRepository<Travel, Long> {
 
-    @EntityGraph(value = "Travel.withAll")
-    Optional<Travel> findWithAllById(@Param("id") Long id);
+    String SELECT_TRAVEL_INFO_QUERY = "select t.travel_id as travelId, " +
+            "t.name as name, t.description as description, u.nickname userNickName, " +
+            "tk.name as travelKeyword, ST_X(t.location) as longitude, ST_Y(t.location) as latitude " +
+            "from travel t " +
+            "join user u on t.travel_user_id = u.user_id " +
+            "join travel_keyword tk on t.travel_travel_keyword_id = tk.travel_keyword_id " +
+            "where t.travel_id = :id";
+
+    @Query(value = SELECT_TRAVEL_INFO_QUERY, nativeQuery = true)
+    TravelSearchResponseDto findWithAllById(@Param("id") Long id);
+
+    String SELECT_TRAVEL_IMAGES_QUERY = "select url " +
+            "from travel t " +
+            "join image i on t.travel_id = i.image_travel_id " +
+            "where t.travel_id = :id";
+
+    @Query(value = SELECT_TRAVEL_IMAGES_QUERY, nativeQuery = true)
+    List<String> findImagesById(@Param("id") Long id);
 
     String SEARCH_RADIUS = "1000";
 

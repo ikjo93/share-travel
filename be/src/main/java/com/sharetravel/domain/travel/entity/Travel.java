@@ -14,10 +14,6 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@NamedEntityGraph(name = "Travel.withAll", attributeNodes = {
-    @NamedAttributeNode("writer"), @NamedAttributeNode("travelKeyword"),
-    @NamedAttributeNode("images")
-})
 @Table(name = "`travel`")
 @Entity
 public class Travel extends BaseTimeEntity {
@@ -46,18 +42,4 @@ public class Travel extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "travel")
     private List<Image> images = new ArrayList<>();
-
-    public String getTravelKeyword() {
-        return travelKeyword.getName();
-    }
-
-    public String getWriterNickName() {
-        return writer.getNickName();
-    }
-
-    public List<String> getImageUrls() {
-        return images.stream()
-            .map(Image::getUrl)
-            .collect(Collectors.toList());
-    }
 }
