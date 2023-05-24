@@ -15,16 +15,27 @@
       shadow
       title="원하시는 여행지를 검색해보세요! 📢"
       width="25%"
+      no-header-close
     >
       <div class="px-3 py-2" style="margin-top: 15%;">
-        <b-nav-form>
-          <b-form-input
-            size="lg"
-            class="mr-sm-2"
-            placeholder="현재 위치에서 찾으실 여행지를 작성해주세요"
-          ></b-form-input>
-          <b-button size="lg" class="my-2 my-sm-0" type="submit">검색</b-button>
-        </b-nav-form>
+        <b-form-group
+          id="fieldset-1"
+          label="선호하시는 여행 키워드로 검색해보세요. 💕"
+          label-for="input-1"
+        >
+          <div class="grid-container">
+            <button
+              class="radious grid-item"
+              v-for="travelKeyword in travelKeywords"
+              :key="travelKeyword.id"
+              @click="selectTravelKeyword(travelKeyword)"
+              :value="travelKeyword.id"
+              :class="{ selected: travelKeyword.selected }"
+            >
+              {{ travelKeyword.name }}
+            </button>
+          </div>
+        </b-form-group>
         <b-list-group style="margin-top: 20px;">
           <b-list-group-item>Cras justo odio</b-list-group-item>
           <b-list-group-item>Dapibus ac facilisis in</b-list-group-item>
@@ -38,10 +49,14 @@
 </template>
 
 <script>
+import { getTravelKeywords } from '@/api/travel.js';
+
 export default {
   data() {
     return {
       searchBar: false,
+      travelKeywords: [],
+      userInputTravelKeywords: [],
     };
   },
   computed: {
@@ -53,8 +68,63 @@ export default {
     toggle() {
       this.searchBar = !this.searchBar;
     },
+    async selectTravelKeyword(keyword) {
+      keyword.selected = !keyword.selected;
+      if (keyword.selected) {
+        this.userInputTravelKeywords.push(keyword.id);
+      } else {
+        this.deleteTravelKeyword(keyword);
+      }
+    },
+  },
+  async created() {
+    const { data } = await getTravelKeywords();
+    for (let i = 0; i < data.length; i++) {
+      this.travelKeywords.push({
+        id: data[i].id,
+        name: data[i].name,
+        selected: false,
+      });
+    }
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+.radious {
+  border-radius: 50px !important;
+  padding: 5px 12px !important;
+  overflow-x: auto !important;
+  margin: 5px !important;
+  white-space: nowrap !important;
+  border: 0px !important;
+}
+
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid-container > .grid-item {
+  flex: 0 0 calc(33.33% - 10px);
+  margin: 5px;
+  border: 1px solid #ccc;
+  font-size: 25px;
+  text-align: center;
+}
+
+.grid-container > .grid-item.selected {
+  background-color: #ffcc00;
+  /* Update with desired background color */
+  color: #ffffff;
+  /* Update with desired letter color */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  /* Adjust the margin as needed */
+}
+</style>

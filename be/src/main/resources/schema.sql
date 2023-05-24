@@ -1,16 +1,14 @@
-CREATE
-DATABASE IF NOT EXISTS sharetravel CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS sharetravel CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-use
-sharetravel;
+use sharetravel;
 
 drop table if exists `image`;
 drop table if exists `travel`;
 drop table if exists `user_travel_keyword`;
 drop table if exists `travel_keyword`;
-drop table if exists `user`;
 drop table if exists `board`;
 drop table if exists `board_category`;
+drop table if exists `user`;
 
 create table `travel_keyword`
 (

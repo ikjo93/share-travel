@@ -1,6 +1,5 @@
 package com.sharetravel.domain.travel.dto;
 
-import com.sharetravel.domain.travel.entity.Travel;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,10 +15,10 @@ public class TravelResponseDto {
     private String description;
     private String travelKeyword;
     private String writer;
-    private List<String> url;
+    private List<String> urls;
 
-    public static TravelResponseDto from(Travel travel) {
+    public static TravelResponseDto from(TravelSearchResponseDto travel, List<String> urls) {
         return new TravelResponseDto(travel.getName(), travel.getDescription(),
-            travel.getTravelKeyword(), travel.getWriterNickName(), travel.getImageUrls());
+            travel.getTravelKeyword(), travel.getUserNickName(), urls);
     }
 }
