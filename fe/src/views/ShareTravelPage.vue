@@ -130,7 +130,7 @@
       >
         <b-form-group
           id="fieldset-1"
-          label="장소 이름 : {{ detailTravelInfo.name }}"
+          :label="`장소 이름 : {{ detailTravelInfo.name }}`"
         >
         </b-form-group>
         <h2>여행지 키워드 : {{ detailTravelInfo.travelKeyword }}</h2>
@@ -168,10 +168,9 @@ export default {
   },
   data() {
     return {
-      map: null,
-      markers: [],
-      travelMarkers: [],
-      infoWin: null,
+      map: null, // 카카오맵 지도 객체
+      markers: [], // 카카오맵에 존재하는 마커 객체 배열
+      infoWin: null, // 선택한 인포윈도우 객체
       travelKeywords: [],
       userInputTravelName: '',
       userInputTravelDescription: '',
@@ -179,8 +178,8 @@ export default {
       userInputTravelPictures: [],
       longitude: 0,
       latitude: 0,
-      travelInfo: [],
-      detailTravelInfo: '',
+      travelInfo: [], // 검색한 여행지 정보 객체 배열
+      detailTravelInfo: {}, // 상세화면 정보 객체
     };
   },
   computed: {
@@ -416,17 +415,30 @@ export default {
       // 받은 여행지 정보 좌표 기반 지도에 뿌려주기
       data.forEach(info => {
         this.travelInfo.push(info);
-        console.log(info);
 
         // 클릭한 위도, 경도 정보를 가져옴
         let longitude = info.longitude;
         let latitude = info.latitude;
-        console.log(longitude, latitude);
+
+        let markerImageLogo = '/logo.png';
+        if (info.travelKeyword === '운동시설') {
+          markerImageLogo = '/travel/exercise.png';
+        } else if (info.travelKeyword === '산책') {
+          markerImageLogo = '/travel/walking.png';
+        } else if (info.travelKeyword === '일몰') {
+          markerImageLogo = '/travel/sunout.png';
+        } else if (info.travelKeyword === '일출') {
+          markerImageLogo = '/travel/sunin.png';
+        } else if (info.travelKeyword === '감성') {
+          markerImageLogo = '/travel/sense.png';
+        } else if (info.travelKeyword === '야경') {
+          markerImageLogo = '/travel/nightview.png';
+        }
 
         // 마커 이미지 생성
         let markerImage = new kakao.maps.MarkerImage(
-          '/logo.png', // 마커이미지의 주소
-          new kakao.maps.Size(50, 65), // 마커이미지의 크기
+          markerImageLogo, // 마커이미지의 주소
+          new kakao.maps.Size(30, 30), // 마커이미지의 크기
           { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
         );
 
@@ -440,11 +452,41 @@ export default {
           marker,
           'click',
           function() {
-            let travelInfoWindowContent = `<div click="openTravelInfoModal(${info.travelId})" style="width: 250px; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);">
-                                            <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">장소 이름 : ${info.name}</h2>
-                                            <p style="margin-bottom: 15px;">여행지 키워드 : ${info.travelKeyword}</p>
-                                            <img src="${info.url}" style="display: inline-block; padding: 8px 15px; background-color: #337ab7; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s;">
-                                          </div>`;
+            let travelInfoWindowContent = document.createElement('div');
+            travelInfoWindowContent.className = 'card';
+            travelInfoWindowContent.style = `display: flex;
+              pointer: cursor;
+              flex - direction: column;
+              align - items: flex - start;
+              justify - content: flex - start;
+              width: 200px;
+              background - color: #fff;
+              padding: 20px;
+              border - radius: 10px;
+              box - shadow: 0 2px 6px rgba(0, 0, 0, 0.3);`;
+            travelInfoWindowContent.innerHTML = `
+                                            <h4 class="title" style="flex-grow: 1;
+                                                margin-left: 10px;
+                                                margin-right: 10px;">
+                                                ${info.name}
+                                            </h4>
+                                            <div class="row" style="display: flex; align-items: center;">
+                                              <img src="${info.url}" width="100px" height="60px" class="image" style="
+                                                  margin-left: auto;
+                                                  padding: 8px 15px;
+                                                  color: #fff;
+                                                  text-decoration: none;
+                                                  border-radius: 4px;
+                                                  transition: background-color 0.3s;
+                                              ">
+                                              <p class="text" style="flex-grow: 1;
+                                                                     margin-left: 10px;
+                                                                     margin-right: 10px;
+                                              ">${info.travelKeyword}</p>
+                                            </div>`;
+            travelInfoWindowContent.onclick = this.openTravelInfoModal(
+              `${info.travelId}`,
+            );
 
             let travelInfoWindow = new kakao.maps.InfoWindow({
               content: travelInfoWindowContent,
@@ -459,9 +501,13 @@ export default {
       });
     },
     async openTravelInfoModal(travelId) {
-      const { data } = await getTravelInfoById(travelId);
-      this.detailTravelInfo = data;
-      this.$refs['detailTravelModal'].show();
+      try {
+        const { data } = await getTravelInfoById(travelId);
+        this.detailTravelInfo = data;
+        this.$refs['detailTravelModal'].show();
+      } catch (error) {
+        alert('여행지 정보를 가져오는 과정에서 에러가 발생했습니다!');
+      }
     },
     /* 여행지 등록 모달창 열기 */
     async moveRegisterForm() {
@@ -496,7 +542,7 @@ export default {
       this.$refs['registerTravelModal'].hide();
     },
     closeDetailTravelInfo() {
-      this.detailTravelInfo = '';
+      this.detailTravelInfo = {};
       this.$refs['detailTravelModal'].hide();
     },
     /* 여행지 키워드 선택하기(토글) */

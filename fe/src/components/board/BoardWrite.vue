@@ -47,6 +47,8 @@ export default {
   created() {
     this.board.categoryId = this.$store.state.categoryId;
     this.board.nickName = this.$store.state.user.nickName;
+    console.log(this.board.categoryId);
+    console.log(this.board.nickName);
   },
   methods: {
     regist() {
@@ -68,14 +70,25 @@ export default {
         this.$refs.textarea.focus());
 
       if (!err) alert(msg);
-      else
-        registBoard({
-          categoryId: this.board.categoryId,
-          nickName: this.board.nickName,
-          title: this.board.title,
-          subTitle: this.board.subTitle,
-          content: this.board.content,
-        }).then(this.$router.push({ name: 'boardgeneral' }));
+      else {
+        let nickName = this.board.nickName;
+        let title = this.board.title;
+        let subTitle = this.board.subTitle;
+        let content = this.board.content;
+        let categoryId = this.board.categoryId;
+        let data = {
+          nickName: nickName,
+          title: title,
+          subTitle: subTitle,
+          content: content,
+          categoryId: categoryId,
+        };
+        console.log(data);
+        registBoard(data).then(
+          alert('등록이 완료되었습니다'),
+          this.$router.push({ name: 'boardgeneral' }),
+        );
+      }
     },
     redirectBoard() {
       if (confirm('취소하면 작성한 모든 내용이 사라집니다 !')) {

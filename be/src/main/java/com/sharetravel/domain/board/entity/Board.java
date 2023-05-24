@@ -39,7 +39,7 @@ public class Board extends BaseTimeEntity {
     private String title;
 
     @Column(length = 100, nullable = false)
-    private String subTitle;
+    private String subtitle;
 
     @Column(length = 1500, nullable = false)
     private String content;
@@ -57,7 +57,7 @@ public class Board extends BaseTimeEntity {
         String subTitle, String content,
         User user, BoardCategory category) {
         this.title = title;
-        this.subTitle = subTitle;
+        this.subtitle = subTitle;
         this.content = content;
         this.author = user;
         this.category = category;
@@ -65,7 +65,7 @@ public class Board extends BaseTimeEntity {
 
     public Board update(BoardUpdateRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.subTitle = requestDto.getSubTitle();
+        this.subtitle = requestDto.getSubTitle();
         this.content = requestDto.getContent();
 
         return this;

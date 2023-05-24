@@ -31,8 +31,10 @@ public class BoardService {
     public List<BoardResponseDto> findAllByCondition(BoardSearchCondition condition) {
         List<Board> boards;
         if (condition.isTitle()) {
+            System.out.println(condition.getKeyword()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             boards = boardRepository.findAllByTitleKeyword(condition.getCategoryId(), condition.getKeyword());
         } else {
+            System.out.println(condition.getKeyword()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             boards = boardRepository.findAllByNicknameKeyword(condition.getCategoryId(), condition.getKeyword());
         }
         return boards.stream()

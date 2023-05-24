@@ -49,13 +49,13 @@ public class BoardController {
         return boardService.save(userId, requestDto);
     }
 
-    @PutMapping("/api/board/{id}")
+    @PutMapping("/api/boards/{id}")
     public BoardResponseDto update(@PathVariable Long id, @Valid @RequestBody BoardUpdateRequestDto requestDto) {
         return boardService.update(id, requestDto);
     }
 
     // 게시글 삭제
-    @DeleteMapping("/api/board/{id}")
+    @DeleteMapping("/api/boards/{id}")
     public ResponseEntity<ApiResponseMessage> delete(@PathVariable Long id) {
         boardService.delete(id);
         return getResponseEntity(ApiResponseCode.BOARD_DELETE_SUCCESS);

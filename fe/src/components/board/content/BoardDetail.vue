@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="btn-box-top">
-      <button class="radious temp" @click="boardModify()">수정</button>
-      <button class="radious temp" @click="boardDelete()">삭제</button>
+      <button class="radious" @click="boardModify()">수정</button>
+      <button class="radious" @click="boardDelete()">삭제</button>
     </div>
     <section class="article-detail">
       <div class="article-detail-header">
         <div class="article-detail-meta">
-          {{ board.boardType }} | {{ board.writeDate }}
+          {{ categories[board.categoryId - 1] }}
         </div>
         <div class="article-detail-title">
           <h1>{{ board.title }}</h1>
@@ -25,7 +25,7 @@
         목록으로
       </button>
     </div>
-    <section class="article-reply">
+    <!-- <section class="article-reply">
       <div class="article-reply-add">
         <textarea
           class="article-reply-textarea"
@@ -47,7 +47,7 @@
         </div>
         <div v-else></div>
       </div>
-    </section>
+    </section> -->
   </div>
 </template>
 <script>
@@ -57,14 +57,14 @@ export default {
   data() {
     return {
       board: {
+        categoryId: '',
         boardId: '',
         nickName: '',
         title: '',
         subTitle: '',
-        categoryId: '',
-        created_at: '',
         content: '',
       },
+      categories: ['자유게시판', '꿀팁게시판', '공지사항', '이벤트'],
       replies: [
         {
           reAuthor: '오승기1',
@@ -83,8 +83,10 @@ export default {
   },
   async created() {
     this.board.boardId = this.$route.query.boardId;
-    console.log(this.board.boardId);
-    this.board = await getDetail(this.$route.query.boardId);
+    await getDetail(this.$route.query.boardId).then(response => {
+      this.board = response.data;
+      this.board.categoryId = this.$store.state.categoryId;
+    });
   },
   methods: {
     moveGeneral() {
@@ -100,7 +102,10 @@ export default {
     },
     boardDelete() {
       if (confirm('정말 삭제하시겠습니까 ?')) {
-        deleteBoard(this.board.boardId).then(alert('삭제가 완료되었습니다'));
+        deleteBoard(this.board.boardId).then(
+          () => alert('삭제가 완료되었습니다'),
+          this.$router.push({ name: 'boardgeneral' }),
+        );
       }
     },
   },
@@ -122,6 +127,7 @@ div:not(.btn-box-top) {
 }
 .btn-box-top {
   float: right;
+  margin: 50px;
 }
 .btn-box-top > button {
   display: inline;
@@ -131,10 +137,11 @@ div:not(.btn-box-top) {
 }
 .article-detail-header,
 .article-detail-content {
+  width: 30px;
   border-bottom: 1px solid #d6d7da;
   padding: 40px;
 }
-.article-reply-add {
+/* .article-reply-add {
   padding: 40px;
   border-bottom: 1px solid #d6d7da;
 }
@@ -150,8 +157,5 @@ div:not(.btn-box-top) {
   background-color: #fff;
   color: #495057;
   resize: none;
-}
-.article-replies-author {
-  padding: 40px;
-}
+} */
 </style>
