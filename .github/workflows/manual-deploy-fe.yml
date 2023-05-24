@@ -43,6 +43,8 @@ jobs:
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
             sudo rm -rf /home/ec2-user/github/workspace/fe/dist/*
+            sudo chown -R ec2-user:ec2-user /home/ec2-user/github/workspace/fe/dist
+            sudo chmod -R 755 /home/ec2-user/github/workspace/fe/dist
 
       - name: Deploy new build outputs to AWS EC2
         uses: appleboy/scp-action@v0.0.10
