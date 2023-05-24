@@ -85,4 +85,4 @@ jobs:
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7}
             docker stop share-travel-spring-container
-            docker run -d --rm --name share-travel-spring-container -e JWT_SECRET=${{ secrets.JWT_SECRET }} -e TZ=Asia/Seoul -p 8080:8080 --net mynet --ip 172.19.0.3 ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7}
+            docker run -d --rm --name share-travel-spring-container -e CLIENT_URL=${ secrets.CLIENT_URL} -e JWT_SECRET=${{ secrets.JWT_SECRET }} -e TZ=Asia/Seoul -p 8080:8080 --net mynet --ip 172.19.0.3 ${{ secrets.DOCKER_USERNAME }}/share-travel:${GITHUB_SHA::7}
