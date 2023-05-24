@@ -11,6 +11,8 @@ spring:
         format_sql: true # SQL 예쁘게 보기
     hibernate:
       ddl-auto: none
+    database: mysql
+    database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
   data:
     redis:
       host: ${REDIS_HOST}
@@ -64,6 +66,22 @@ spring:
           starttls:
             enable: true
           auth: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESSKEY}
+      secret-key: ${S3_SECRETKEY}
+    region:
+      static: ${S3_REGION}
+    s3:
+      bucket: ${S3_BUCKET}
+    stack:
+      auto: false
 
 logging:
   level:

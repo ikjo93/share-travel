@@ -1,12 +1,19 @@
 package com.sharetravel.domain.boardCategory.controller;
 
+import static com.sharetravel.global.api.ApiUtil.getResponseEntity;
+
+import com.sharetravel.domain.board.dto.BoardResponseDto;
+import com.sharetravel.global.api.ApiResponseCode;
+import com.sharetravel.global.api.ApiResponseMessage;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sharetravel.domain.boardCategory.dto.BoardCategoryDto;
-import com.sharetravel.domain.boardCategory.entity.BoardCategory;
-import com.sharetravel.domain.boardCategory.sevice.BoardCategoryService;
+import com.sharetravel.domain.boardcategory.sevice.BoardCategoryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,16 +21,16 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class BoardCategoryController {
 
-	private final BoardCategoryService boardCategoryService;
+    private final BoardCategoryService boardCategoryService;
 
-	// 모든 게시판 종류 가져오기
-	public List<BoardCategory> findAll() {
-		return boardCategoryService.findAll();
-	}
+    @GetMapping("/api/boards")
+    public List<BoardResponseDto> findAllByCategoryId(@RequestParam Long categoryId) {
+        return boardCategoryService.findAllByCategoryId(categoryId);
+    }
 
-	// 게시판 타입 가져오기
-	public BoardCategoryDto findById(Long categoryId) {
-		return boardCategoryService.findById(categoryId);
-	}
-
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResponseMessage> handleUserNotFoundException(IllegalStateException e) {
+        e.printStackTrace();
+        return getResponseEntity(ApiResponseCode.BOARD_CATEGORY_NOT_FOUND);
+    }
 }

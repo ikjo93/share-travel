@@ -1,5 +1,6 @@
 package com.sharetravel.domain.user.entity;
 
+import com.sharetravel.domain.board.entity.Board;
 import com.sharetravel.domain.travelkeyword.dto.TravelKeywordResponseDto;
 import com.sharetravel.global.domain.BaseTimeEntity;
 import com.sharetravel.global.auth.oauth2.dto.OAuth2Provider;
@@ -51,6 +52,9 @@ public class User extends BaseTimeEntity {
     @Column(length = 500, name = "picture")
     private String picture;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Board> boards = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<UserTravelKeyword> userTravelKeywords = new ArrayList<>();
 
@@ -73,11 +77,19 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public User registerNickNameAndTravelKeywords(String nickName, List<UserTravelKeyword> travelKeywords) {
-        this.nickName = nickName;
-        this.userTravelKeywords = travelKeywords;
+    public void clearUserTravelKeyword() {
+        for (UserTravelKeyword userTravelKeyword : userTravelKeywords) {
+            userTravelKeyword.setUser(null);
+        }
+        userTravelKeywords.clear();
+    }
 
-        return this;
+    public void addUserTravelKeyword(UserTravelKeyword userTravelKeyword) {
+        userTravelKeywords.add(userTravelKeyword);
+    }
+
+    public void updateNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public List<TravelKeywordResponseDto> getTravelKeywords() {

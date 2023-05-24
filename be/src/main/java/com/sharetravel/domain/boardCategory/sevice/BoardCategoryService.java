@@ -1,13 +1,14 @@
-package com.sharetravel.domain.boardCategory.sevice;
+package com.sharetravel.domain.boardcategory.sevice;
 
+import com.sharetravel.domain.board.dto.BoardResponseDto;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sharetravel.domain.boardCategory.dto.BoardCategoryDto;
-import com.sharetravel.domain.boardCategory.entity.BoardCategory;
-import com.sharetravel.domain.boardCategory.repository.BoardCategoryRepository;
+import com.sharetravel.domain.boardcategory.entity.BoardCategory;
+import com.sharetravel.domain.boardcategory.repository.BoardCategoryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,20 +16,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class BoardCategoryService {
 
-	private final BoardCategoryRepository boardCategoryRepository;
+    private final BoardCategoryRepository boardCategoryRepository;
 
-	@Transactional
-	public List<BoardCategory> findAll() {
-		return boardCategoryRepository.findAll();
-	}
+    @Transactional(readOnly = true)
+    public List<BoardResponseDto> findAllByCategoryId(Long categoryId) {
+        BoardCategory boardCategory = boardCategoryRepository.findById(categoryId)
+            .orElseThrow(() -> {
+                throw new IllegalStateException("식별번호가 " + categoryId + "에 해당하는 카테고리가 존재하지 않습니다.");
+            });
 
-	@Transactional
-	public BoardCategoryDto findById(Long categoryId) {
-		BoardCategory boardCategory = boardCategoryRepository.findById(categoryId)
-			.orElseThrow(() -> {
-				throw new IllegalStateException(categoryId + "번 카테고리가 존재하지 않습니다.");
-			});
-		return BoardCategoryDto.from(boardCategory);
-	}
-
+        return boardCategory.getBoards()
+                .stream()
+                .map(board -> BoardResponseDto.from(categoryId, board))
+                .collect(Collectors.toList());
+    }
 }

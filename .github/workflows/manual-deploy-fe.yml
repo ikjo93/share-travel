@@ -1,0 +1,56 @@
+name: FRONTEND CI/CD
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./be
+
+    strategy:
+      matrix:
+        node-version: [10.x] # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - name: checkout Github Action
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: './fe/package-lock.json'
+
+      - name: npm install
+        run: npm ci
+
+      - name: Build project
+        run: |
+          npm run build --if-present
+
+      - name: init build outputs at AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST}}
+          username: ec2-user
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /home/ec2-user/github/workspace/fe/build/*
+
+      - name: Deploy new build outputs to AWS EC2
+        uses: appleboy/scp-action@v0.0.10
+        with:
+          host: ${{ secrets.AWS_HOST}}
+          username: ec2-user
+          port: 22
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          source: "/home/runner/work/issue-tracker/issue-tracker/fe/build"
+          target: "/home/ec2-user"

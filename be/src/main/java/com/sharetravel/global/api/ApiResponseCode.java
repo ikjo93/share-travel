@@ -16,9 +16,9 @@ public enum ApiResponseCode {
     USER_NOT_FOUND("U01", 404, "존재하지 않는 회원입니다."),
     USER_UPDATE_SUCCESS("U02", 200, "회원 정보 수정이 완료되었습니다."),
 
-
     BOARD_NOT_FOUND("B01", 404, "존재하지 않는 게시글 입니다."),
     BOARD_DELETE_SUCCESS("B02", 200, "게시글 삭제가 완료되었습니다."),
+    BOARD_CATEGORY_NOT_FOUND("B03", 404, "존재하지 않는 게시글 카테고리입니다."),
 
     USER_DUPLICATE_NICKNAME("U03", 200, "이미 존재하는 닉네임입니다."),
     USER_NOT_DUPLICATE_NICKNAME("U04", 200, "사용 가능한 닉네임입니다."),
@@ -29,9 +29,12 @@ public enum ApiResponseCode {
     USER_LOGOUT_SUCCESS("U09", 200, "로그아웃이 정상적으로 처리되었습니다."),
 
     TRAVEL_KEYWORD_NOT_FOUND("TK01", 404, "존재하지 않는 여행지 키워드입니다."),
+    TRAVEL_SAVING_SUCCESS("TK02", 200, "여행지 정보가 성공적으로 저장되었습니다."),
+    TRAVEL_SAVING_FAILED("TK03", 500, "여행지 정보를 등록하는데 실패했습니다."),
+
+    REQUEST_RESOURCE_NOT_FOUND("R1", 404, "요청하신 데이터가 존재하지 않습니다."),
 
     SERVER_INTERNAL_ERROR("G01", 500, "현재 서버 내부에서 에러가 발생했습니다.");
-
 
     private final String code;
     private final int httpStatusCode;

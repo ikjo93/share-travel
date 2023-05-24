@@ -38,6 +38,12 @@ jobs:
           sed -i "s|\${NAVER_CLIENT_SECRET}|$NAVER_CLIENT_SECRET|g" ./src/main/resources/application.yml
           sed -i "s|\${KAKAO_CLIENT_ID}|$KAKAO_CLIENT_ID|g" ./src/main/resources/application.yml
           sed -i "s|\${KAKAO_CLIENT_SECRET}|$KAKAO_CLIENT_SECRET|g" ./src/main/resources/application.yml
+          sed -i "s|\${GOOGLE_EMAIL}|$GOOGLE_EMAIL|g" ./src/main/resources/application.yml
+          sed -i "s|\${GOOGLE_APP_PASSWORD}|$GOOGLE_APP_PASSWORD|g" ./src/main/resources/application.yml
+          sed -i "s|\${S3_ACCESSKEY}|$S3_ACCESSKEY|g" ./src/main/resources/application.yml
+          sed -i "s|\${S3_SECRETKEY}|$S3_SECRETKEY|g" ./src/main/resources/application.yml
+          sed -i "s|\${S3_REGION}|$S3_REGION|g" ./src/main/resources/application.yml
+          sed -i "s|\${S3_BUCKET}|$S3_BUCKET|g" ./src/main/resources/application.yml
         env:
           DB_URL: ${{ secrets.DB_URL }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
@@ -49,6 +55,12 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
+          GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+          S3_ACCESSKEY: ${{ secrets.S3_ACCESSKEY }}
+          S3_SECRETKEY: ${{ secrets.S3_SECRETKEY }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
