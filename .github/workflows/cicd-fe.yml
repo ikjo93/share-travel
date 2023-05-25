@@ -10,7 +10,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'fe')
+    if: startsWith(github.head_ref, 'fe/')
     defaults:
       run:
         shell: bash
@@ -54,5 +54,5 @@ jobs:
           username: ec2-user
           port: 22
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          source: "/home/runner/work/issue-tracker/issue-tracker/fe/build"
+          source: "/home/runner/work/share-travel/share-travel/fe/build"
           target: "/home/ec2-user"

@@ -1,6 +1,60 @@
 <template>
   <div>
-    <TravelSearchBar></TravelSearchBar>
+    <b-button
+      v-b-toggle.sidebar-1
+      class="position-fixed top-0 left-0 mt-3 ml-3"
+      style="z-index: 1050;"
+      :variant="searchBarFlag"
+      @click="toggle"
+    >
+      <div v-if="searchBar">여행지 검색창 닫기</div>
+      <div v-else>여행지 검색창 열기</div>
+    </b-button>
+    <b-sidebar
+      id="sidebar-1"
+      shadow
+      title="원하시는 여행지를 검색해보세요! 📢"
+      width="25%"
+      no-header-close
+    >
+      <div class="px-3 py-2" style="margin-top: 15%;">
+        <b-form-group
+          id="fieldset-1"
+          label="선호하시는 여행 키워드로 검색해보세요. 💕"
+          label-for="input-1"
+        >
+          <div class="grid-container">
+            <button
+              class="radious grid-item"
+              v-for="travelKeyword in searchBarTravelKeywords"
+              :key="travelKeyword.id"
+              @click="selectSearchBarTravelKeyword(travelKeyword)"
+              :value="travelKeyword.id"
+              :class="{ selected: travelKeyword.selected }"
+            >
+              {{ travelKeyword.name }}
+            </button>
+          </div>
+        </b-form-group>
+        <div class="travel-list" v-for="info in travelInfo" :key="info.id">
+          <div class="travel-container row">
+            <div class="content">
+              <h4>🚆 {{ info.name }}</h4>
+              <span>⭐ {{ info.travelKeyword }} 키워드</span>
+            </div>
+            <div style="margin: auto;">
+              <img
+                src="/arrow.png"
+                width="50px"
+                height="50px"
+                style="cursor: pointer;"
+                @click="openTravelInfoModal(info.travelId)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </b-sidebar>
     <div id="map"></div>
     <b-modal
       ref="registerTravelModal"
@@ -123,31 +177,41 @@
       </b-jumbotron>
     </b-modal>
     <b-modal ref="detailTravelModal" hide-footer hide-header>
-      <b-jumbotron
-        lead="여행지 상세정보 💁‍♂️"
-        bg-variant="white"
-        style="font-family: 'hanna-pro';"
-      >
-        <b-form-group
-          id="fieldset-1"
-          :label="`장소 이름 : {{ detailTravelInfo.name }}`"
-        >
-        </b-form-group>
-        <h2>여행지 키워드 : {{ detailTravelInfo.travelKeyword }}</h2>
-        <h3>장소 설명</h3>
-        <p>
-          {{ detailTravelInfo.description }}
-        </p>
-        <div class="button-container">
-          <b-button
-            size="lg"
-            variant="outline-danger"
-            @click="closeDetailTravelInfo"
-            style="margin-left: 5px;"
-            >닫기</b-button
-          >
-        </div>
-      </b-jumbotron>
+      <div class="modal-content" style="font-family: 'hanna-pro';">
+        <b-card no-body class="border-0">
+          <b-card-body class="p-4">
+            <h2>여행지 상세 정보 💁‍♂️</h2>
+            <h3 class="custom-heading">여행지 이름</h3>
+            <p>{{ detailTravelInfo.name }}</p>
+            <h3 class="custom-heading">여행지 키워드</h3>
+            <p>{{ detailTravelInfo.travelKeyword }}</p>
+            <h3 class="custom-heading">작성자</h3>
+            <p>{{ detailTravelInfo.writer }}</p>
+            <h3 class="custom-heading">장소 설명</h3>
+            <p>{{ detailTravelInfo.description }}</p>
+            <h3 class="custom-heading">사진</h3>
+            <div class="image-list">
+              <div
+                v-for="(url, index) in detailTravelInfo.urls"
+                :key="index"
+                class="image-item"
+              >
+                <img :src="url" class="image-preview" />
+              </div>
+            </div>
+            <div class="button-container">
+              <b-button
+                size="lg"
+                variant="outline-danger"
+                @click="closeDetailTravelInfo"
+                class="mr-2"
+              >
+                닫기
+              </b-button>
+            </div>
+          </b-card-body>
+        </b-card>
+      </div>
     </b-modal>
   </div>
 </template>
@@ -157,17 +221,19 @@ import {
   getTravelKeywords,
   getTravelInfoById,
   getTravelInfoAroundCoordinate,
+  getTravelInfoAroundCoordinateByKeywordId,
   registerTravel,
 } from '@/api/travel.js';
-import TravelSearchBar from '@/components/travel/TravelSearchBar.vue';
 
 export default {
   name: 'KakaoMap',
-  components: {
-    TravelSearchBar,
-  },
+
   data() {
     return {
+      searchBar: false,
+      searchBarTravelKeywords: [],
+      searchBarUserInputTravelKeywords: [],
+      selectedTravelKeywordIdx: -1,
       map: null, // 카카오맵 지도 객체
       markers: [], // 카카오맵에 존재하는 마커 객체 배열
       infoWin: null, // 선택한 인포윈도우 객체
@@ -183,6 +249,9 @@ export default {
     };
   },
   computed: {
+    searchBarFlag() {
+      return this.searchBar ? 'danger' : 'primary';
+    },
     travelNameState() {
       return (
         this.userInputTravelName.length >= 1 &&
@@ -245,6 +314,40 @@ export default {
     }
   },
   methods: {
+    toggle() {
+      this.searchBar = !this.searchBar;
+    },
+    selectSearchBarTravelKeyword(keyword) {
+      keyword.selected = !keyword.selected;
+
+      if (keyword.selected) {
+        if (this.searchBarUserInputTravelKeywords.length > 0) {
+          // 기존 선택된 거 취소
+          this.searchBarTravelKeywords[
+            this.selectedTravelKeywordIdx
+          ].selected = false;
+          this.deleteSearchVarTravelKeyword(this.selectedTravelKeywordIdx);
+
+          // 새로운 거 선택
+          this.selectedTravelKeywordIdx = keyword.idx;
+          this.searchBarUserInputTravelKeywords.push(keyword.idx);
+          this.searchTravels(keyword.id);
+        } else {
+          // 기존에 아무것도 없는 경우에는 해당 거 바로 선택
+          this.searchBarUserInputTravelKeywords.push(keyword.idx);
+          this.selectedTravelKeywordIdx = keyword.idx;
+          this.searchTravels(keyword.id);
+        }
+      } else {
+        this.deleteSearchVarTravelKeyword(keyword.idx);
+      }
+    },
+    deleteSearchVarTravelKeyword(keywordIdx) {
+      const idx = this.searchBarUserInputTravelKeywords.indexOf(keywordIdx);
+      if (idx > -1) {
+        this.searchBarUserInputTravelKeywords.splice(idx, 1);
+      }
+    },
     /* 카카오맵 지도 초기화 */
     initMap() {
       const container = document.getElementById('map');
@@ -279,9 +382,9 @@ export default {
 
       let searchContent = document.createElement('div');
       searchContent.style =
-        'background: #FFFF33; color: #000; text-align: center; width: 190px; height: 24px; line-height: 22px; border-radius: 4px; padding: 0px 10px; cursor: pointer';
+        'background: #F5C2B4; color: #000; text-align: center; line-height: 26px; width: 180px; height: 26px; border-radius: 0px; cursor: pointer';
       searchContent.textContent = '👉 여행지 검색하기';
-      searchContent.onclick = this.searchTravels;
+      searchContent.onclick = this.searchTravelsForClick;
 
       let searchInfowindow = new kakao.maps.InfoWindow({
         content: searchContent,
@@ -390,8 +493,18 @@ export default {
       this.latitude = center.getLat();
       this.searchTravels();
     },
+    async searchTravelsForClick() {
+      // 기존 검색창 선택 취소
+      for (let i = 0; i < this.searchBarTravelKeywords.length; i++) {
+        this.searchBarTravelKeywords[i].selected = false;
+      }
+
+      this.searchBarUserInputTravelKeywords = [];
+
+      this.searchTravels();
+    },
     /* 클릭한 부분 여행지 검색 API 호출 */
-    async searchTravels() {
+    async searchTravels(keywordId) {
       // 기존 인포윈도우 삭제
       if (this.infoWin != null) {
         this.infoWin.setMap(null);
@@ -406,10 +519,25 @@ export default {
       // 기존 여행지 데이터 삭제
       this.travelInfo = [];
 
-      const { data } = await getTravelInfoAroundCoordinate(
-        this.longitude,
-        this.latitude,
-      );
+      let response;
+
+      if (Number.isInteger(keywordId)) {
+        let center = this.map.getCenter();
+        this.longitude = center.getLng();
+        this.latitude = center.getLat();
+        response = await getTravelInfoAroundCoordinateByKeywordId(
+          keywordId,
+          this.longitude,
+          this.latitude,
+        );
+      } else {
+        response = await getTravelInfoAroundCoordinate(
+          this.longitude,
+          this.latitude,
+        );
+      }
+
+      const { data } = response;
       console.log('travel info data response...');
 
       // 받은 여행지 정보 좌표 기반 지도에 뿌려주기
@@ -438,7 +566,7 @@ export default {
         // 마커 이미지 생성
         let markerImage = new kakao.maps.MarkerImage(
           markerImageLogo, // 마커이미지의 주소
-          new kakao.maps.Size(30, 30), // 마커이미지의 크기
+          new kakao.maps.Size(35, 35), // 마커이미지의 크기
           { offset: new kakao.maps.Point(27, 69) }, // 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정
         );
 
@@ -452,48 +580,7 @@ export default {
           marker,
           'click',
           function() {
-            let travelInfoWindowContent = document.createElement('div');
-            travelInfoWindowContent.className = 'card';
-            travelInfoWindowContent.style = `display: flex;
-              pointer: cursor;
-              flex - direction: column;
-              align - items: flex - start;
-              justify - content: flex - start;
-              width: 200px;
-              background - color: #fff;
-              padding: 20px;
-              border - radius: 10px;
-              box - shadow: 0 2px 6px rgba(0, 0, 0, 0.3);`;
-            travelInfoWindowContent.innerHTML = `
-                                            <h4 class="title" style="flex-grow: 1;
-                                                margin-left: 10px;
-                                                margin-right: 10px;">
-                                                ${info.name}
-                                            </h4>
-                                            <div class="row" style="display: flex; align-items: center;">
-                                              <img src="${info.url}" width="100px" height="60px" class="image" style="
-                                                  margin-left: auto;
-                                                  padding: 8px 15px;
-                                                  color: #fff;
-                                                  text-decoration: none;
-                                                  border-radius: 4px;
-                                                  transition: background-color 0.3s;
-                                              ">
-                                              <p class="text" style="flex-grow: 1;
-                                                                     margin-left: 10px;
-                                                                     margin-right: 10px;
-                                              ">${info.travelKeyword}</p>
-                                            </div>`;
-            travelInfoWindowContent.onclick = this.openTravelInfoModal(
-              `${info.travelId}`,
-            );
-
-            let travelInfoWindow = new kakao.maps.InfoWindow({
-              content: travelInfoWindowContent,
-              removable: true,
-            });
-
-            travelInfoWindow.open(this.map, marker);
+            this.openTravelInfoModal(`${info.travelId}`);
           }.bind(this),
         );
 
@@ -596,11 +683,14 @@ export default {
   async created() {
     const { data } = await getTravelKeywords();
     for (let i = 0; i < data.length; i++) {
-      this.travelKeywords.push({
+      const travelKeyword = {
+        idx: i,
         id: data[i].id,
         name: data[i].name,
         selected: false,
-      });
+      };
+      this.searchBarTravelKeywords.push(travelKeyword);
+      this.travelKeywords.push(travelKeyword);
     }
   },
 };
@@ -667,5 +757,88 @@ export default {
   width: 95%;
   /* Set the desired width */
   margin-right: 10px;
+}
+/* 여행지 상세 정보 모달창 */
+.title-box {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.title-text {
+  font-weight: bold;
+  font-size: 24px;
+  margin: 0;
+}
+
+.modal-content {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.modal-content h2 {
+  font-size: 24px;
+}
+
+.modal-content h3 {
+  color: #333;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.modal-content p {
+  color: #555;
+}
+
+.custom-heading {
+  color: #333; /* Set the text color */
+  font-size: 24px; /* Adjust the font size */
+  font-weight: bold; /* Set the font weight */
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.image-item {
+  width: 50%;
+  padding: 5px;
+}
+
+.image-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.modal-content .button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+.travel-list .travel-container {
+  display: flex;
+  width: 90%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 15px;
+  margin: auto;
+}
+
+.travel-list .content {
+  align-items: center;
+}
+.travel-list .image {
+  padding: 8px 15px;
+  color: #fff;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin: auto;
 }
 </style>

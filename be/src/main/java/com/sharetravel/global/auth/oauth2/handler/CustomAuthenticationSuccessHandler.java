@@ -38,6 +38,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.addCookie(getAccessTokenCookie(accessToken));
         response.addCookie(getRefreshTokenIdCookie(refreshTokenId));
 
-        response.sendRedirect("https://localhost:3000");
+        response.sendRedirect(System.getenv("CLIENT_URL"));
     }
 }

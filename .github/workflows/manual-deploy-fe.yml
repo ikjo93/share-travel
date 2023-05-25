@@ -1,10 +1,7 @@
-name: FRONTEND CI/CD
+name: Manual Deploy Frontend
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   build:
@@ -12,7 +9,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./be
+        working-directory: ./fe
 
     strategy:
       matrix:
@@ -35,6 +32,8 @@ jobs:
       - name: Build project
         run: |
           npm run build --if-present
+          pwd
+          ls -al
 
       - name: init build outputs at AWS EC2
         uses: appleboy/ssh-action@master
@@ -43,7 +42,9 @@ jobs:
           username: ec2-user
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
-            sudo rm -rf /home/ec2-user/github/workspace/fe/build/*
+            sudo rm -rf /home/ec2-user/github/workspace/fe/dist/*
+            sudo chown -R ec2-user:ec2-user /home/ec2-user/github/workspace/fe/dist
+            sudo chmod -R 755 /home/ec2-user/github/workspace/fe/dist
 
       - name: Deploy new build outputs to AWS EC2
         uses: appleboy/scp-action@v0.0.10
@@ -52,5 +53,5 @@ jobs:
           username: ec2-user
           port: 22
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          source: "/home/runner/work/issue-tracker/issue-tracker/fe/build"
+          source: "/home/runner/work/share-travel/share-travel/fe/dist"
           target: "/home/ec2-user"

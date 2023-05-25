@@ -23,7 +23,7 @@ function getTravelInfoAroundCoordinateByKeywordId(
   latitude,
 ) {
   return commonApi.get(
-    `travels/keyword?keywordId=${keywordId}&longitude=${longitude}&latitude=${latitude}`,
+    `travels/search?keywordId=${keywordId}&longitude=${longitude}&latitude=${latitude}`,
   );
 }
 

@@ -138,9 +138,7 @@ export default {
 
           this.loading = false;
         } catch (error) {
-          alert(
-            '메일 인증 코드 발송에 실패했습니다. 로그인 여부를 확인해주세요.',
-          );
+          alert('메일 인증 코드 발송에 실패했습니다.');
           this.$refs['my-modal'].hide();
           this.loading = false;
           return;

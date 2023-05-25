@@ -5,6 +5,7 @@ public interface TravelSearchResponseDto {
     Long getTravelId();
 
     String getName();
+    String getUserNickName();
 
     String getDescription();
 
