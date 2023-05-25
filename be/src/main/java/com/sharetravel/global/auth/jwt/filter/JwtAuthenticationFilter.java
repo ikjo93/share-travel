@@ -43,7 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(token)) {
 
+                log.info("token parsing completed...");
+
                 Claims claims = accessTokenService.validateAndGetClaims(token);
+
+                log.info("token is valid...");
 
                 JwtAuthenticationResult jwtAuthenticationResult = accessTokenService.getJwtAuthenticationResult(claims);
                 jwtAuthenticationResult.setAuthenticated(true);
