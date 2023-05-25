@@ -58,12 +58,14 @@ public class TokenController {
     }
 
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ApiResponseMessage> handleInvalidTokenException() {
+    public ResponseEntity<ApiResponseMessage> handleInvalidTokenException(InvalidTokenException e) {
+        e.printStackTrace();
         return getResponseEntity(ApiResponseCode.TOKEN_INVALID);
     }
 
     @ExceptionHandler(HackedTokenException.class)
-    public ResponseEntity<ApiResponseMessage> handleHackedTokenException() {
+    public ResponseEntity<ApiResponseMessage> handleHackedTokenException(HackedTokenException e) {
+        e.printStackTrace();
         return getResponseEntity(ApiResponseCode.TOKEN_HACKED);
     }
 }
