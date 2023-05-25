@@ -57,7 +57,7 @@ public class Board extends BaseTimeEntity {
         String subTitle, String content,
         User user, BoardCategory category) {
         this.title = title;
-        this.subtitle = subTitle;
+        this.subTitle = subTitle;
         this.content = content;
         this.author = user;
         this.category = category;
@@ -65,7 +65,7 @@ public class Board extends BaseTimeEntity {
 
     public Board update(BoardUpdateRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.subtitle = requestDto.getSubTitle();
+        this.subTitle = requestDto.getSubTitle();
         this.content = requestDto.getContent();
 
         return this;

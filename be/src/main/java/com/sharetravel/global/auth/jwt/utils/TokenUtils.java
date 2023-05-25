@@ -58,7 +58,7 @@ public class TokenUtils {
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setAttribute("SameSite", "None");
+        refreshTokenCookie.setAttribute("SameSite", "Strict");
         refreshTokenCookie.setMaxAge(REFRESH_TOKEN_ID_COOKIE_DURATION);
 
         return refreshTokenCookie;
