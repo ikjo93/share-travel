@@ -45,7 +45,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
-            sudo rm -rf /home/ec2-user/github/workspace/fe/build/*
+            sudo rm -rf /home/ec2-user/github/workspace/fe/dist/*
 
       - name: Deploy new build outputs to AWS EC2
         uses: appleboy/scp-action@v0.0.10
@@ -54,5 +54,5 @@ jobs:
           username: ec2-user
           port: 22
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          source: "/home/runner/work/share-travel/share-travel/fe/build"
+          source: "/home/runner/work/share-travel/share-travel/fe/dist"
           target: "/home/ec2-user"
