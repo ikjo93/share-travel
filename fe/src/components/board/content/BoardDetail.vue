@@ -1,8 +1,10 @@
 <template>
   <div>
     <div class="btn-box-top">
-      <button class="radious" @click="boardModify()">수정</button>
-      <button class="radious" @click="boardDelete()">삭제</button>
+      <div class="btn-box-right" v-if="isSameName()">
+        <button class="radious" @click="boardModify()">수정</button>
+        <button class="radious" @click="boardDelete()">삭제</button>
+      </div>
     </div>
     <section class="article-detail">
       <div class="article-detail-header">
@@ -25,29 +27,6 @@
         목록으로
       </button>
     </div>
-    <!-- <section class="article-reply">
-      <div class="article-reply-add">
-        <textarea
-          class="article-reply-textarea"
-          placeholder="기분 좋은 리뷰는 작성자를 춤추게 합니다 !"
-        ></textarea>
-      </div>
-      <div class="article-reply-list">
-        <div v-if="replies.length">
-          <div
-            v-for="(reply, index) in replies"
-            :key="index"
-            class="article-replies"
-          >
-            <div class="article-replies-author">
-              {{ reply.reAuthor }}
-            </div>
-            {{ reply.reContent }}
-          </div>
-        </div>
-        <div v-else></div>
-      </div>
-    </section> -->
   </div>
 </template>
 <script>
@@ -89,6 +68,15 @@ export default {
     });
   },
   methods: {
+    isSameName() {
+      if (this.$store.state.user.nickName == this.board.nickName) {
+        console.log('정상');
+        return true;
+      } else {
+        console.log('비정상');
+        return false;
+      }
+    },
     moveGeneral() {
       this.$router.push({ name: 'boardgeneral' });
     },
@@ -122,40 +110,46 @@ export default {
   display: block;
 }
 div:not(.btn-box-top) {
-  width: fit-content;
-  margin: auto;
+  /* width: fit-content; */
+  /* margin: auto; */
 }
 .btn-box-top {
-  float: right;
+  display: flex;
+  justify-content: flex-end;
   margin: 50px;
 }
-.btn-box-top > button {
-  display: inline;
+.btn-box-top > .btn-box-right {
+  display: flex;
+}
+.btn-box-top > .btn-box-right > button {
+  margin-left: 10px;
 }
 .btn-box {
   padding-top: 40px;
+  width: fit-content;
+  margin: auto;
+}
+.article-detail {
+  width: 800px; /* 원하는 가로 넓이로 조정 */
+  margin: 0 auto;
 }
 .article-detail-header,
 .article-detail-content {
-  width: 30px;
-  border-bottom: 1px solid #d6d7da;
-  padding: 40px;
-}
-/* .article-reply-add {
-  padding: 40px;
-  border-bottom: 1px solid #d6d7da;
-}
-.article-reply-textarea {
-  font-weight: 400;
-  line-height: 1.47;
-  letter-spacing: -0.3px;
-  font-size: 15px;
-  padding: 13px 12px;
   width: 100%;
-  min-height: 102px;
-  border: none;
-  background-color: #fff;
-  color: #495057;
-  resize: none;
-} */
+  border-bottom: 1px solid #d6d7da;
+  padding: 40px;
+}
+.article-detail-meta,
+.article-detail-title,
+.article-detail-subtitle,
+.article-detail-content {
+  width: fit-content;
+  margin: auto;
+}
+.article-detail-content {
+  width: 800px; /* 원하는 가로 크기로 설정 */
+  word-wrap: break-word; /* 줄 바꿈 가능하도록 설정 */
+  margin: 0 auto; /* 수평 가운데 정렬 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+}
 </style>

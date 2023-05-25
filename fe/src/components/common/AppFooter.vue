@@ -13,7 +13,7 @@ export default {};
 
 <style scoped>
 footer {
-  /* position: fixed; */
+  position: fixed;
   bottom: 0;
   width: 100%;
   height: 40px;
@@ -25,11 +25,9 @@ footer {
   background: #fffefc;
   color: black;
   font-size: large;
+  z-index: 9999;
 }
 footer a {
   color: black;
-}
-body {
-  padding-top: 0px;
 }
 </style>

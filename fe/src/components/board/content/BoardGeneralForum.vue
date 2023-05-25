@@ -1,5 +1,23 @@
 <template lang="">
   <div>
+    <b-jumbotron
+      header="커뮤니티"
+      lead="여러분만의 여행 팁을 공유해주세요 !"
+      bg-variant="white"
+    >
+      <button :class="['radious', 'clickedBtn']">
+        자유 게시판
+      </button>
+      <button :class="['radious']" @click="moveCategory(1)">
+        꿀팁 게시판
+      </button>
+      <button :class="['radious']" @click="moveCategory(2)">
+        공지사항
+      </button>
+      <button :class="['radious']" @click="moveCategory(3)">
+        이벤트
+      </button>
+    </b-jumbotron>
     <button
       :class="['radious', { changeColor: isHovering }]"
       id="writeBtn"
@@ -9,7 +27,6 @@
     >
       글쓰기
     </button>
-    <button @click="getLog()">로그용</button>
     <div v-if="items.length">
       <div class="article-search-input">
         <div calss="article-search-type">
@@ -50,7 +67,6 @@
         @row-clicked="moveDetail"
       >
       </b-table>
-      <!-- https://bootstrap-vue.org/docs/components/pagination#component-reference 꾸밀때 참고 -->
       <b-pagination
         v-model="currentPage"
         :total-rows="rows"
@@ -78,7 +94,10 @@ export default {
     return {
       perPage: 10,
       currentPage: 1,
-      fields: ['boardId', 'title', 'nickName'],
+      fields: [
+        { key: 'title', label: '제목', tdAttrs: { style: 'width: 70%' } },
+        { key: 'nickName', label: '작성자', tdAttrs: { style: 'width: 30%' } },
+      ],
       items: [],
       item: {
         boardId: '',
@@ -95,21 +114,21 @@ export default {
       keyword: null,
     };
   },
-  created() {
-    this.categoryId = this.$store.state.categoryId;
-    this.getBoardList();
+  async created() {
+    this.categoryId = await this.$store.state.categoryId;
+    await this.getBoardList();
   },
   mounted() {
     this.selectType(0, 'title');
   },
   methods: {
-    getLog() {
-      console.log(this.board);
-    },
     async getBoardList() {
       await getListByCategory(this.categoryId).then(boards => {
         this.boards = boards.data;
         this.createList();
+        this.$nextTick(() => {
+          this.items = [...this.items];
+        });
       });
     },
     createList() {
@@ -121,6 +140,21 @@ export default {
         this.item.title = this.boards[i].title;
         this.items.push(this.item);
         this.item = {};
+      }
+    },
+    moveCategory(idx) {
+      if (idx == 0) {
+        this.$store.commit('SET_CATEGORY_ID', 1);
+        this.$router.push({ name: 'boardgeneral' });
+      } else if (idx == 1) {
+        this.$store.commit('SET_CATEGORY_ID', 2);
+        this.$router.push({ name: 'boardtip' });
+      } else if (idx == 2) {
+        this.$store.commit('SET_CATEGORY_ID', 3);
+        this.$router.push({ name: 'boardnotice' });
+      } else if (idx == 3) {
+        this.$store.commit('SET_CATEGORY_ID', 4);
+        this.$router.push({ name: 'boardevent' });
       }
     },
     moveDetail(item) {
@@ -147,8 +181,13 @@ export default {
           this.searchType,
           this.keyword,
         ).then(response => {
-          this.board = response.data;
-          this.createList;
+          this.boards = [];
+          this.items = [];
+          this.boards = response.data;
+          this.createList();
+          this.$nextTick(() => {
+            this.items = [...this.items];
+          });
         });
       } else {
         alert('검색어를 입력하세요 !');
@@ -162,7 +201,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .radious {
   border-radius: 50px !important;
   padding: 5px 12px !important;

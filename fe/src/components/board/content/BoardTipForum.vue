@@ -1,5 +1,23 @@
 <template lang="">
   <div>
+    <b-jumbotron
+      header="커뮤니티"
+      lead="여러분만의 여행 팁을 공유해주세요 !"
+      bg-variant="white"
+    >
+      <button :class="['radious']" @click="moveCategory(0)">
+        자유 게시판
+      </button>
+      <button :class="['radious', 'clickedBtn']">
+        꿀팁 게시판
+      </button>
+      <button :class="['radious']" @click="moveCategory(2)">
+        공지사항
+      </button>
+      <button :class="['radious']" @click="moveCategory(3)">
+        이벤트
+      </button>
+    </b-jumbotron>
     <button
       :class="['radious', { changeColor: isHovering }]"
       id="writeBtn"
@@ -19,14 +37,19 @@
         </button>
         <button
           :class="['radious', 'searchTypeBtn', { clickedBtn: isClicked[1] }]"
-          @click="selectType(1, 'nickName')"
+          @click="selectType(1, 'author')"
         >
           작성자
         </button>
       </div>
       <div class="article-search-input">
         <label>
-          <input id="search-input" placeholder="검색어를 입력하세요" />
+          <input
+            id="search-input"
+            placeholder="검색어를 입력하세요"
+            v-model="keyword"
+            @keyup.enter="submit()"
+          />
           <button type="button" class="radious" @click="submit()">
             <img id="submitImage" src="../../../../public/search_icon.png" />
           </button>
@@ -40,10 +63,9 @@
         :fields="fields"
         :per-page="perPage"
         :current-page="currentPage"
-        @row-clicked="moveDetail()"
+        @row-clicked="moveDetail"
       >
       </b-table>
-      <!-- https://bootstrap-vue.org/docs/components/pagination#component-reference 꾸밀때 참고 -->
       <b-pagination
         v-model="currentPage"
         :total-rows="rows"
@@ -64,27 +86,80 @@
   </div>
 </template>
 <script>
+import { getListByCategory, getListByCondition } from '@/api/board.js';
+
 export default {
   data() {
     return {
       perPage: 10,
       currentPage: 1,
-      fields: ['title', 'author', 'writeDate', 'boardType'],
+      fields: [
+        { key: 'title', label: '제목', tdAttrs: { style: 'width: 70%' } },
+        { key: 'nickName', label: '작성자', tdAttrs: { style: 'width: 30%' } },
+      ],
       items: [],
+      item: {
+        boardId: '',
+        categoryId: '',
+        nickName: '',
+        subTitle: '',
+        title: '',
+      },
+      boards: [],
       isHovering: false,
       categoryId: '',
       isClicked: [true, false],
       searchType: null,
+      keyword: null,
     };
   },
-  created() {
+  async created() {
     this.categoryId = this.$store.state.categoryId;
+    await this.getBoardList();
+  },
+  mounted() {
+    this.selectType(0, 'title');
   },
   methods: {
-    moveDetail(board) {
+    async getBoardList() {
+      await getListByCategory(this.categoryId).then(boards => {
+        this.boards = boards.data;
+        this.createList();
+        this.$nextTick(() => {
+          this.items = [...this.items];
+        });
+      });
+    },
+    createList() {
+      for (var i = 0; i < this.boards.length; i++) {
+        this.item.boardId = this.boards[i].boardId;
+        this.item.categoryId = this.boards[i].categoryId;
+        this.item.nickName = this.boards[i].nickName;
+        this.item.subTitle = this.boards[i].subTitle;
+        this.item.title = this.boards[i].title;
+        this.items.push(this.item);
+        this.item = {};
+      }
+    },
+    moveCategory(idx) {
+      if (idx == 0) {
+        this.$store.commit('SET_CATEGORY_ID', 1);
+        this.$router.push({ name: 'boardgeneral' });
+      } else if (idx == 1) {
+        this.$store.commit('SET_CATEGORY_ID', 2);
+        this.$router.push({ name: 'boardtip' });
+      } else if (idx == 2) {
+        this.$store.commit('SET_CATEGORY_ID', 3);
+        this.$router.push({ name: 'boardnotice' });
+      } else if (idx == 3) {
+        this.$store.commit('SET_CATEGORY_ID', 4);
+        this.$router.push({ name: 'boardevent' });
+      }
+    },
+    moveDetail(item) {
       this.$router.push({
         name: 'boarddetail',
-        query: { boardId: board.boardId },
+        query: { boardId: item.boardId },
       });
     },
     moveWrite() {
@@ -98,11 +173,24 @@ export default {
       this.$set(this.isClicked, idx, true);
       this.searchType = type;
     },
-    submit() {
-      console.log('TODO');
-      console.log(this.categoryId);
-      // TODO : 클릭 시 searchType과 input내용 가져와서 검색 후
-      // 화면에 뿌려주기
+    async submit() {
+      if (this.keyword != null) {
+        await getListByCondition(
+          this.categoryId,
+          this.searchType,
+          this.keyword,
+        ).then(response => {
+          this.boards = [];
+          this.items = [];
+          this.boards = response.data;
+          this.createList();
+          this.$nextTick(() => {
+            this.items = [...this.items];
+          });
+        });
+      } else {
+        alert('검색어를 입력하세요 !');
+      }
     },
   },
   computed: {

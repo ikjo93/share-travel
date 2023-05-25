@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <AppHeader></AppHeader>
+    <AppHeader class="fixed-header"></AppHeader>
     <div class="app-contents">
       <router-view></router-view>
     </div>
@@ -254,6 +254,7 @@ export default {
 /* 배민 글씨체 적용 */
 .app {
   font-family: 'hanna-pro';
+  padding-top: 55px; /* 헤더의 높이에 맞게 조절 */
 }
 /* 사용자 필수 정보 입력 모달창 관련 CSS */
 .radious {
@@ -295,5 +296,17 @@ export default {
 .custom-button.disabled {
   background-color: #dc3545; /* Update with desired background color */
   color: #ffffff; /* Update with desired text color */
+}
+.app-contents {
+  margin-bottom: 40px;
+}
+.fixed-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999; /* 필요에 따라 z-index 값을 조정 */
+}
+body {
+  padding-bottom: 40px;
 }
 </style>

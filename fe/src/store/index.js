@@ -26,6 +26,9 @@ export default new Vuex.Store({
     getCategoryId(state) {
       return state.categoryId;
     },
+    getUserNickName(state) {
+      return state.user.nickName;
+    },
   },
   mutations: {
     SET_USER(state, user) {
