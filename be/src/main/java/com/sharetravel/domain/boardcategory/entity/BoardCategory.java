@@ -43,7 +43,6 @@ public class BoardCategory extends BaseTimeEntity {
 	@Column(name = "board_category_id")
 	private Long id;
 
-	@Column(name = "category_name")
 	private String name;
 
 	@OneToMany(mappedBy = "category")

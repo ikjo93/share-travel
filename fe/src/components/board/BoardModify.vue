@@ -38,15 +38,18 @@ export default {
         categoryId: '',
         nickName: '',
         title: '',
-        subTitle: null,
-        content: null,
+        subTitle: '',
+        content: '',
       },
     };
   },
   computed: {},
   async created() {
     this.board.boardId = this.$route.query.boardId;
-    this.board = await getDetail(this.$route.query.boardId);
+    await getDetail(this.$route.query.boardId).then(response => {
+      this.board = response.data;
+      console.log(this.board);
+    });
   },
   methods: {
     modify() {
@@ -73,7 +76,7 @@ export default {
           title: this.board.title,
           subTitle: this.board.subTitle,
           content: this.board.content,
-        }).then(this.$router.push({ name: 'boardgeneral' }));
+        }).then(() => this.$router.push({ name: 'boardgeneral' }));
       }
     },
     cancle() {

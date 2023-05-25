@@ -1,14 +1,12 @@
-import { boards, boardsWithAuth } from '@/api/index';
-
-// function getListByCondition() {}
+import { commonApi, boards, boardsWithAuth } from '@/api/index';
 
 function getListByCategory(categoryId) {
-  return boards.get(`?categoryId=${categoryId}`);
+  return commonApi.get(`boards?categoryId=${categoryId}`);
 }
 
 function getListByCondition(categoryId, searchType, keyword) {
-  return boards.get(
-    `?categoryId=${categoryId}&searchType=${searchType}&keyword=${keyword}`,
+  return commonApi.get(
+    `boards/search?categoryId=${categoryId}&searchType=${searchType}&keyword=${keyword}`,
   );
 }
 
@@ -20,8 +18,8 @@ function registBoard(board) {
   return boardsWithAuth.post(``, board);
 }
 
-function updateBoard(boardId, data) {
-  return boardsWithAuth.put(`/${boardId}`, data);
+function updateBoard(boardId, updateData) {
+  return boardsWithAuth.put(`/${boardId}`, updateData);
 }
 
 function deleteBoard(boardId) {

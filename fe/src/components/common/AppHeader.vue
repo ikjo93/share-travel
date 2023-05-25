@@ -7,16 +7,8 @@
       </b-navbar-brand>
 
       <b-navbar-nav>
-        <b-nav-item
-          :to="{ name: 'boardnotice' }"
-          @click="this.$store.commit('SET_CATEGORY_ID', 3)"
-          >공지사항</b-nav-item
-        >
-        <b-nav-item
-          :to="{ name: 'boardevent' }"
-          @click="this.$store.commit('SET_CATEGORY_ID', 4)"
-          >이벤트</b-nav-item
-        >
+        <b-nav-item @click="moveCategory(2)">공지사항</b-nav-item>
+        <b-nav-item @click="moveCategory(3)">이벤트</b-nav-item>
       </b-navbar-nav>
 
       <b-collapse id="nav-collapse" is-nav>
@@ -24,7 +16,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item to="/share">여행지 찾기</b-nav-item>
           <b-nav-item to="/recommend">여행지 추천</b-nav-item>
-          <b-nav-item :to="{ name: 'boardgeneral' }">커뮤니티</b-nav-item>
+          <b-nav-item @click="moveCategory(0)">커뮤니티</b-nav-item>
           <template v-if="isLoggedIn">
             <b-nav-item to="/user">마이페이지</b-nav-item>
             <b-nav-item href="javascript:;" @click="userLogout"
@@ -53,6 +45,21 @@ export default {
     ...mapGetters(['isLoggedIn']),
   },
   methods: {
+    moveCategory(idx) {
+      if (idx == 0) {
+        this.$store.commit('SET_CATEGORY_ID', 1);
+        this.$router.push({ name: 'boardgeneral' });
+      } else if (idx == 1) {
+        this.$store.commit('SET_CATEGORY_ID', 2);
+        this.$router.push({ name: 'boardtip' });
+      } else if (idx == 2) {
+        this.$store.commit('SET_CATEGORY_ID', 3);
+        this.$router.push({ name: 'boardnotice' });
+      } else if (idx == 3) {
+        this.$store.commit('SET_CATEGORY_ID', 4);
+        this.$router.push({ name: 'boardevent' });
+      }
+    },
     async userLogout() {
       try {
         await logout();
@@ -75,8 +82,5 @@ export default {
 .navbar-brand img {
   height: 30px;
   width: 40px;
-}
-body {
-  padding-top: 0px;
 }
 </style>

@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 public class BoardSaveRequestDto {
 
-    @Min(6) @Max(15)
+    @Length(min = 6,max = 15)
     private String nickName;
 
     @Length(min = 1, max = 50)

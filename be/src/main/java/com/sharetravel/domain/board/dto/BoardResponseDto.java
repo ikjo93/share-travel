@@ -21,6 +21,6 @@ public class BoardResponseDto {
 
     public static BoardResponseDto from(Long categoryId, Board board) {
         return new BoardResponseDto(categoryId, board.getId(), board.getNickNameOfAuthor(), board.getTitle(),
-            board.getSubTitle(), board.getContent());
+            board.getSubtitle(), board.getContent());
     }
 }
