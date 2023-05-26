@@ -74,7 +74,7 @@
 
 ## 🏁 Architecture
 
-> <img src="https://github.com/ikjo93/share-travel/assets/82401504/ee8edc29-9889-49e1-a805-e812516c7a72" width="1000" height="550" alt="">
+> <img src="https://github.com/ikjo93/share-travel/assets/82401504/8c722faf-4a84-47ba-8b29-fa85f1b54341" width="1500" height="550" alt="">
 
 <br>
 
