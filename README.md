@@ -74,8 +74,7 @@
 
 ## 🏁 Architecture
 
-### 테스트 서버 인프라 아키텍처
-> <img src="https://github.com/ikjo93/share-travel/assets/82401504/71bc4e62-078e-4a80-99a7-5de22b2df9f5" width="750" height="550" alt="">
+> <img src="https://github.com/ikjo93/share-travel/assets/82401504/ee8edc29-9889-49e1-a805-e812516c7a72" width="1000" height="550" alt="">
 
 <br>
 
