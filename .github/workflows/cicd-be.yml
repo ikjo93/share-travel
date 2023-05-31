@@ -9,8 +9,8 @@ permissions:
 
 jobs:
   build:
+    if: startsWith(github.head_ref, 'be/') && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'be')
     defaults:
       run:
         shell: bash
