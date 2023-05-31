@@ -5,8 +5,7 @@ import static com.sharetravel.global.auth.jwt.utils.TokenUtils.getRefreshTokenId
 
 import com.sharetravel.global.auth.jwt.service.AccessTokenService;
 import com.sharetravel.global.auth.jwt.service.RefreshTokenService;
-import com.sharetravel.global.auth.oauth2.dto.OAuth2UserInfo;
-import com.sharetravel.global.auth.oauth2.utils.OAuth2UserInfoUtil;
+import com.sharetravel.global.auth.oauth2.dto.CustomOAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,10 +26,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
 
-        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoUtil.getOAuth2UserInfo(
-            (OAuth2AuthenticationToken) authentication);
-
-        String userId = oAuth2UserInfo.getUserId();
+        String userId = getUserIdFromAuth(authentication);
 
         String accessToken = accessTokenService.createAccessToken(userId);
         String refreshTokenId = refreshTokenService.createRefreshToken(userId);
@@ -39,5 +35,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.addCookie(getRefreshTokenIdCookie(refreshTokenId));
 
         response.sendRedirect(System.getenv("CLIENT_URL"));
+    }
+
+    private String getUserIdFromAuth(Authentication authentication) {
+        OAuth2AuthenticationToken auth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+        CustomOAuth2User oAuth2User = (CustomOAuth2User) auth2AuthenticationToken.getPrincipal();
+        return oAuth2User.getUserId();
     }
 }
