@@ -2,14 +2,15 @@ name: BACKEND CI/CD
 
 on:
   pull_request:
-    branches: [ main ]
+    types:
+      - closed
 
 permissions:
   contents: read
 
 jobs:
   build:
-    if: startsWith(github.head_ref, 'be/') && github.event.action == 'closed' && github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'be/') && github.base_ref == 'main'
     runs-on: ubuntu-latest
     defaults:
       run:
