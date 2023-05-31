@@ -102,4 +102,10 @@ public class User extends BaseTimeEntity {
     public String getRoleKey() {
         return this.role.getKey();
     }
+
+    public List<Long> getIdsOfUserTravelKeyword() {
+        return userTravelKeywords.stream()
+            .map(UserTravelKeyword::getId)
+            .collect(Collectors.toList());
+    }
 }

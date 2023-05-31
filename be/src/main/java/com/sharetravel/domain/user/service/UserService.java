@@ -110,7 +110,8 @@ public class UserService {
     public void deleteUSer(Long userId, String refreshTokenId, Integer code) {
         User user = getUserById(userId);
         if (mailAuthorizationCodeRepository.validateCode(user.getEmail(), code)) {
-            userRepository.delete(user); // TODO : usertravelkeyword batch delete
+            userTravelKeywordRepository.deleteAllByIdInQuery(user.getIdsOfUserTravelKeyword());
+            userRepository.deleteById(user.getId());
             refreshTokenRepository.deleteByKey(refreshTokenId);
         } else {
             throw new InvalidMailAuthorizationCodeException("회원 탈퇴 처리를 위한 인증 번호가 일치하지 않습니다.");
