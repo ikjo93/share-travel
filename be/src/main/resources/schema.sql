@@ -54,12 +54,13 @@ create table `travel`
     travel_user_id           bigint       not null,
     name                     varchar(30)  not null,
     description              varchar(500) not null,
-    location                 varbinary(255) not null,
+    location                 point not null SRID 0,
     created_date             TIMESTAMP,
     modified_date            TIMESTAMP,
     primary key (travel_id),
     foreign key (travel_travel_keyword_id) references `travel_keyword` (travel_keyword_id),
-    foreign key (travel_user_id) references `user` (user_id)
+    foreign key (travel_user_id) references `user` (user_id),
+    SPATIAL INDEX index_location (location)
 );
 
 create table `image`

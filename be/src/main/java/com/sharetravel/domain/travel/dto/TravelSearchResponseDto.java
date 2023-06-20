@@ -1,19 +1,21 @@
 package com.sharetravel.domain.travel.dto;
 
-public interface TravelSearchResponseDto {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-    Long getTravelId();
+@Setter
+@Getter
+@AllArgsConstructor
+public class TravelSearchResponseDto {
 
-    String getName();
-    String getUserNickName();
-
-    String getDescription();
-
-    String getTravelKeyword();
-
-    String getUrl();
-
-    Double getLongitude(); // 경도
-
-    Double getLatitude(); // 위도
+    private Long travelId;
+    private Long travelKeywordId;
+    private String name;
+    private String userNickName;
+    private String description;
+    private String travelKeyword;
+    private String url;
+    private Double longitude; // 경도
+    private Double latitude; // 위도
 }

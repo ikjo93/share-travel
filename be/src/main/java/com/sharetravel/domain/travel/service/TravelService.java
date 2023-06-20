@@ -6,14 +6,15 @@ import com.sharetravel.domain.image.service.ImageService;
 import com.sharetravel.domain.travel.dto.TravelRequestDto;
 import com.sharetravel.domain.travel.dto.TravelResponseDto;
 import com.sharetravel.domain.travel.dto.TravelSearchResponseDto;
-import com.sharetravel.domain.travel.entity.Travel;
 import com.sharetravel.domain.travel.repository.TravelRepository;
 import com.sharetravel.domain.travelkeyword.entity.TravelKeyword;
 import com.sharetravel.domain.travelkeyword.repository.TravelKeywordRepository;
 import com.sharetravel.domain.user.entity.User;
 import com.sharetravel.domain.user.repository.UserRepository;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,27 @@ public class TravelService {
     @Transactional(readOnly = true)
     public List<TravelSearchResponseDto> findAllAroundCoordinate(Double longitude, Double latitude) {
         String point = getPoint(longitude, latitude);
-        return travelRepository.findAllByPoint(point);
+        List<TravelSearchResponseDto> travels = travelRepository.findAllByPoint(point);
+        List<TravelKeyword> travelKeywords = travelKeywordRepository.findAll();
+        Map<Long, String> travelKeywordMap = getTravelKeywordMap(travelKeywords);
+        setKeywordByTravel(travels, travelKeywordMap);
+
+        return travels;
+    }
+
+    private Map<Long, String> getTravelKeywordMap(List<TravelKeyword> travelKeywords) {
+        Map<Long, String> travelKeywordMap = new HashMap<>();
+        for (TravelKeyword travelKeyword : travelKeywords) {
+            travelKeywordMap.put(travelKeyword.getId(), travelKeyword.getName());
+        }
+
+        return travelKeywordMap;
+    }
+
+    private void setKeywordByTravel(List<TravelSearchResponseDto> travels, Map<Long, String> travelKeywordMap) {
+        for (TravelSearchResponseDto travel : travels) {
+            travel.setTravelKeyword(travelKeywordMap.get(travel.getTravelKeywordId()));
+        }
     }
 
     @Transactional(readOnly = true)

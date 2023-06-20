@@ -32,20 +32,17 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
     @Query(value = SELECT_TRAVEL_IMAGES_QUERY, nativeQuery = true)
     List<String> findImagesById(@Param("id") Long id);
 
-    String SEARCH_RADIUS = "1000";
+    String SEARCH_DEGREE = "0.009";
 
     String SELECT_TRAVEL_QUERY = "select t.travel_id as travelId, " +
-            "t.name as name, t.description as description, " +
-            "tk.name as travelKeyword, MAX(i.url) as url, " +
             "ST_X(t.location) as longitude, ST_Y(t.location) as latitude " +
             "from travel t " +
-            "join travel_keyword tk on t.travel_travel_keyword_id = tk.travel_keyword_id " +
-            "join image i on t.travel_id = i.image_travel_id " +
-            "where ST_Distance_Sphere(t.location, ST_GeomFromText(:point)) <= " + SEARCH_RADIUS + " " +
-            "group by t.travel_id";
+            "where ST_Contains(ST_Buffer(ST_GeomFromText(:point), " + SEARCH_DEGREE + "), t.location)";
 
     @Query(value = SELECT_TRAVEL_QUERY, nativeQuery = true)
     List<TravelSearchResponseDto> findAllByPoint(@Param("point") String point);
+
+    String SEARCH_METER = "1000";
 
     String SELECT_TRAVEL_BY_KEYWORD_QUERY = "select t.travel_id as travelId, " +
         "t.name as name, t.description as description, " +
@@ -54,7 +51,7 @@ public interface TravelRepository extends JpaRepository<Travel, Long> {
         "from travel t " +
         "join travel_keyword tk on t.travel_travel_keyword_id = tk.travel_keyword_id " +
         "join image i on t.travel_id = i.image_travel_id " +
-        "where ST_Distance_Sphere(t.location, ST_GeomFromText(:point)) <= " + SEARCH_RADIUS + " " +
+        "where ST_Distance_Sphere(t.location, ST_GeomFromText(:point)) <= " + SEARCH_METER + " " +
         "and t.travel_travel_keyword_id = :keywordId " +
         "group by t.travel_id";
 
